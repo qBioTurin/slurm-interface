@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { TextInput, Button, Switch, Table, Group, Badge, Flex } from '@mantine/core';
+import { Table } from '@mantine/core';
 import styles from './Reservations.module.css';
 import { Reservation } from '../../../../utils/models/models';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 
 interface ReservationsTableProps {
@@ -15,6 +15,12 @@ interface ReservationsTableProps {
 
 
 export default function ReservationsTable({ reservations, onReserve }: ReservationsTableProps) {
+
+    const router = useRouter();
+
+    const handleRowClick = (reservationName: string) => {
+        router.push(`/dashboard/reservations/${reservationName}`);
+    };
 
     return (
         <Table className={styles.table} striped highlightOnHover>
@@ -31,7 +37,7 @@ export default function ReservationsTable({ reservations, onReserve }: Reservati
             <tbody>
                 {reservations.length > 0 ? (
                     reservations.map((reservation) => (
-                        <tr key={reservation.ReservationName}>
+                        <tr key={reservation.ReservationName} onClick={() => handleRowClick(reservation.ReservationName)} >
                             <td>{reservation.ReservationName}</td>
                             <td>{reservation.Users.join(', ')}</td>
                             <td>{reservation.NodeCnt}</td>
