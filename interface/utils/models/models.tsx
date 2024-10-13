@@ -30,11 +30,13 @@ export interface Job {
 }
 
 export interface Reservation {
-  ReservationID: string;
-  User: string;
-  Node: Node;
-  Job: Job;
+  ReservationName: string;
   StartTime: string;
   EndTime: string;
+  Duration: string;
+  Users: string[];
+  Accounts: string[];
+  Nodes: Node[];
+  NodeCnt: number;
 }
 

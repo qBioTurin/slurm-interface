@@ -42,19 +42,23 @@ export const mockJobs: Job[] = [
 
 export const mockReservations = [
     {
-        ReservationID: 'rsv1',
-        User: 'John Doe',
-        Node: mockNodes[0],
-        Job: mockJobs[0],
+        ReservationName: 'rsv1',
         StartTime: 'Tue, 8 Oct 2024 10:00:00 GMT',
         EndTime: 'Sun, 13 Oct 2024 16:00:00 GMT',
+        Duration: '5 days 6 hours',
+        Users: ['Jane Doe, John Doe'],
+        Accounts: ['biology'],
+        Nodes: mockNodes.slice(0, 3),
+        NodeCnt: 3,
     },
     {
-        ReservationID: 'rsv2',
-        User: 'Jane Doe',
-        Node: mockNodes[1],
-        Job: mockJobs[1],
+        ReservationName: 'rsv2',
         StartTime: 'Tue, 8 Oct 2024 16:00:00 GMT',
         EndTime: 'Sun, 13 Oct 2024 22:00:00 GMT',
+        Duration: '5 days 6 hours',
+        Users: ['Tom Cruise'],
+        Accounts: ['physics'],
+        Nodes: mockNodes.slice(3, 4),
+        NodeCnt: 1,
     },
 ];
