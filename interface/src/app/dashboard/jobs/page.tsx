@@ -1,13 +1,30 @@
-import JobsPage from "@/app/components/jobs/jobs";
-import { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-    title: 'Jobs',
-    description: 'View and manage jobs in the cluster',
-};
+import { useState } from 'react';
+import { TextInput, Group } from '@mantine/core';
+import JobTable from '../../components/jobs/JobsTable';
+import { Job } from '../../../../utils/models/models';
+import { mockJobs } from '../../../../utils/models/mock';
 
-export default function Nodes() {
+export default function JobsPage() {
+    const [searchQuery, setSearchQuery] = useState<string>('');
+
+    const filteredJobs = mockJobs.filter((job) =>
+        job.JobName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.User.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <JobsPage />
+        <div>
+            <Group>
+                <TextInput
+                    placeholder="Search Jobs"
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.currentTarget.value)}
+                />
+            </Group>
+
+            <JobTable jobs={filteredJobs} />
+        </div>
     );
 }
