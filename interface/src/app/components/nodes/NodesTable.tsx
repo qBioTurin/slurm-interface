@@ -1,5 +1,5 @@
 import { Table, Badge, Button } from '@mantine/core';
-import styles from './NodeList.module.css';
+import styles from './NodesTable.module.css';
 import { Node } from '../../../../utils/models/models';
 
 interface NodeTableProps {

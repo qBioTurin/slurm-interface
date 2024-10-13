@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { TextInput, Switch, Group } from '@mantine/core';
-import styles from '../../components/nodes/NodeList.module.css';
+import styles from './Nodes.module.css';
 import NodeTable from '../../components/nodes/NodesTable';
 import { Node } from '../../../../utils/models/models';
 import { mockNodes } from '../../../../utils/models/mock';
@@ -28,7 +28,7 @@ export default function NodesPage() {
 
   return (
     <div className={styles.container}>
-      <Group className={styles.controls}>
+      <Group className={styles.group}>
         <TextInput
           className={styles.searchInput}
           placeholder="SearchNodes by NodeID"
