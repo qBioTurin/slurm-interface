@@ -5,6 +5,7 @@ import { TextInput, Group } from '@mantine/core';
 import JobTable from '../../components/jobs/JobsTable';
 import { Job } from '../../../../utils/models/models';
 import { mockJobs } from '../../../../utils/models/mock';
+import styles from './Jobs.module.css';
 
 export default function JobsPage() {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -15,9 +16,10 @@ export default function JobsPage() {
     );
 
     return (
-        <div>
-            <Group>
+        <div className={styles.container}>
+            <Group className={styles.group}>
                 <TextInput
+                    className={styles.searchInput}
                     placeholder="Search Jobs"
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.currentTarget.value)}

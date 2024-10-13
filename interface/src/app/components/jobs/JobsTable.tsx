@@ -1,6 +1,7 @@
 import { Table, Badge, Button } from '@mantine/core';
 import { Job } from '../../../../utils/models/models';
 import { useRouter } from 'next/router';
+import styles from './JobsTable.module.css';
 
 interface JobTableProps {
     jobs: Job[];
@@ -14,7 +15,7 @@ export default function JobTable({ jobs }: JobTableProps) {
     // };
 
     return (
-        <Table striped highlightOnHover>
+        <Table className={styles.table} striped highlightOnHover>
             <thead>
                 <tr>
                     <th>JobID</th>
