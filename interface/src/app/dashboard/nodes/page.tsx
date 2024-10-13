@@ -6,6 +6,7 @@ import styles from './Nodes.module.css';
 import NodeTable from '../../components/nodes/NodesTable';
 import { Node } from '../../../../utils/models/models';
 import { mockNodes } from '../../../../utils/models/mock';
+import FloatingButton from '../../components/nodes/FloatingButton';
 
 export default function NodesPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -45,6 +46,9 @@ export default function NodesPage() {
       </Group>
 
       <NodeTable nodes={filteredNodes} onReserve={handleReserve} />
+
+      <FloatingButton />
+
     </div>
   );
 }
