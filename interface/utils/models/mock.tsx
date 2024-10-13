@@ -6,7 +6,7 @@ export const mockNodes: Node[] = [
     { NodeID: 'node2', State: 'Allocated', reserved: true },
     { NodeID: 'node3', State: 'Down', reserved: false },
     { NodeID: 'node4', State: 'Maintenance', reserved: false },
-  ];
+];
 
 export const mockJobs: Job[] = [
     {
@@ -37,5 +37,24 @@ export const mockJobs: Job[] = [
         Memory: '64G',
         TimeLimit: '2-00:00:00',
         Priority: 900,
+    },
+];
+
+export const mockReservations = [
+    {
+        ReservationID: 'rsv1',
+        User: 'John Doe',
+        Node: mockNodes[0],
+        Job: mockJobs[0],
+        StartTime: 'Tue, 8 Oct 2024 10:00:00 GMT',
+        EndTime: 'Sun, 13 Oct 2024 16:00:00 GMT',
+    },
+    {
+        ReservationID: 'rsv2',
+        User: 'Jane Doe',
+        Node: mockNodes[1],
+        Job: mockJobs[1],
+        StartTime: 'Tue, 8 Oct 2024 16:00:00 GMT',
+        EndTime: 'Sun, 13 Oct 2024 22:00:00 GMT',
     },
 ];
