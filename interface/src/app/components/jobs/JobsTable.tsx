@@ -1,18 +1,13 @@
 import { Table, Badge, Button } from '@mantine/core';
 import { Job } from '../../../../utils/models/models';
-import { useRouter } from 'next/router';
 import styles from './JobsTable.module.css';
+import Link from 'next/link';
 
 interface JobTableProps {
     jobs: Job[];
 }
 
-export default function JobTable({ jobs }: JobTableProps) {
-    // const router = useRouter();
-
-    // const handleJobClick = (jobID: number) => {
-    //     router.push(`/dashboard/jobs/${jobID}`);
-    // };
+export default function JobsTable({ jobs }: JobTableProps) {
 
     return (
         <Table className={styles.table} striped highlightOnHover>
@@ -31,10 +26,11 @@ export default function JobTable({ jobs }: JobTableProps) {
                 {jobs.map((job) => (
                     <tr key={job.JobID}>
                         <td>
-                            {/*<Button variant="subtle" onClick={() => handleJobClick(job.JobID)}>*/}
-                                <Button>
+                        <Link href={`/dashboard/jobs/${job.JobID}`} passHref>
+                            <Button>
                                 {job.JobID}
                             </Button>
+                        </Link>
                         </td>
                         <td>{job.JobName}</td>
                         <td>{job.User}</td>
