@@ -31,8 +31,8 @@ export interface Job {
 
 export interface Reservation {
   ReservationName: string;
-  StartTime: string;
-  EndTime: string;
+  StartTime: Date;
+  EndTime: Date;
   Duration: string;
   Users: string[];
   Accounts: string[];

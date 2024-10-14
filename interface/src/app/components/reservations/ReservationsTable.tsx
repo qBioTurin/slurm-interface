@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Table } from '@mantine/core';
+import { Table, Pill } from '@mantine/core';
 import styles from './Reservations.module.css';
 import { Reservation } from '../../../../utils/models/models';
 import { useRouter } from 'next/navigation';
@@ -37,13 +37,20 @@ export default function ReservationsTable({ reservations, onReserve }: Reservati
             <tbody>
                 {reservations.length > 0 ? (
                     reservations.map((reservation) => (
-                        <tr key={reservation.ReservationName} onClick={() => handleRowClick(reservation.ReservationName)} >
+                        <tr key={reservation.ReservationName} onClick={() => handleRowClick(reservation.ReservationName)}>
                             <td>{reservation.ReservationName}</td>
-                            <td>{reservation.Users.join(', ')}</td>
+                            <td>
+                                {reservation.Users.map((user) => (
+                                    <Pill key={user} mr='0.5em' mb='0.5em' disabled>
+                                        {user}
+                                    </Pill>
+                                ))}
+                            </td>
                             <td>{reservation.NodeCnt}</td>
-                            <td>{reservation.Nodes.map((node) => node.NodeID).join(', ')}</td>
-                            <td>{reservation.StartTime}</td>
-                            <td>{reservation.EndTime}</td>
+                            <td>{reservation.Nodes.map((node) => (
+                                <Pill key={node.NodeID} mr='0.5em' mb='0.5em' disabled>{node.NodeID}</Pill>))}</td>
+                            <td>{reservation.StartTime.toUTCString()}</td>
+                            <td>{reservation.EndTime.toUTCString()}</td>
                         </tr>
                     ))
                 ) : (
