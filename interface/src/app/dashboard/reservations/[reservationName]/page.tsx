@@ -6,7 +6,7 @@ import { DateInput } from '@mantine/dates';
 import { Reservation, Node } from '../../../../../utils/models/models';
 import { mockNodes, mockReservations } from '../../../../../utils/models/mock';
 import { useState, useEffect } from 'react';
-import styles from './ReservationDetails.module.css';
+import styles from './ReservationForm.module.css';
 import { useDisclosure } from '@mantine/hooks';
 import '@mantine/dates/styles.css';
 import dayjs from 'dayjs';
@@ -95,7 +95,7 @@ export default function EditReservation({ params }: EditReservationProps) {
                 label="End Time"
                 placeholder="End Time"
                 dateParser={(s) =>
-                    dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate().getTime()
+                    dayjs(s, "DD/MM/YYYY HH:mm:ss",).toDate().getTime()
                         ? dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()
                         : new Date(s)
                 }
@@ -110,8 +110,6 @@ export default function EditReservation({ params }: EditReservationProps) {
                 mt="md"
                 clearable
             />
-
-
 
             <MultiSelect
                 {...form.getInputProps('Accounts')}
@@ -143,11 +141,11 @@ export default function EditReservation({ params }: EditReservationProps) {
                 </Group>
             </Modal>
 
-            {/*<Text mt="md">Form values:</Text>
+            <Text mt="md">Form values:</Text>
             <Code block>{JSON.stringify(form.values, null, 2)}</Code>
 
             <Text mt="md">Submitted values:</Text>
-            <Code block>{submittedValues ? JSON.stringify(submittedValues, null, 2) : '–'}</Code> */}
+            <Code block>{submittedValues ? JSON.stringify(submittedValues, null, 2) : '–'}</Code>
         </form>
     );
 }

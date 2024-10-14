@@ -43,8 +43,8 @@ export const mockJobs: Job[] = [
 export const mockReservations = [
     {
         ReservationName: 'rsv1',
-        StartTime: new Date('2024-08-10T08:00:00.000Z'),
-        EndTime: new Date('2024-10-12T16:00:00.000Z'),
+        StartTime: new Date('10/08/2024 10:00:00'), // format: MM/DD/YYYY HH:MM:SS
+        EndTime: new Date('10/12/2024 16:00:00'),
         Duration: '5 days 6 hours',
         Users: ['Jane Doe', 'John Doe'],
         Accounts: ['biology'],
@@ -53,8 +53,8 @@ export const mockReservations = [
     },
     {
         ReservationName: 'rsv2',
-        StartTime: new Date('08/10/2024 16:00:00'),
-        EndTime: new Date('2024-10-13T22:00:00.000Z'),
+        StartTime: new Date('10/10/2024 16:00:00'), // format: MM/DD/YYYY HH:MM:SS
+        EndTime: new Date('10/13/2024 22:00:00'),
         Duration: '5 days 6 hours',
         Users: ['Tom Cruise'],
         Accounts: ['physics'],
