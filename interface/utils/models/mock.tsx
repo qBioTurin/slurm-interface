@@ -2,13 +2,108 @@ import { Node } from './models';
 import { Job } from './models';
 
 export const mockNodes: Node[] = [
-    { NodeID: 'node1', State: 'Idle', reserved: false },
-    { NodeID: 'node2', State: 'Allocated', reserved: true },
-    { NodeID: 'node3', State: 'Down', reserved: false },
-    { NodeID: 'node4', State: 'Maintenance', reserved: false },
-    { NodeID: 'node5', State: 'Idle', reserved: false },
-    { NodeID: 'node6', State: 'Allocated', reserved: true },
+  {
+    nodeName: "csm-001",
+    account: "general",
+    state: "ALLOCATED",
+    cpu: {
+      load: 13.61,
+      allocated: 20,
+      idle: 0,
+      total: 20,
+    },
+    memory: {
+      available: 45186,
+      total: 246640,
+    },
+    gpu: {
+      idle: "N/A",
+      total: "N/A",
+    },
+    reason: "N/A",
+  },
+  {
+    nodeName: "csm-002",
+    account: "albrecht",
+    state: "MIXED",
+    cpu: {
+      load: 10.14,
+      allocated: 15,
+      idle: 5,
+      total: 20,
+    },
+    memory: {
+      available: 1072,
+      total: 246640,
+    },
+    gpu: {
+      idle: "N/A",
+      total: "N/A",
+    },
+    reason: "N/A",
+  },
+  {
+    nodeName: "csm-003",
+    account: "colej",
+    state: "ALLOCATED",
+    cpu: {
+      load: 7.45,
+      allocated: 20,
+      idle: 0,
+      total: 20,
+    },
+    memory: {
+      available: 50032,
+      total: 246640,
+    },
+    gpu: {
+      idle: "N/A",
+      total: "N/A",
+    },
+    reason: "N/A",
+  },
+  {
+    nodeName: "csn-004",
+    account: "general",
+    state: "MIXED",
+    cpu: {
+      load: 9.92,
+      allocated: 12,
+      idle: 8,
+      total: 20,
+    },
+    memory: {
+      available: 16160,
+      total: 118012,
+    },
+    gpu: {
+      idle: "N/A",
+      total: "N/A",
+    },
+    reason: "Scheduled maintenance",
+  },
+  {
+    nodeName: "csm-005",
+    account: "albrecht",
+    state: "IDLE",
+    cpu: {
+      load: 0.0,
+      allocated: 0,
+      idle: 20,
+      total: 20,
+    },
+    memory: {
+      available: 246640,
+      total: 246640,
+    },
+    gpu: {
+      idle: "N/A",
+      total: "N/A",
+    },
+    reason: "No jobs",
+  }
 ];
+
 
 export const mockJobs: Job[] = [
     {
