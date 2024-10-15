@@ -34,12 +34,21 @@ export const JobStateDescriptions = {
 
 export interface Job {
   jobId: number;
-  partition: string;
+  partition: Partition;
   name: string;
   user: string;
   state: JobState;
   time: string;
   nodesCount: number;
+  nodeList: Node[];
+}
+
+export interface Partition {
+  name: string;
+  availability: 'UP' | 'DOWN';
+  timeLimit: string;
+  nodesCount: number;
+  state: 'ALLOCATED' | 'IDLE' | 'DOWN';
   nodeList: Node[];
 }
 
