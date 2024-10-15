@@ -1,15 +1,21 @@
 import { BarChart } from '@mantine/charts';
 import '@mantine/charts/styles.css' 
-import { Job } from '../../../../utils/models/models';
+import { Job, JobStateInfo} from '../../../../utils/models/models';
+import { JobStates }  from '../../../../utils/models/job_state';
 
 interface JobsBarchartProps {
     jobs: Job[];
 }
 
-const aggregateJobStates = (jobs: Job[]) => {
+const jobStateMap = JobStates.reduce((map, stateInfo) => {
+    map[stateInfo.code] = stateInfo.state;
+    return map;
+}, {} as Record<string, string>);
 
+const aggregateJobStates = (jobs: Job[]) => {
     const counts = jobs.reduce((acc, job) => {
-        acc[job.State] = (acc[job.State] || 0) + 1;
+        const stateName = jobStateMap[job.state] || job.state;
+        acc[stateName] = (acc[stateName] || 0) + 1;
         return acc;
     }, {} as Record<string, number>);
 
