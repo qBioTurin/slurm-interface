@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { mockJobs } from '../../../../utils/models/mock';
 import JobsBarchart from '../../components/dashboard/JobsBarchart';
 import UpcomingJobs from '../../components/dashboard/UpcomingJobsTable';
+import styles from './Dashboard.module.css';
 
 export const metadata: Metadata = {
     title: 'DashBoard',
@@ -10,16 +11,26 @@ export const metadata: Metadata = {
 
 export default function DashBoard() {
     return (
-        <div>
-            <h1> Dashboard </h1>
-            <div>
+        <div className={styles.container}>
+            <div className={styles.header}>
+                <h1> Dashboard </h1>
+            </div>
+            
+            <div className={styles.section}>
                 <h2>Upcoming Jobs for Today </h2>
-                <UpcomingJobs jobs={mockJobs} />
+
+                <div className={styles.upcomingJobs}>
+                    <UpcomingJobs jobs={mockJobs} />
+                </div>
             </div>
 
-            <div style={{ padding: '20px', backgroundColor: '#f9f9f9', borderRadius: 10}}>
+            <div className={styles.section}>
                 <h2> Jobs statistics </h2>
-                <JobsBarchart jobs={mockJobs} />
+
+                <div className={styles.stats}>
+                    <JobsBarchart jobs={mockJobs} />
+                </div>
+                
             </div>
         </div>
     );
