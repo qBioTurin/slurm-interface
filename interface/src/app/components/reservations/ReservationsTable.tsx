@@ -7,7 +7,6 @@ import styles from './Reservations.module.css';
 import { Reservation } from '../../../../utils/models/models';
 import { mockReservations } from '../../../../utils/models/mock';
 import { useRouter } from 'next/navigation';
-import { mock } from 'node:test';
 
 
 interface ThProps {
@@ -57,7 +56,7 @@ function filterData(data: Reservation[], search: string) {
             } else if (key == 'Users' || key == 'Accounts' || key == 'Groups') {
                 return item[key]?.some((value) => value.toLowerCase().includes(query));
             } else if (key == 'Nodes') {
-                return item[key]?.some((node) => node.NodeID.toLowerCase().includes(query));
+                return item[key]?.some((node) => node.nodeName.toLowerCase().includes(query));
             }
         })
     );
@@ -181,7 +180,7 @@ export default function ReservationsTableSort() {
                 ))}</Table.Td>
             <Table.Td>{row.NodeCnt}</Table.Td>
             <Table.Td>{row.Nodes?.map((node) => (
-                <Pill key={node.NodeID} mr='0.5em' mb='0.5em'>{node.NodeID}</Pill>))}</Table.Td>
+                <Pill key={node?.nodeName} mr='0.5em' mb='0.5em'>{node?.nodeName}</Pill>))}</Table.Td>
             <Table.Td>{row.StartTime.toLocaleString()}</Table.Td>
             <Table.Td>{row.EndTime.toLocaleString()}</Table.Td>
         </Table.Tr>
@@ -228,6 +227,5 @@ export default function ReservationsTableSort() {
                 </Table>
             </ScrollArea>
         </div >
-
     );
 }
