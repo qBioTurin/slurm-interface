@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Text } from '@mantine/core';
+import { Text, Grid } from '@mantine/core';
 import { Job } from '../../../../../utils/models/models';
 import { mockJobs } from '../../../../../utils/models/mock';
 import { useState, useEffect } from 'react';
@@ -34,35 +34,40 @@ const JobPage = ({ params }: JobPageProps) => {
       
       {/* Job Header */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Job {job.jobId}: {job.name}</h2>
+        <h2 className={styles.title}>[{job.jobId}] {job.name}</h2>
         <JobStateBadge state={job.state} />
       </div>
 
-      {/* Job Info Section */}
-      <InfoCard title="Job Info">
-        <InfoField label="Submission Time" value={job.timeSubmission} />
-        {job.timeStart && <InfoField label="Start Time" value={job.timeStart} />}
-        <InfoField label="Time Left" value={job.timeLeft} />
-        <InfoField label="Time Used" value={job.timeUsed} />
-        <InfoField label="Partition" value={job.partition.name} />
-        <InfoField label="Priority" value={job.priority.toFixed(2)} />
-      </InfoCard>
+      <Grid>
+        {/* Left Column: Job Timeline */}
+        <Grid.Col span={6}>
+            <InfoCard title="Job Timeline">
+              <JobProgressTimeline job={job} />
+            </InfoCard>
+        </Grid.Col>
+          
+        {/* Right Column: Job Info */}
+        <Grid.Col span={6}>
+          <InfoCard title="Job Metadata">
+            <InfoField label="User" value={job.user} />
+            <InfoField label="Submission Time" value={job.timeSubmission} />
+            <InfoField label="Quality of Service" value={job.qos} />
+            <InfoField label="Priority" value={job.priority.toFixed(2)} />
+          </InfoCard>
 
-      {/* Job Progress Section */}
-      <InfoCard title="Job Progress">
-        <InfoField label="Submitted" value={job.timeSubmission} />
-        {job.timeStart && <InfoField label="Started" value={job.timeStart} />}
-        <InfoField label="State" value={job.state} />
-        {job.timeUsed && <InfoField label="Elapsed Time" value={job.timeUsed} />}
-        <InfoField label="Nodes Count" value={job.nodesCount.toString()} />
-        <InfoField label="Quality of Service" value={job.qos} />
-      </InfoCard>
+          <InfoCard title="Job Resources">
+          <InfoField label="Partition" value={job.partition.name} />
+          <InfoField label="Nodes Count" value={job.nodesCount.toString()} />
+          </InfoCard>
 
-      <InfoCard title="Job Timeline">
-        <JobProgressTimeline job={job} />
-      </InfoCard>
-    </div>
-
+          <InfoCard title="Job Info">
+            {job.timeStart && <InfoField label="Start Time" value={job.timeStart} />}
+            <InfoField label="Time Left" value={job.timeLeft} />
+            {job.timeUsed && <InfoField label="Elapsed Time" value={job.timeUsed} />}
+          </InfoCard>
+        </Grid.Col>
+    </Grid>
+  </div>
   );
 };
 

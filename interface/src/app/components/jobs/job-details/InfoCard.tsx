@@ -8,10 +8,10 @@ interface InfoCardProps {
 export const InfoCard = ({ title, children }: InfoCardProps) => {
   return (
     <div className={styles.card}>
-    <div className={styles.section}>
-      <h3 className={styles.sectionHeader}>{title}</h3>
-      {children}
+      <div className={styles.section}>
+        <h3 className={styles.sectionHeader}>{title}</h3>
+        {children}
+      </div>
     </div>
-  </div>
   )
 };
