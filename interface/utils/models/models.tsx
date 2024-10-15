@@ -41,6 +41,16 @@ export interface Job {
   time: string;
   nodesCount: number;
   nodeList: Node[];
+
+  priority: number;             // %p: Priority of the job (0.0 to 1.0)
+  qos: string;                  // %q: Quality of service associated with the job
+  timeStart: string;            // %S: Actual or expected start time of the job
+  reservation: string;          // %v: Reservation for the job
+  timeSubmission: string;       // %V: Job's submission time
+  timeUsed: string;             // %M: Time used by the job in days-hours:minutes:seconds
+  timeLeft: string;             // %L: Time left for the job in days-hours:minutes:seconds
+  timeLimit: string;            // %l: Time limit of the job in days-hours:minutes:seconds
+  endTime: string;              // %e: Time at which the job ended or is expected to end
 }
 
 export interface Partition {

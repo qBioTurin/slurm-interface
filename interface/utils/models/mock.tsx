@@ -107,7 +107,6 @@ export const mockNodes: Node[] = [
   }
 ];
 
-
 export const mockPartitions: Partition[] = [
   {
     name: "batch",
@@ -137,7 +136,6 @@ export const mockPartitions: Partition[] = [
   },
 ];
 
-// Mock jobs
 export const mockJobs: Job[] = [
   {
     jobId: 18957,
@@ -148,6 +146,16 @@ export const mockJobs: Job[] = [
     time: "0:01",
     nodesCount: 1,
     nodeList: [mockNodes[0]], // csm-001
+
+    priority: 0.8,
+    qos: "normal",
+    timeStart: "2024-10-15T12:00:00Z",
+    reservation: "none",
+    timeSubmission: "2024-10-15T11:59:00Z",
+    timeUsed: "0-0:00:01",
+    timeLeft: "0-0:59:00",
+    timeLimit: "0-1:00:00",
+    endTime: "2024-10-15T13:00:00Z",
   },
   {
     jobId: 18956,
@@ -158,6 +166,16 @@ export const mockJobs: Job[] = [
     time: "48:38",
     nodesCount: 1,
     nodeList: [mockNodes[1]], // csm-002
+
+    priority: 0.9,
+    qos: "high",
+    timeStart: "2024-10-15T11:30:00Z",
+    reservation: "none",
+    timeSubmission: "2024-10-15T11:00:00Z",
+    timeUsed: "0-2:00:00", 
+    timeLeft: "0-0:38:00", 
+    timeLimit: "0-2:00:00", 
+    endTime: "2024-10-15T13:30:00Z",
   },
   {
     jobId: 18967,
@@ -168,6 +186,16 @@ export const mockJobs: Job[] = [
     time: "14:25",
     nodesCount: 1,
     nodeList: [mockNodes[2]], // csm-003
+
+    priority: 0.5,
+    qos: "low",
+    timeStart: "2024-10-15T12:15:00Z",
+    reservation: "none", 
+    timeSubmission: "2024-10-15T11:00:00Z",
+    timeUsed: "0-0:00:00",
+    timeLeft: "0-0:14:25",
+    timeLimit: "0-1:00:00",
+    endTime: "2024-10-15T12:29:25Z",
   },
   {
     jobId: 18968,
@@ -178,6 +206,16 @@ export const mockJobs: Job[] = [
     time: "12:10",
     nodesCount: 2,
     nodeList: [mockNodes[3], mockNodes[4]], // csn-004, csm-005
+
+    priority: 0.7,
+    qos: "normal",
+    timeStart: "2024-10-15T12:00:00Z",
+    reservation: "none",
+    timeSubmission: "2024-10-15T11:15:00Z",
+    timeUsed: "0-0:12:10",
+    timeLeft: "0-0:00:00",
+    timeLimit: "0-1:00:00",
+    endTime: "2024-10-15T13:00:00Z",
   },
   {
     jobId: 18969,
@@ -188,6 +226,16 @@ export const mockJobs: Job[] = [
     time: "10:05",
     nodesCount: 1,
     nodeList: [mockNodes[4]], // csm-005
+
+    priority: 0.6,
+    qos: "normal",
+    timeStart: "2024-10-15T11:45:00Z",
+    reservation: "none",
+    timeSubmission: "2024-10-15T11:00:00Z",
+    timeUsed: "0-0:10:05",
+    timeLeft: "0-0:00:00",
+    timeLimit: "0-1:00:00",
+    endTime: "2024-10-15T12:55:05Z",
   },
 ];
 
