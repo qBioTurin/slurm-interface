@@ -1,5 +1,8 @@
+import { mock } from 'node:test';
 import { Node } from './models';
 import { Job } from './models';
+import { Partition } from './models';
+import { Reservation } from './models';
 
 export const mockNodes: Node[] = [
   {
@@ -105,106 +108,87 @@ export const mockNodes: Node[] = [
 ];
 
 
+export const mockPartitions: Partition[] = [
+  {
+    name: "batch",
+    availability: "UP",
+    timeLimit: "infinite",
+    nodesCount: 5,
+    state: "ALLOCATED",
+    nodeList: [
+      mockNodes[0], // csm-001
+      mockNodes[1], // csm-002
+      mockNodes[2], // csm-003
+      mockNodes[3], // csn-004
+      mockNodes[4], // csm-005
+    ],
+  },
+  {
+    name: "debug",
+    availability: "UP",
+    timeLimit: "30:00",
+    nodesCount: 3,
+    state: "IDLE",
+    nodeList: [
+      mockNodes[0], // csm-001
+      mockNodes[1], // csm-002
+      mockNodes[4], // csm-005
+    ],
+  },
+];
+
+// Mock jobs
 export const mockJobs: Job[] = [
-    {
-        JobID: 1,
-        JobName: 'data-analysis',
-        User: 'john_doe',
-        Partition: 'compute',
-        State: 'RUNNING',
-        TimeSubmit: '2024-10-12T10:00:00Z',
-        TimeStart: '2024-10-12T10:05:00Z',
-        Nodes: 4,
-        CPUs: 16,
-        Memory: '32G',
-        TimeLimit: '1-00:00:00',
-        TimeUsed: '02:00:00',
-        TimeLeft: '22:00:00',
-        Priority: 1000,
-    },
-    {
-        JobID: 2,
-        JobName: 'model-training',
-        User: 'jane_doe',
-        Partition: 'gpu',
-        State: 'PENDING',
-        TimeSubmit: '2024-10-12T09:00:00Z',
-        Nodes: 2,
-        CPUs: 8,
-        Memory: '64G',
-        TimeLimit: '2-00:00:00',
-        Priority: 900,
-    },
-    {
-        JobID: 3,
-        JobName: "Job 3",
-        User: "User 3",
-        Partition: "Partition B",
-        State: "FAILED",
-        TimeSubmit: "2024-10-01T12:10:00Z",
-        Nodes: 1,
-        CPUs: 1,
-        Memory: "2GB",
-        TimeLimit: "1h",
-        Priority: 3,
-      },
-      {
-        JobID: 4,
-        JobName: "Job 4",
-        User: "User 2",
-        Partition: "Partition A",
-        State: "RUNNING",
-        TimeSubmit: "2024-10-01T12:05:00Z",
-        Nodes: 1,
-        CPUs: 4,
-        Memory: "8GB",
-        TimeLimit: "2h",
-        Priority: 2,
-      },
-      {
-        JobID: 5,
-        JobName: 'Job5',
-        User: 'UserA',
-        Partition: 'A',
-        State: 'RUNNING',
-        TimeSubmit: '2024-10-12T08:00:00',
-        TimeStart: '2024-10-12T09:00:00',
-        Nodes: 2,
-        CPUs: 4,
-        Memory: '8GB',
-        TimeLimit: '1h',
-        TimeUsed: '30m',
-        TimeLeft: '30m',
-        Priority: 5
-    },
-    {
-        JobID: 6,
-        JobName: 'Job6',
-        User: 'UserB',
-        Partition: 'B',
-        State: 'PENDING',
-        TimeSubmit: '2024-10-14T22:00:00',
-        TimeStart: '2024-10-14T23:00:00',
-        Nodes: 1,
-        CPUs: 2,
-        Memory: '4GB',
-        TimeLimit: '2h',
-        Priority: 8
-    },
-    {
-        JobID: 7,
-        JobName: 'Job7',
-        User: 'UserC',
-        Partition: 'C',
-        State: 'PENDING',
-        TimeSubmit: '2024-10-14T21:00:00',
-        TimeStart: '2024-10-14T23:30:00',
-        Nodes: 3,
-        CPUs: 6,
-        Memory: '16GB',
-        TimeLimit: '3h',
-        Priority: 7
-    }
+  {
+    jobId: 18957,
+    partition: mockPartitions[0], // batch
+    name: "mean",
+    user: "user1",
+    state: "R", // Running
+    time: "0:01",
+    nodesCount: 1,
+    nodeList: [mockNodes[0]], // csm-001
+  },
+  {
+    jobId: 18956,
+    partition: mockPartitions[0], // batch
+    name: "calc",
+    user: "user2",
+    state: "R", // Running
+    time: "48:38",
+    nodesCount: 1,
+    nodeList: [mockNodes[1]], // csm-002
+  },
+  {
+    jobId: 18967,
+    partition: mockPartitions[1], // debug
+    name: "wrap",
+    user: "user1",
+    state: "PD", // Pending
+    time: "14:25",
+    nodesCount: 1,
+    nodeList: [mockNodes[2]], // csm-003
+  },
+  {
+    jobId: 18968,
+    partition: mockPartitions[0], // batch
+    name: "test",
+    user: "user3",
+    state: "CG", // Completing
+    time: "12:10",
+    nodesCount: 2,
+    nodeList: [mockNodes[3], mockNodes[4]], // csn-004, csm-005
+  },
+  {
+    jobId: 18969,
+    partition: mockPartitions[1], // debug
+    name: "analyze",
+    user: "user2",
+    state: "CD", // Completed
+    time: "10:05",
+    nodesCount: 1,
+    nodeList: [mockNodes[4]], // csm-005
+  },
 ];
 
 export const mockReservations = [
