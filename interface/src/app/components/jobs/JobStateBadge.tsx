@@ -1,31 +1,38 @@
 import { Badge, Tooltip } from '@mantine/core';
-import { JobState, JobStateDescriptions } from '../../../../utils/models/models';
+import { JobStates} from '../../../../utils/models/job_state';
 
 
 interface JobStateBadgeProps {
-    state: JobState; // The state of the job
+    state: string;
 }
 
 const JobStateBadge: React.FC<JobStateBadgeProps> = ({ state }) => {
+    const jobStateInfo = JobStates.find((jobState) => jobState.code === state);
+
+    if (!jobStateInfo) {
+        return (
+            <Tooltip label="Unknown" position="top" withArrow>
+                <Badge color="gray" style={{ cursor: 'pointer' }}>
+                    Unknown
+                </Badge>
+            </Tooltip>
+        );
+    }
+    
     const getBadgeColor = () => {
-        switch (state) {
-            case 'R':
-                return 'green';
-            case 'PD':
-                return 'yellow';
-            case 'CD':
-                return 'blue';
-            case 'F':
-                return 'red';
-            default:
-                return 'gray';
+        switch (jobStateInfo.code) {
+            case 'R':   return 'green';    // Running
+            case 'PD':  return 'yellow';   // Pending
+            case 'CD':  return 'blue';     // Completed
+            case 'F':   return 'red';      // Failed
+            default:    return 'gray';     // Default for unknown or handled states
         }
     };
 
     return (
-        <Tooltip label={JobStateDescriptions[state]} position="top" withArrow>
+        <Tooltip label={jobStateInfo.description} position="top" withArrow>
             <Badge color={getBadgeColor()} style={{ cursor: 'pointer' }}>
-                {state}
+                {jobStateInfo.state}
             </Badge>
         </Tooltip>
     );

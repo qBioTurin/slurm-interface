@@ -7,6 +7,7 @@ import {
   IconHandStop,
 } from '@tabler/icons-react';
 import { Job } from '../../../../../utils/models/models';
+import { JobStateInfo } from '../../../../../utils/models/models';
 
 interface JobProgressTimelineProps {
   job: Job;
