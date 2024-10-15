@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { TextInput, Group } from '@mantine/core';
 import JobTable from '../../components/jobs/JobsTable';
-import { Job } from '../../../../utils/models/models';
 import { mockJobs } from '../../../../utils/models/mock';
 import styles from './Jobs.module.css';
 
@@ -11,8 +10,8 @@ export default function JobsPage() {
     const [searchQuery, setSearchQuery] = useState<string>('');
 
     const filteredJobs = mockJobs.filter((job) =>
-        job.JobName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.User.toLowerCase().includes(searchQuery.toLowerCase())
+        job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.user.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (

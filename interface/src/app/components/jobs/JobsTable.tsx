@@ -1,5 +1,5 @@
 import { Table, Badge, Button } from '@mantine/core';
-import { Job } from '../../../../utils/models/models';
+import { Job, JobStateDescriptions} from '../../../../utils/models/models';
 import styles from './JobsTable.module.css';
 import Link from 'next/link';
 
@@ -13,35 +13,41 @@ export default function JobsTable({ jobs }: JobTableProps) {
         <Table className={styles.table} striped highlightOnHover>
             <thead>
                 <tr>
-                    <th>JobID</th>
-                    <th>JobName</th>
+                    <th>Job ID</th>
+                    <th>Job Name</th>
                     <th>User</th>
                     <th>Partition</th>
                     <th>State</th>
-                    <th>Priority</th>
-                    <th>Time Left</th>
+                    <th>Nodes Count</th>
+                    <th>Elapsed Time</th>
                 </tr>
             </thead>
             <tbody>
                 {jobs.map((job) => (
-                    <tr key={job.JobID}>
+                    <tr key={job.jobId}>
                         <td>
-                        <Link href={`/dashboard/jobs/${job.JobID}`} passHref>
+                        <Link href={`/dashboard/jobs/${job.jobId}`} passHref>
                             <Button>
-                                {job.JobID}
+                                {job.jobId}
                             </Button>
                         </Link>
                         </td>
-                        <td>{job.JobName}</td>
-                        <td>{job.User}</td>
-                        <td>{job.Partition}</td>
+                        <td>{job.name}</td>
+                        <td>{job.user}</td>
+                        <td>{job.partition.name}</td>
                         <td>
-                            <Badge color={job.State === 'RUNNING' ? 'green' : 'gray'}>
-                                {job.State}
+                            <Badge color={
+                                job.state === 'R' ? 'green' :
+                                job.state === 'PD' ? 'yellow' :
+                                job.state === 'CD' ? 'blue' :
+                                job.state === 'F' ? 'red' :
+                                'gray'
+                            }>
+                                {job.state}
                             </Badge>
                         </td>
-                        <td>{job.Priority}</td>
-                        <td>{job.TimeLeft || 'N/A'}</td>
+                        <td>{job.nodesCount}</td>
+                        <td>{job.time}</td>
                     </tr>
                 ))}
             </tbody>
