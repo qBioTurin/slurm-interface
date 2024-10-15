@@ -1,7 +1,8 @@
-import { Table, Badge, Button } from '@mantine/core';
-import { Job, JobStateDescriptions} from '../../../../utils/models/models';
+import { Table, Button } from '@mantine/core';
+import { Job } from '../../../../utils/models/models';
 import styles from './JobsTable.module.css';
 import Link from 'next/link';
+import JobStateBadge from './JobStateBadge';
 
 interface JobTableProps {
     jobs: Job[];
@@ -35,17 +36,7 @@ export default function JobsTable({ jobs }: JobTableProps) {
                         <td>{job.name}</td>
                         <td>{job.user}</td>
                         <td>{job.partition.name}</td>
-                        <td>
-                            <Badge color={
-                                job.state === 'R' ? 'green' :
-                                job.state === 'PD' ? 'yellow' :
-                                job.state === 'CD' ? 'blue' :
-                                job.state === 'F' ? 'red' :
-                                'gray'
-                            }>
-                                {job.state}
-                            </Badge>
-                        </td>
+                        <td> <JobStateBadge state={job.state} /> </td>
                         <td>{job.nodesCount}</td>
                         <td>{job.time}</td>
                     </tr>
