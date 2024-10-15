@@ -1,8 +1,24 @@
 export interface Node {
-  NodeID: string;
-  State: 'Idle' | 'Allocated' | 'Down' | 'Maintenance';
-  reserved: boolean;
+  nodeName: string;
+  account: string;
+  state: "ALLOCATED" | "MIXED" | "IDLE" | "DOWN"; //for simplicity, we only consider these states
+  cpu: {
+    load: number;
+    allocated: number; 
+    idle: number; 
+    total: number;
+  };
+  memory: {
+    available: number;
+    total: number;
+  };
+  gpu: {
+    idle: string | number;
+    total: string | number;
+  };
+  reason: string;
 }
+
 
 export interface Job {
   JobID: number;
