@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react';
 import styles from './JobDetails.module.css';
 import {InfoCard} from '../../../components/jobs/job-details/InfoCard';
 import {InfoField} from '../../../components/jobs/job-details/InfoField';
+import JobStateBadge from '../../../components/jobs/JobStateBadge';
+import JobProgressTimeline from '../../../components/jobs/job-details/JobProgressTimeline';
 
 interface JobPageProps {
   params: {
@@ -19,7 +21,7 @@ const JobPage = ({ params }: JobPageProps) => {
   const [job, setJob] = useState<Job | null>(null);
 
   useEffect(() => {
-    const foundJob = mockJobs.find((j) => j.JobID === Number(jobID));
+    const foundJob = mockJobs.find((j) => j.jobId === Number(jobID));
     setJob(foundJob || null);
   }, [jobID]);
 
@@ -32,30 +34,35 @@ const JobPage = ({ params }: JobPageProps) => {
       
       {/* Job Header */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Job {job.JobID}: {job.JobName}</h2>
-        <Badge className={styles.badge} color={job.State === 'RUNNING' ? 'green' : 'gray'}>
-          {job.State}
-        </Badge>
+        <h2 className={styles.title}>Job {job.jobId}: {job.name}</h2>
+        <JobStateBadge state={job.state} />
       </div>
 
       {/* Job Info Section */}
       <InfoCard title="Job Info">
-        <InfoField label="Submission Time" value={job.TimeSubmit} />
-        {job.TimeStart && <InfoField label="Start Time" value={job.TimeStart} />}
-        <InfoField label="Time Left" value={job.TimeLeft} />
-        <InfoField label="Time Used" value={job.TimeUsed} />
-        <InfoField label="Partition" value={job.Partition} />
-        <InfoField label="Priority" value={job.Priority} />
+        <InfoField label="Submission Time" value={job.timeSubmission} />
+        {job.timeStart && <InfoField label="Start Time" value={job.timeStart} />}
+        <InfoField label="Time Left" value={job.timeLeft} />
+        <InfoField label="Time Used" value={job.timeUsed} />
+        <InfoField label="Partition" value={job.partition.name} />
+        <InfoField label="Priority" value={job.priority.toFixed(2)} />
       </InfoCard>
 
       {/* Job Progress Section */}
       <InfoCard title="Job Progress">
-        <InfoField label="Submitted" value={job.TimeSubmit} />
-        {job.TimeStart && <InfoField label="Started" value={job.TimeStart} />}
-        <InfoField label="State" value={job.State} />
-        {job.TimeUsed && <InfoField label="Elapsed Time" value={job.TimeUsed} />}
+        <InfoField label="Submitted" value={job.timeSubmission} />
+        {job.timeStart && <InfoField label="Started" value={job.timeStart} />}
+        <InfoField label="State" value={job.state} />
+        {job.timeUsed && <InfoField label="Elapsed Time" value={job.timeUsed} />}
+        <InfoField label="Nodes Count" value={job.nodesCount.toString()} />
+        <InfoField label="Quality of Service" value={job.qos} />
+      </InfoCard>
+
+      <InfoCard title="Job Timeline">
+        <JobProgressTimeline job={job} />
       </InfoCard>
     </div>
+
   );
 };
 
