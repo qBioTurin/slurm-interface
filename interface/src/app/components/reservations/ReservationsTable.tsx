@@ -48,16 +48,16 @@ function filterData(data: Reservation[], search: string) {
     const query = search.toLowerCase().trim();
     return data.filter((item) =>
         keys(data[0]).some((key) => {
-            if (key == 'NodeCnt') {
+            if (key == 'NodeCnt' || key == 'CoreCnt') {
                 return String(item[key]).toLowerCase().includes(query);
             } else if (key == 'StartTime' || key == 'EndTime') {
                 return item[key].toUTCString().toLowerCase().includes(query);
-            } else if (key == 'ReservationName') {
-                return item[key].toLowerCase().includes(query);
-            } else if (key == 'Users' || key == 'Accounts') {
-                return item[key].some((value) => value.toLowerCase().includes(query));
+            } else if (key == 'ReservationName' || key == 'Duration' || key == 'PartitionName' || key == 'Licenses' || key == 'Features' || key == 'BurstBuffer') {
+                return item[key]?.toLowerCase().includes(query);
+            } else if (key == 'Users' || key == 'Accounts' || key == 'Groups') {
+                return item[key]?.some((value) => value.toLowerCase().includes(query));
             } else if (key == 'Nodes') {
-                return item[key].some((node) => node.NodeID.toLowerCase().includes(query));
+                return item[key]?.some((node) => node.NodeID.toLowerCase().includes(query));
             }
         })
     );
@@ -83,6 +83,14 @@ function sortData(
                 } else {
                     return dateA.getTime() - dateB.getTime();
                 }
+            } else if (sortBy === 'NodeCnt') {
+                const nodeCntA = a.NodeCnt ?? -1;
+                const nodeCntB = b.NodeCnt ?? -1;
+                if (payload.reversed) {
+                    return nodeCntB - nodeCntA;
+                } else {
+                    return nodeCntA - nodeCntB;
+                }
             } else {
                 if (payload.reversed) {
                     return b[sortBy].toString().localeCompare(a[sortBy].toString());
@@ -93,6 +101,7 @@ function sortData(
         }),
         payload.search
     );
+
 }
 
 
@@ -165,13 +174,13 @@ export default function ReservationsTableSort() {
         <Table.Tr key={row.ReservationName} onClick={() => handleRowClick(row.ReservationName)}>
             <Table.Td>{row.ReservationName}</Table.Td>
             <Table.Td>
-                {row.Users.map((user) => (
+                {row.Users?.map((user) => (
                     <Pill key={user} mr='0.5em' mb='0.5em' >
                         {user}
                     </Pill>
                 ))}</Table.Td>
             <Table.Td>{row.NodeCnt}</Table.Td>
-            <Table.Td>{row.Nodes.map((node) => (
+            <Table.Td>{row.Nodes?.map((node) => (
                 <Pill key={node.NodeID} mr='0.5em' mb='0.5em'>{node.NodeID}</Pill>))}</Table.Td>
             <Table.Td>{row.StartTime.toLocaleString()}</Table.Td>
             <Table.Td>{row.EndTime.toLocaleString()}</Table.Td>
@@ -183,14 +192,25 @@ export default function ReservationsTableSort() {
 
         <div className={styles.container}>
             <ScrollArea>
-                <TextInput
-                    placeholder="Search by any field"
-                    mb="md"
-                    leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                    value={search}
-                    onChange={handleSearchChange}
-                />
-                <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} className={styles.table} striped highlightOnHover>
+                <Group justify="end">
+                    <TextInput
+                        placeholder="Search by any field"
+                        mb="md"
+                        leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+                        value={search}
+                        onChange={handleSearchChange}
+                    />
+
+                    <Button
+                        mb="md"
+                        onClick={() => router.push('/dashboard/reservations/new')}
+                        color="blue"
+                        className={styles.addButton}
+                    >
+                        New reservation
+                    </Button>
+                </Group>
+                <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} className={styles.table} highlightOnHover>
                     <Table.Thead>{ths}</Table.Thead>
                     <Table.Tbody>
                         {rows.length > 0 ? (
@@ -207,7 +227,7 @@ export default function ReservationsTableSort() {
                     </Table.Tbody>
                 </Table>
             </ScrollArea>
-        </div>
+        </div >
 
     );
 }

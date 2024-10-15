@@ -2,7 +2,7 @@
 
 import { Text, TextInput, NumberInput, Button, Code, Group, MultiSelect, TagsInput, Modal } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { DateInput } from '@mantine/dates';
+import { DateInput, TimeInput } from '@mantine/dates';
 import { Reservation, Node } from '../../../../../utils/models/models';
 import { mockNodes, mockReservations } from '../../../../../utils/models/mock';
 import { useState, useEffect } from 'react';
@@ -34,9 +34,16 @@ export default function EditReservation({ params }: EditReservationProps) {
             EndTime: new Date(),
             Duration: '',
             Users: new Array<string>(),
+            Groups: new Array<string>(),
             Accounts: new Array<string>(),
-            Nodes: new Array<string>(),
             NodeCnt: 0,
+            Nodes: new Array<string>(),
+            CoreCnt: 0,
+            PartitionName: '',
+            Licenses: '',
+            Features: '',
+            Flags: new Array<string>(),
+            BurstBuffer: '',
         },
         validate: {
         },
@@ -55,9 +62,16 @@ export default function EditReservation({ params }: EditReservationProps) {
                 EndTime: reservation.EndTime,
                 Duration: reservation.Duration,
                 Users: reservation.Users,
+                Groups: reservation.Groups,
                 Accounts: reservation.Accounts,
-                Nodes: reservation.Nodes.map((node) => node.NodeID),
                 NodeCnt: reservation.NodeCnt,
+                Nodes: reservation.Nodes?.map((node) => node.nodeName) || new Array<string>(),
+                CoreCnt: reservation.CoreCnt,
+                PartitionName: reservation.PartitionName,
+                Licenses: reservation.Licenses,
+                Features: reservation.Features,
+                Flags: reservation.Flags,
+                BurstBuffer: reservation.BurstBuffer,
             });
         }
     }, [reservation]);
@@ -100,13 +114,20 @@ export default function EditReservation({ params }: EditReservationProps) {
                         : new Date(s)
                 }
                 mt="md"
-                withAsterisk
             />
 
             <TagsInput
                 {...form.getInputProps('Users')}
                 label="Users"
                 defaultValue={reservation.Users}
+                mt="md"
+                clearable
+            />
+
+            <TagsInput
+                {...form.getInputProps('Groups')}
+                label="Groups"
+                defaultValue={reservation.Groups}
                 mt="md"
                 clearable
             />
@@ -121,12 +142,34 @@ export default function EditReservation({ params }: EditReservationProps) {
 
             <MultiSelect
                 {...form.getInputProps('Nodes')}
-                data={mockNodes.map((node) => node.NodeID)}
+                data={mockNodes.map((node) => node.nodeName)}
                 label="Nodes"
                 placeholder="Select nodes"
                 mt="md"
                 searchable
             />
+
+            <NumberInput
+                {...form.getInputProps('NodeCnt')}
+                label="Node Count"
+                min={0}
+                mt="md"
+            />
+
+            <NumberInput
+                {...form.getInputProps('CoreCnt')}
+                label="Core Count"
+                min={0}
+                mt="md"
+
+            />
+
+            <TextInput
+                {...form.getInputProps('PartitionName')}
+                label="Partition Name"
+                placeholder="Partition Name"
+                mt="md" />
+
             <Group justify="space-between" mt='lg'>
                 <Button type="submit" className={styles.submitButton}>
                     Submit

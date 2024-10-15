@@ -60,9 +60,17 @@ export interface Reservation {
   StartTime: Date;
   EndTime: Date;
   Duration: string;
-  Users: string[];
-  Accounts: string[];
-  Nodes: Node[];
-  NodeCnt: number;
+  Users?: string[];
+  Groups?: string[];
+  Accounts?: string[];
+  NodeCnt?: number; //TODO: should be an array of numbers
+  Nodes?: Node[];
+  CoreCnt?: number; //TODO: should be an array of numbers
+  PartitionName?: string;
+  Licenses?: string
+  Features?: string
+  Flags?: string[];
+  BurstBuffer?: string;
+  //MaxStartDelay'
 }
 

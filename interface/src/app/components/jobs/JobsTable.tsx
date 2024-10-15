@@ -27,11 +27,11 @@ export default function JobsTable({ jobs }: JobTableProps) {
                 {jobs.map((job) => (
                     <tr key={job.jobId}>
                         <td>
-                        <Link href={`/dashboard/jobs/${job.jobId}`} passHref>
-                            <Button>
-                                {job.jobId}
-                            </Button>
-                        </Link>
+                            <Link href={`/dashboard/jobs/${job.jobId}`} passHref>
+                                <Button>
+                                    {job.jobId}
+                                </Button>
+                            </Link>
                         </td>
                         <td>{job.name}</td>
                         <td>{job.user}</td>
