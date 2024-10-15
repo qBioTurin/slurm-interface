@@ -4,53 +4,77 @@ import { Node } from '../../../../utils/models/models';
 
 interface NodeTableProps {
   nodes: Node[];
-  onReserve: (nodeID: string) => void;
 }
 
-export default function NodeTable({ nodes, onReserve }: NodeTableProps) {
+export default function NodesTable({nodes}: NodeTableProps) {
   return (
     <Table className={styles.table} striped highlightOnHover>
       <thead>
         <tr>
-          <th>NodeID</th>
+          <th>Node Name</th>
+          <th>Account</th>
           <th>State</th>
-          <th>Reserve</th>
+          <th>CPU</th>
+          <th>Memory</th>
+          <th>GPU</th>
+          <th>Reason</th>
         </tr>
       </thead>
       <tbody>
         {nodes.length > 0 ? (
           nodes.map((node) => (
-            <tr key={node.NodeID}>
-              <td>{node.NodeID}</td>
+            <tr key={node.nodeName}>
+              <td>{node.nodeName}</td>
+              <td>{node.account}</td>
               <td>
                 <Badge
                   color={
-                    node.State === 'Idle'
+                    node.state === 'IDLE'
                       ? 'green'
-                      : node.State === 'Allocated'
+                      : node.state === 'ALLOCATED'
                       ? 'blue'
-                      : node.State === 'Down'
+                      : node.state === 'DOWN'
                       ? 'red'
                       : 'yellow'
                   }
                 >
-                  {node.State}
+                  {node.state}
                 </Badge>
               </td>
+
               <td>
-                <Button
-                  variant={node.reserved ? 'outline' : 'filled'}
-                  color={node.reserved ? 'gray' : 'blue'}
-                  onClick={() => onReserve(node.NodeID)}
-                >
-                  {node.reserved ? 'Reserved' : 'Reserve'}
-                </Button>
+              <div>
+                  <strong>Load:</strong> {node.cpu.load.toFixed(2)} <br />
+                  <strong>Allocated:</strong> {node.cpu.allocated} <br />
+                  <strong>Idle:</strong> {node.cpu.idle} <br />
+                  <strong>Total:</strong> {node.cpu.total}
+                </div>
               </td>
+
+              <td>
+                <div>
+                  <strong>Available:</strong> {node.memory.available} MB <br />
+                  <strong>Total:</strong> {node.memory.total} MB
+                </div>
+              </td>
+
+              <td>
+                {node.gpu.idle === 'N/A' ? (
+                  'N/A'
+                ) : (
+                  <div>
+                    <strong>Idle:</strong> {node.gpu.idle} <br />
+                    <strong>Total:</strong> {node.gpu.total}
+                  </div>
+                )}
+              </td>
+
+              <td>{node.reason || 'N/A'}</td>
             </tr>
           ))
         ) : (
           <tr>
-            <td colSpan={3} className={styles.noNodes}>
+            <td colSpan={7} className={styles.noNodes}>
               No nodes found
             </td>
           </tr>
