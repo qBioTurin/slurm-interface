@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { TextInput, Switch, Group } from '@mantine/core';
 import styles from './Nodes.module.css';
-import NodeTable from '../../components/nodes/NodesTable';
+import NodesTable from '../../components/nodes/NodesTable';
 import { Node } from '../../../../utils/models/models';
 import { mockNodes } from '../../../../utils/models/mock';
 import FloatingButton from '../../components/nodes/FloatingButton';
@@ -14,25 +14,17 @@ export default function NodesPage() {
   const [nodes, setNodes] = useState<Node[]>(mockNodes);
 
   const filteredNodes = nodes.filter((node) => {
-    const matchSearch = node.NodeID.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchFilter = !showIdleOnly || node.State === 'Idle';
+    const matchSearch = node.nodeName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchFilter = !showIdleOnly || node.state === 'IDLE';
     return matchSearch && matchFilter;
   });
-
-  const handleReserve = (nodeID: string): void => {
-    setNodes((prevNodes) =>
-      prevNodes.map((node) =>
-        node.NodeID === nodeID ? { ...node, reserved: !node.reserved } : node
-      )
-    );
-  };
 
   return (
     <div className={styles.container}>
       <Group className={styles.group}>
         <TextInput
           className={styles.searchInput}
-          placeholder="SearchNodes by NodeID"
+          placeholder="Search nodes by name"
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.currentTarget.value)}
         />
@@ -45,7 +37,7 @@ export default function NodesPage() {
         </div>
       </Group>
 
-      <NodeTable nodes={filteredNodes} onReserve={handleReserve} />
+      <NodesTable nodes={filteredNodes} />
 
       <FloatingButton />
 
