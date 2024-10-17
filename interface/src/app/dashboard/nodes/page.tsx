@@ -42,8 +42,6 @@ export default function NodesPage() {
 
       <NodesTable nodes={filteredNodes} />
 
-      <FloatingButton />
-
     </div>
   );
 }
