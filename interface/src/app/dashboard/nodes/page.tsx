@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { TextInput, Switch, Group } from '@mantine/core';
+import { TextInput, Switch, Group, rem } from '@mantine/core';
 import styles from './Nodes.module.css';
+import { IconSearch } from '@tabler/icons-react';
 import NodesTable from '../../components/nodes/NodesTable';
 import { Node } from '../../../../utils/models/models';
 import { mockNodes } from '../../../../utils/models/mock';
@@ -25,6 +26,8 @@ export default function NodesPage() {
         <TextInput
           className={styles.searchInput}
           placeholder="Search nodes by name"
+          leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.currentTarget.value)}
         />

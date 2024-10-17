@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { TextInput, Group } from '@mantine/core';
+import { TextInput, Group, rem } from '@mantine/core';
 import JobTable from '../../components/jobs/JobsTable';
+import { IconSearch } from '@tabler/icons-react';
 import { mockJobs } from '../../../../utils/models/mock';
 import styles from './Jobs.module.css';
 
@@ -20,6 +21,7 @@ export default function JobsPage() {
                 <TextInput
                     className={styles.searchInput}
                     placeholder="Search Jobs"
+                    leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.currentTarget.value)}
                 />
