@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
 import { Table, Pill, TextInput, Button, Switch, Group, Badge, Flex, rem, UnstyledButton, Text, Center, ScrollArea, keys } from '@mantine/core';
 import styles from './Reservations.module.css';
-import { Reservation } from '../../../../utils/models/models';
+import { Reservation, Node } from '../../../../utils/models/models';
 import { mockReservations } from '../../../../utils/models/mock';
 import { useRouter } from 'next/navigation';
 
@@ -43,7 +43,7 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
     );
 }
 
-function filterData(data: Reservation[], search: string) {
+function filterData(data: Reservation[], search: string): Reservation[] {
     const query = search.toLowerCase().trim();
     return data.filter((item) =>
         keys(data[0]).some((key) => {
@@ -65,7 +65,7 @@ function filterData(data: Reservation[], search: string) {
 function sortData(
     data: Reservation[],
     payload: { sortBy: keyof Reservation | null; reversed: boolean; search: string }
-) {
+): Reservation[] {
     const { sortBy } = payload;
 
     if (!sortBy) {
@@ -106,7 +106,7 @@ function sortData(
 
 export default function ReservationsTableSort() {
     const [search, setSearch] = useState('');
-    const [sortedData, setSortedData] = useState(mockReservations);
+    const [sortedData, setSortedData] = useState<Reservation[]>(mockReservations);
     const [sortBy, setSortBy] = useState<keyof Reservation | null>(null);
     const [reverseSortDirection, setReverseSortDirection] = useState(false);
 

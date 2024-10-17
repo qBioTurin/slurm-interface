@@ -4,8 +4,8 @@ export interface Node {
   state: "ALLOCATED" | "MIXED" | "IDLE" | "DOWN"; //for simplicity, we only consider these states
   cpu: {
     load: number;
-    allocated: number; 
-    idle: number; 
+    allocated: number;
+    idle: number;
     total: number;
   };
   memory: {
@@ -60,17 +60,17 @@ export interface Reservation {
   StartTime: Date;
   EndTime: Date;
   Duration: string;
-  Users?: string[];
-  Groups?: string[];
-  Accounts?: string[];
-  NodeCnt?: number; //TODO: should be an array of numbers
-  Nodes?: Node[];
-  CoreCnt?: number; //TODO: should be an array of numbers
-  PartitionName?: string;
-  Licenses?: string
-  Features?: string
-  Flags?: string[];
-  BurstBuffer?: string;
+  Users: string[];
+  Groups: string[];
+  Accounts: string[];
+  NodeCnt: number; //TODO: should be an array of numbers
+  Nodes: Node[];
+  CoreCnt: number; //TODO: should be an array of numbers
+  PartitionName: string;
+  Licenses: string
+  Features: string
+  Flags: string[];
+  BurstBuffer: string;
   //MaxStartDelay'
 }
 

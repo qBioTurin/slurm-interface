@@ -1,6 +1,6 @@
 'use client';
 
-import { Text, TextInput, NumberInput, Button, Code, Group, MultiSelect, TagsInput, Modal } from '@mantine/core';
+import { Text, TextInput, NumberInput, Button, Code, Group, MultiSelect, TagsInput, Modal, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { DateInput, TimeInput } from '@mantine/dates';
 import { Reservation, Node } from '../../../../../utils/models/models';
@@ -170,6 +170,20 @@ export default function EditReservation({ params }: EditReservationProps) {
                 placeholder="Partition Name"
                 mt="md" />
 
+            <Flex
+                gap="md"
+                justify="flex-start"
+                align="flex-start"
+                direction="row"
+                wrap="wrap"
+                mt="md"
+            >
+                <TextInput {...form.getInputProps('Licenses')} label="Licenses" placeholder="Licenses" />
+                <TextInput {...form.getInputProps('Features')} label="Features" placeholder="Features" />
+                <TextInput {...form.getInputProps('BurstBuffer')} label="Burst Buffer" placeholder="Burst Buffer" />
+            </Flex>
+
+
             <Group justify="space-between" mt='lg'>
                 <Button type="submit" className={styles.submitButton}>
                     Submit
@@ -177,6 +191,9 @@ export default function EditReservation({ params }: EditReservationProps) {
                 <Button color="rgba(219, 13, 13, 1)" onClick={open}>Delete</Button>
 
             </Group>
+
+
+
             <Modal opened={opened} onClose={close} title="Are you sure you want to delete this reservation?">
                 <Group justify="end">
                     <Button onClick={close}>Cancel</Button>
@@ -184,11 +201,12 @@ export default function EditReservation({ params }: EditReservationProps) {
                 </Group>
             </Modal>
 
-            <Text mt="md">Form values:</Text>
+
+            {/* <Text mt="md">Form values:</Text>
             <Code block>{JSON.stringify(form.values, null, 2)}</Code>
 
             <Text mt="md">Submitted values:</Text>
-            <Code block>{submittedValues ? JSON.stringify(submittedValues, null, 2) : '–'}</Code>
+            <Code block>{submittedValues ? JSON.stringify(submittedValues, null, 2) : '–'}</Code> */}
         </form>
     );
 }
