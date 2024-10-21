@@ -6,29 +6,31 @@ import {
   IconHourglass,
   IconHandStop,
 } from '@tabler/icons-react';
-import { Job } from '../../../../../utils/models/models';
-import { JobStateInfo } from '../../../../../utils/models/models';
+import { z } from 'zod';
+import {JobSchema} from '../../../schemas/job_schema';
+
+type Job = z.infer<typeof JobSchema>;
 
 interface JobProgressTimelineProps {
   job: Job;
 }
 
 function JobProgressTimeline({ job }: JobProgressTimelineProps) {
-  // Determine the active state based on job state
+
   let activeStep = 0;
-  switch (job.state) {
-    case 'PD': // Pending
+  switch (job.job_state[0]) {
+    case 'PENDING':
       activeStep = 0;
       break;
-    case 'R': // Running
+    case 'RUNNING':
       activeStep = 2;
       break;
-    case 'CG': // Completing
+    case 'COMPLETING':
       activeStep = 3;
       break;
-    case 'CD': // Completed
-    case 'F':  // Failed
-    case 'TO': // Terminated
+    case 'COMPLETED':
+    case 'FAILED':
+    case 'TERMINATED':
       activeStep = 4;
       break;
     default:
@@ -44,10 +46,10 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
       >
         <Text c="dimmed" size="sm">
           The job <strong>{job.name}</strong> has been submitted by{' '}
-          <strong>{job.user}</strong> on <strong>{job.timeSubmission}</strong>.
+          <strong>{job.user_name}</strong> on <strong>{job.submit_time.number}</strong>.
         </Text>
         <Text size="xs" mt={4}>
-          {job.timeStart ? `Started: ${job.timeStart}` : 'Pending Start'}
+          {job.start_time.number ? `Started: ${job.start_time.number}` : 'Pending Start'}
         </Text>
       </Timeline.Item>
 
@@ -60,7 +62,7 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
           The job is currently being scheduled for resource allocation.
         </Text>
         <Text size="xs" mt={4}>
-          Priority: {job.priority} | QOS: {job.qos}
+          Priority: {job.priority.number} | QOS: {job.qos}
         </Text>
       </Timeline.Item>
 
@@ -70,10 +72,10 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
         title="Running"
       >
         <Text c="dimmed" size="sm">
-          The job is currently running on <strong>{job.nodesCount}</strong> node(s).
+          The job is currently running on <strong>{job.job_resources && job.job_resources.nodes? job.job_resources.nodes.count : job.nodes}</strong> node(s).
         </Text>
         <Text size="xs" mt={4}>
-          Time Used: {job.timeUsed} | Time Left: {job.timeLeft}
+          Time Used: {} | Time Available: {job.eligible_time.number}
         </Text>
       </Timeline.Item>
 
@@ -86,7 +88,7 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
           The job is finishing up its tasks.
         </Text>
         <Text size="xs" mt={4}>
-          Expected End Time: {job.endTime}
+          Expected End Time: {}
         </Text>
       </Timeline.Item>
 
@@ -100,7 +102,7 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
           The job has been terminated successfully.
         </Text>
         <Text size="xs" mt={4}>
-          Time Limit: {job.timeLimit}
+          Time Limit: {job.time_limit.number}
         </Text>
       </Timeline.Item>
     </Timeline>
