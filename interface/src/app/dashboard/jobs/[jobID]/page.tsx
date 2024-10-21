@@ -1,14 +1,17 @@
 'use client';
 
 import { Text, Grid } from '@mantine/core';
-import { Job } from '../../../../../utils/models/models';
-import { mockJobs } from '../../../../../utils/models/mock';
+import {mockJobData} from '../../../../../../temp/job-106958';
 import { useState, useEffect } from 'react';
 import styles from './JobDetails.module.css';
 import {InfoCard} from '../../../components/jobs/job-details/InfoCard';
 import {InfoField} from '../../../components/jobs/job-details/InfoField';
 import JobStateBadge from '../../../components/jobs/JobStateBadge';
 import JobProgressTimeline from '../../../components/jobs/job-details/JobProgressTimeline';
+import { z } from 'zod';
+import {JobSchema, SlurmJobResponseSchema} from '../../../schemas/job_schema';
+
+type Job = z.infer<typeof JobSchema>;
 
 interface JobPageProps {
   params: {
@@ -21,9 +24,19 @@ const JobPage = ({ params }: JobPageProps) => {
   const [job, setJob] = useState<Job | null>(null);
 
   useEffect(() => {
-    const foundJob = mockJobs.find((j) => j.jobId === Number(jobID));
-    setJob(foundJob || null);
-  }, [jobID]);
+    const foundJob = mockJobData.jobs.find((j) => j.job_id === Number(jobID)); 
+    if (foundJob) {
+      try {
+          const validatedJob = SlurmJobResponseSchema.parse(foundJob);
+          setJob(validatedJob.jobs[0]);
+      } catch (error) {
+          console.error('Invalid job data:', error);
+          setJob(null); 
+      }
+  } else {
+      setJob(null);
+  }
+}, [jobID]);
 
   if (!job) {
     return <Text>Job {jobID} not found</Text>;
@@ -34,36 +47,35 @@ const JobPage = ({ params }: JobPageProps) => {
       
       {/* Job Header */}
       <div className={styles.header}>
-        <h2 className={styles.title}>[{job.jobId}] {job.name}</h2>
-        <JobStateBadge state={job.state} />
+        <h2 className={styles.title}>[{job.job_id}] {job.name}</h2>
+        <JobStateBadge state={job.job_state[0]} />
       </div>
 
       <Grid>
         {/* Left Column: Job Timeline */}
         <Grid.Col span={6}>
-            <InfoCard title="Job Timeline">
+            {/* <InfoCard title="Job Timeline">
               <JobProgressTimeline job={job} />
-            </InfoCard>
+            </InfoCard> */}
         </Grid.Col>
           
         {/* Right Column: Job Info */}
         <Grid.Col span={6}>
           <InfoCard title="Job Metadata">
-            <InfoField label="User" value={job.user} />
-            <InfoField label="Submission Time" value={job.timeSubmission} />
+            <InfoField label="User" value={job.user_name} />
+            <InfoField label="Submission Time" value={job.submit_time.number} />
             <InfoField label="Quality of Service" value={job.qos} />
-            <InfoField label="Priority" value={job.priority.toFixed(2)} />
+            <InfoField label="Priority" value={job.priority.number.toFixed(2)} />
           </InfoCard>
 
           <InfoCard title="Job Resources">
-          <InfoField label="Partition" value={job.partition.name} />
-          <InfoField label="Nodes Count" value={job.nodesCount.toString()} />
+          <InfoField label="Partition" value={job.partition} />
+          <InfoField label="Nodes Count" value={job.nodes.toString()} />
           </InfoCard>
 
           <InfoCard title="Job Info">
-            {job.timeStart && <InfoField label="Start Time" value={job.timeStart} />}
-            <InfoField label="Time Left" value={job.timeLeft} />
-            {job.timeUsed && <InfoField label="Elapsed Time" value={job.timeUsed} />}
+            {job.start_time && <InfoField label="Start Time" value={job.start_time.number} />}
+            {job.end_time && <InfoField label="End Time" value={job.end_time.number} />} 
           </InfoCard>
         </Grid.Col>
     </Grid>
