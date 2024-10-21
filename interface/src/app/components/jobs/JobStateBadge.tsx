@@ -7,7 +7,7 @@ interface JobStateBadgeProps {
 }
 
 const JobStateBadge: React.FC<JobStateBadgeProps> = ({ state }) => {
-    const jobStateInfo = JobStates.find((jobState) => jobState.code === state);
+    const jobStateInfo = JobStates.find((jobState) => jobState.state === state);
 
     if (!jobStateInfo) {
         return (
@@ -20,12 +20,12 @@ const JobStateBadge: React.FC<JobStateBadgeProps> = ({ state }) => {
     }
     
     const getBadgeColor = () => {
-        switch (jobStateInfo.code) {
-            case 'R':   return 'green';    // Running
-            case 'PD':  return 'yellow';   // Pending
-            case 'CD':  return 'blue';     // Completed
-            case 'F':   return 'red';      // Failed
-            default:    return 'gray';     // Default for unknown or handled states
+        switch (jobStateInfo.state) {
+            case 'RUNNING':   return 'green';
+            case 'PENDING':  return 'yellow';
+            case 'COMPLETED':  return 'blue';
+            case 'FAILED':   return 'red';
+            default:    return 'gray';
         }
     };
 
