@@ -11,8 +11,6 @@ import { useSlurmData } from '@/hooks/useSlurmData';
 import { useState } from 'react';
 import LoadingPage from '../LoadingPage/loadingPage';
 
-
-
 const JobsTable: React.FC = () => {
     const { data, loading, error } = useSlurmData('users');
     console.log(data);
@@ -22,8 +20,6 @@ const JobsTable: React.FC = () => {
         job.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         job.user?.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-
 
     if (loading) return <LoadingPage />;
     if (error) return <div>Error: {error}</div>;
