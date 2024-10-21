@@ -26,10 +26,10 @@ export const JobResourcesSchema = z.object({
           index: z.number(),
         })),
       })),
-    }),
-    threads_per_core: NumberSetInfiniteSchema,
-    cpus: z.number(),
-    select_type: z.array(z.string()),
+    }).optional(),
+    threads_per_core: NumberSetInfiniteSchema.optional(),
+    cpus: z.number().optional(),
+    select_type: z.array(z.string()).optional(),
   });
 
 export const JobSchema = z.object({
@@ -136,7 +136,7 @@ export const JobSchema = z.object({
     name: z.string(),
     preempt_time: NumberSetInfiniteSchema,
     contiguous: z.boolean(),
-    job_resources: JobResourcesSchema,
+    job_resources: JobResourcesSchema.optional(),
     billable_tres: NumberSetInfiniteSchema.extend({
       number: z.number(),
     }),

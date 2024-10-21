@@ -6,31 +6,42 @@ import JobTable from '../../components/jobs/JobsTable';
 import { IconSearch } from '@tabler/icons-react';
 import {JobSchema, SlurmJobResponseSchema} from '../../schemas/job_schema';
 import { z } from 'zod';
-import { useSlurmData } from '@/hooks/useSlurmData';
+import { fromError } from 'zod-validation-error';
 import styles from './JobsPage.module.css';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
+import { useSlurmData } from '@/hooks/useSlurmData';
 
 type Job = z.infer<typeof JobSchema>;
 
 export default function JobsPage() {
-    const { data, loading, error } = useSlurmData('jobs');
-    console.log(JSON.stringify(data));
-    console.log(loading);
-    console.log(error);
-    
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [jobs, setJobs] = useState<Job[]>([]);
+    const [isValidating, setIsValidating] = useState(false);
+
+    const { data, loading, error } = useSlurmData('jobs');
+        console.log(data);
+        console.log(loading);
+        console.log(error);
 
     useEffect(() => {
-        if (!loading && data) {
+        if (loading) {
+            return;
+        }
+    
+        if (data) {
+            setIsValidating(true);
             try {
                 const validatedData = SlurmJobResponseSchema.parse(data);
-                console.log(validatedData);
                 setJobs(validatedData.jobs);
             } catch (error) {
-                console.error('Error validating job data:', error);
+                const validationError = fromError(error);
+                console.error('Error validating job data:', validationError.toString()); //debug
                 setJobs([]);
+            } finally {
+                setIsValidating(false);
             }
+        } else {
+            console.warn("Data is null or undefined, skipping validation.");
         }
     }, [data, loading]);
 
@@ -38,14 +49,6 @@ export default function JobsPage() {
         job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         job.user_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    if (loading) {
-        return <LoadingPage />;
-    }
-
-    if (error) {
-        return <p>Error loading jobs: {error}</p>;
-    }
 
     return (
         <div className={styles.container}>

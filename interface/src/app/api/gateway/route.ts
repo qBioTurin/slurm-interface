@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SLURM_API_BASE_URL = 'https://jsonplaceholder.typicode.com/';
+const SLURM_API_BASE_URL = process.env.SLURM_API_URL;
 const SLURM_JWT = process.env.SLURM_JWT;
 
 export async function GET(req: NextRequest) {
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         const slurmResponse = await fetch(`${SLURM_API_BASE_URL}${path}`, {
             method: 'GET',
             headers: {
-                //'X-SLURM-USER-TOKEN': SLURM_JWT || '',
+                'X-SLURM-USER-TOKEN': SLURM_JWT || '',
                 'Content-Type': 'application/json',
             },
         });

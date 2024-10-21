@@ -7,6 +7,7 @@ export function useSlurmData(path: string) {
     const [loading, setLoading] = useState<boolean>(false);
 
     const fetchData = useCallback(async () => {
+        console.log("Fetching data from:", `/api/gateway?path=${encodeURIComponent(path)}`); //debug
         setLoading(true);
         setError(null);
 
@@ -14,17 +15,18 @@ export function useSlurmData(path: string) {
             const response = await fetch(`/api/gateway?path=${encodeURIComponent(path)}`, {
                 method: 'GET',
                 headers: {
-                    //'X-SLURM-USER-TOKEN': process.env.SLURM_JWT || '',
+                    'X-SLURM-USER-TOKEN': process.env.SLURM_JWT || '',
                     'Content-Type': 'application/json',
                 },
             });
-
+            
+            console.log("Response status:", response.status); //debug
             if (!response.ok) {
                 throw new Error(`Error fetching data: ${response.statusText}`);
             }
 
             const jsonData = await response.json();
-            console.log("in useSlurmData:", jsonData);
+            console.log("in useSlurmData:", jsonData); //debug
             setData(jsonData);
 
 
@@ -36,6 +38,7 @@ export function useSlurmData(path: string) {
     }, [path]);
 
     useEffect(() => {
+        console.log("useEffect called"); //debug
         if (path) {
             fetchData();
         }
