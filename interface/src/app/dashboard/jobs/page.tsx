@@ -19,11 +19,12 @@ export default function JobsPage() {
     const [isValidating, setIsValidating] = useState(false);
 
     const { data, loading, error } = useSlurmData('jobs');
-        console.log(data);
-        console.log(loading);
-        console.log(error);
 
     useEffect(() => {
+        if (error) {
+            return;
+        }
+
         if (loading) {
             return;
         }
@@ -35,7 +36,7 @@ export default function JobsPage() {
                 setJobs(validatedData.jobs);
             } catch (error) {
                 const validationError = fromError(error);
-                console.error('Error validating job data:', validationError.toString()); //debug
+                console.error('Error validating job data:', validationError.toString());
                 setJobs([]);
             } finally {
                 setIsValidating(false);
@@ -49,6 +50,10 @@ export default function JobsPage() {
         job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         job.user_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    if (loading || isValidating) {
+        return <LoadingPage />;
+    }
 
     return (
         <div className={styles.container}>

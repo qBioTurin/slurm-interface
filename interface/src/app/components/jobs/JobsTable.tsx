@@ -1,13 +1,9 @@
-'use client'
-
 import styles from './JobsTable.module.css';
 import React, { useEffect, useState } from 'react';
 import { Table, Button } from '@mantine/core';
 import Link from 'next/link';
 import JobStateBadge from './JobStateBadge';
 import { JobSchema } from '../../schemas/job_schema';
-import { useSlurmData } from '@/hooks/useSlurmData';
-import LoadingPage from '../LoadingPage/loadingPage';
 import { z } from 'zod';
 import { FC } from 'react';
 
@@ -17,10 +13,8 @@ interface JobTableProps {
     jobs: Job[];
 }
 
-
 export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
 
- 
     return (
         <Table className={styles.table} striped highlightOnHover>
             <thead>
@@ -30,8 +24,8 @@ export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
                     <th>User</th>
                     <th>Partition</th>
                     <th>State</th>
-                    <th>Nodes Count</th>
-                    <th>Elapsed Time</th>
+                    <th>Nodes</th>
+                    <th>Reservation</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,7 +45,7 @@ export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
                         <td>{job.partition}</td>
                         <td> <JobStateBadge state={job.job_state[0]} /> </td>
                         <td>{job.nodes}</td>
-                        <td>'N/A'</td>
+                        <td>{job.resv_name}</td>
                     </tr>
                 );
                 })}
