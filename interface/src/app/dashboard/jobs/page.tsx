@@ -4,31 +4,48 @@ import { useState, useEffect } from 'react';
 import { TextInput, Group, rem } from '@mantine/core';
 import JobTable from '../../components/jobs/JobsTable';
 import { IconSearch } from '@tabler/icons-react';
-import styles from './Jobs.module.css';
 import {JobSchema, SlurmJobResponseSchema} from '../../schemas/job_schema';
 import { z } from 'zod';
-import {mockJobData} from '../../../../../temp/job-106958';
+import { useSlurmData } from '@/hooks/useSlurmData';
+import styles from './JobsPage.module.css';
+import LoadingPage from '@/components/LoadingPage/loadingPage';
 
 type Job = z.infer<typeof JobSchema>;
 
 export default function JobsPage() {
+    const { data, loading, error } = useSlurmData('jobs');
+    console.log(JSON.stringify(data));
+    console.log(loading);
+    console.log(error);
+    
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [jobs, setJobs] = useState<Job[]>([]);
 
     useEffect(() => {
-        try {
-            const validatedData = SlurmJobResponseSchema.parse(mockJobData);
-            setJobs(validatedData.jobs);
-        } catch (error) {
-            console.error('Error validating job data:', error);
-            setJobs([]);
+        if (!loading && data) {
+            try {
+                const validatedData = SlurmJobResponseSchema.parse(data);
+                console.log(validatedData);
+                setJobs(validatedData.jobs);
+            } catch (error) {
+                console.error('Error validating job data:', error);
+                setJobs([]);
+            }
         }
-    }, []);
+    }, [data, loading]);
 
     const filteredJobs = jobs.filter((job) =>
         job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         job.user_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    if (loading) {
+        return <LoadingPage />;
+    }
+
+    if (error) {
+        return <p>Error loading jobs: {error}</p>;
+    }
 
     return (
         <div className={styles.container}>

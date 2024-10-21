@@ -1,16 +1,26 @@
-import { Table, Button } from '@mantine/core';
+'use client'
+
 import styles from './JobsTable.module.css';
+import React, { useEffect, useState } from 'react';
+import { Table, Button } from '@mantine/core';
 import Link from 'next/link';
 import JobStateBadge from './JobStateBadge';
-import {JobSchema} from '../../schemas/job_schema';
+import { JobSchema } from '../../schemas/job_schema';
+import { useSlurmData } from '@/hooks/useSlurmData';
+import LoadingPage from '../LoadingPage/loadingPage';
 import { z } from 'zod';
+import { FC } from 'react';
+
+type Job = z.infer<typeof JobSchema>;
 
 interface JobTableProps {
-    jobs: z.infer<typeof JobSchema>[];
+    jobs: Job[];
 }
 
-export default function JobsTable({ jobs }: JobTableProps) {
 
+export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
+
+ 
     return (
         <Table className={styles.table} striped highlightOnHover>
             <thead>
@@ -25,7 +35,7 @@ export default function JobsTable({ jobs }: JobTableProps) {
                 </tr>
             </thead>
             <tbody>
-                {jobs.map((job) => {
+                {jobs.map((job: any) => {
 
                     return (
                     <tr key={job.job_id}>
@@ -48,4 +58,6 @@ export default function JobsTable({ jobs }: JobTableProps) {
             </tbody>
         </Table>
     );
-}
+}; 
+
+export default JobsTable;
