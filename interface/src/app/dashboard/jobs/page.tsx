@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TextInput, Group, rem } from '@mantine/core';
+import { TextInput, Group, rem, Switch } from '@mantine/core';
 import JobTable from '../../components/jobs/JobsTable';
 import { IconSearch } from '@tabler/icons-react';
 import {JobSchema, SlurmJobResponseSchema} from '../../schemas/job_schema';
@@ -14,9 +14,10 @@ import { useSlurmData } from '@/hooks/useSlurmData';
 type Job = z.infer<typeof JobSchema>;
 
 export default function JobsPage() {
-    const [searchQuery, setSearchQuery] = useState<string>('');
-    const [jobs, setJobs] = useState<Job[]>([]);
-    const [isValidating, setIsValidating] = useState(false);
+    const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
+    const [showRunning, setShowRunning] = useState(true); // state toggle
+    const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
+    const [isValidating, setIsValidating] = useState(false); // page state
 
     const { data, loading, error } = useSlurmData('jobs');
 
@@ -46,10 +47,13 @@ export default function JobsPage() {
         }
     }, [data, loading]);
 
-    const filteredJobs = jobs.filter((job) =>
-        job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.user_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredJobs = jobs.filter((job) => {
+        const matchesSearchQuery = job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                   job.user_name.toLowerCase().includes(searchQuery.toLowerCase());
+        const isRunningJob = job.job_state[0] === 'RUNNING';
+        
+        return matchesSearchQuery && (showRunning ? isRunningJob : !isRunningJob);
+});
 
     if (loading || isValidating) {
         return <LoadingPage />;
@@ -64,6 +68,12 @@ export default function JobsPage() {
                     leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.currentTarget.value)}
+                />
+
+                <Switch
+                    label={showRunning ? "Running Jobs" : "All Jobs"}
+                    checked={showRunning}
+                    onChange={(event) => setShowRunning(event.currentTarget.checked)}
                 />
             </Group>
 
