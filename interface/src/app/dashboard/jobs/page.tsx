@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TextInput, Group, rem, Switch } from '@mantine/core';
+import { TextInput, Group, rem, Switch, Button } from '@mantine/core';
 import JobTable from '../../components/jobs/JobsTable';
 import { IconSearch } from '@tabler/icons-react';
 import {JobSchema, SlurmJobResponseSchema} from '../../schemas/job_schema';
@@ -10,6 +10,7 @@ import { fromError } from 'zod-validation-error';
 import styles from './JobsPage.module.css';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { useSlurmData } from '@/hooks/useSlurmData';
+import { useRouter } from 'next/navigation';
 
 type Job = z.infer<typeof JobSchema>;
 const currentUser = "scontald"; // TODO: get current user from auth context
@@ -19,6 +20,7 @@ export default function JobsPage() {
     const [showUserJobs, setShowUserJobs] = useState(true); // state toggle
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
     const [isValidating, setIsValidating] = useState(false); // page state
+    const router = useRouter();
 
     const { data, loading, error } = useSlurmData('jobs');
 
@@ -78,6 +80,10 @@ export default function JobsPage() {
                     checked={showUserJobs}
                     onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
                 />
+
+                <Button className={styles.submitButton} onClick={() => router.push('/dashboard/jobs/submit')}>
+                    Submit Jobs
+                </Button>
             </Group>
 
             {filteredJobs.length > 0 ? (
