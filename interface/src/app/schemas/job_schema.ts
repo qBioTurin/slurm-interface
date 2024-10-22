@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import {NumberSetInfiniteSchema, ExitCodeSchema, MetaSchema} from './common_schema';
+import {NumberSetInfiniteSchema, ExitCodeSchema, MetaSchema, ErrorsSchema, WarningsSchema} from './common_schema';
 
 export const JobResourcesSchema = z.object({
     nodes: z.object({
@@ -174,6 +174,6 @@ export const SlurmJobResponseSchema = z.object({
     last_update: NumberSetInfiniteSchema,
     meta: MetaSchema,
     jobs: z.array(JobSchema),
-    errors: z.array(z.string()),
-    warnings: z.array(z.string()),
+    errors: z.array(ErrorsSchema).optional(),
+    warnings: z.array(WarningsSchema).optional(),
   });

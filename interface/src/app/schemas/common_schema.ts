@@ -47,3 +47,15 @@ export const ExitCodeSchema = z.object({
     status: z.array(z.string()),
   });
   
+export const WarningsSchema = z.object({
+  description: z.string().optional(),
+  source: z.string().optional(),
+});
+
+export const ErrorsSchema = z.object({
+  description: z.string().optional(),
+  source: z.string().optional(),
+  error: z.string().optional(),
+  error_number: z.number().optional(),
+});
+  

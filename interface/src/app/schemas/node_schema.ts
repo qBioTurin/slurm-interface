@@ -1,0 +1,91 @@
+import { z } from 'zod';
+import { NumberSetInfiniteSchema, MetaSchema, WarningsSchema, ErrorsSchema } from './common_schema';
+
+export const EnergySchema = z.object({
+    current_watts: NumberSetInfiniteSchema.optional(),
+    base_consumed_energy: z.number().optional(),
+    last_collected: z.number().optional(),
+    consumed_energy: z.number().optional(),
+    previous_consumed_energy: z.number().optional(),
+    average_watts: z.number().optional(),
+});
+
+export const ExternalSensorSchema = z.object({
+    sensor_type: z.string().optional(),
+    value: z.number().optional(),
+    unit: z.string().optional(),
+});
+
+export const PowerSchema = z.object({
+    current: z.number().optional().optional(),
+    voltage: z.number().optional().optional(),
+    unit: z.string().optional().optional(),
+});
+
+export const NodeSchema = z.object({
+    reason: z.string(),
+    gpu_spec: z.string().optional(),
+    slurmd_start_time: NumberSetInfiniteSchema.optional(),
+    features: z.array(z.string()).optional(),
+    hostname: z.string().optional(),
+    cores: z.number().optional(),
+    reason_changed_at: NumberSetInfiniteSchema.optional(),
+    reservation: z.string().optional(),
+    tres: z.string().optional(),
+    cpu_binding: z.number().optional(),
+    state: z.array(z.string()),
+    sockets: z.number().optional(),
+    energy: EnergySchema.optional(),
+    partitions: z.array(z.string()).optional(),
+    gres_drained: z.string().optional(),
+    weight: z.number().optional(),
+    version: z.string().optional(),
+    gres_used: z.string().optional(),
+    mcs_label: z.string().optional(),
+    real_memory: z.number().optional(),
+    instance_id: z.string().optional(),
+    burstbuffer_network_address: z.string().optional(),
+    port: z.number().optional(),
+    name: z.string(),
+    resume_after: NumberSetInfiniteSchema.optional(),
+    temporary_disk: z.number().optional(),
+    tres_used: z.string().optional(),
+    effective_cpus: z.number().optional(),
+    instance_type: z.string().optional(),
+    external_sensors: ExternalSensorSchema.optional(),
+    res_cores_per_gpu: z.number().optional(),
+    boards: z.number().optional(),
+    alloc_cpus: z.number().optional(),
+    active_features: z.array(z.string()).optional(),
+    reason_set_by_user: z.string().optional(),
+    free_mem: NumberSetInfiniteSchema.optional(),
+    alloc_idle_cpus: z.number().optional(),
+    extra: z.string().optional(),
+    operating_system: z.string().optional(),
+    power: PowerSchema.optional(),
+    architecture: z.string().optional(),
+    owner: z.string().optional(),
+    cluster_name: z.string().optional(),
+    address: z.string().optional(),
+    cpus: z.number().optional(),
+    tres_weighted: z.number().optional(),
+    gres: z.string().optional(),
+    threads: z.number().optional(),
+    boot_time: NumberSetInfiniteSchema.optional(),
+    alloc_memory: z.number().optional(),
+    specialized_memory: z.number().optional(),
+    specialized_cpus: z.string().optional(),
+    specialized_cores: z.number().optional(),
+    last_busy: NumberSetInfiniteSchema.optional(),
+    comment: z.string().optional(),
+    next_state_after_reboot: z.array(z.string()).optional(),
+    cpu_load: z.number(),
+});
+
+export const SlurmNodeResponseSchema = z.object({
+    nodes: z.array(NodeSchema),
+    meta: MetaSchema.optional(),
+    last_update: NumberSetInfiniteSchema.optional(),
+    warnings: z.array(WarningsSchema).optional(),
+    errors: z.array(ErrorsSchema).optional(),
+});
