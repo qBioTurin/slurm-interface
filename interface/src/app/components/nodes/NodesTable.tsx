@@ -9,27 +9,8 @@ interface NodeTableProps {
   nodes: Node[];
 }
 
-export default function NodesTable({nodes}: NodeTableProps) {
-  const nodesByPartition: Record<string, Node[]> = nodes.reduce((record, node) => {
-    if (node.partitions) {
-      node.partitions.forEach((partition) => {
-        if (!record[partition]) {
-          record[partition] = [];
-        }
-        record[partition].push(node);
-      });
-    }
-    return record;
-  }, {} as Record<string, Node[]>);
-
-  return (
-    <Accordion className={styles.accordion} multiple>
-    {Object.entries(nodesByPartition).map(([partition, partitionNodes]) => (
-      <Accordion.Item value={partition} key={partition}>
-        <Accordion.Control>
-          {partition} ({partitionNodes.length} nodes)
-        </Accordion.Control>
-        <Accordion.Panel>
+export default function NodesTable({ nodes }: NodeTableProps) {
+return (
           <Table className={styles.table} striped highlightOnHover>
             <thead>
               <tr>
@@ -88,10 +69,6 @@ export default function NodesTable({nodes}: NodeTableProps) {
               )}
             </tbody>
           </Table>
-        </Accordion.Panel>
-      </Accordion.Item>
-    ))}
-  </Accordion>
   );
 }
 
