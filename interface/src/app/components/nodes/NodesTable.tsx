@@ -1,6 +1,9 @@
 import { Table, Badge, Button } from '@mantine/core';
 import styles from './NodesTable.module.css';
-import { Node } from '../../../../utils/models/models';
+import { z } from 'zod';
+import { NodeSchema } from '../../schemas/node_schema';
+
+type Node = z.infer<typeof NodeSchema>;
 
 interface NodeTableProps {
   nodes: Node[];
@@ -12,7 +15,7 @@ export default function NodesTable({nodes}: NodeTableProps) {
       <thead>
         <tr>
           <th>Node Name</th>
-          <th>Account</th>
+          <th>Architecture</th>
           <th>State</th>
           <th>CPU</th>
           <th>Memory</th>
@@ -23,17 +26,17 @@ export default function NodesTable({nodes}: NodeTableProps) {
       <tbody>
         {nodes.length > 0 ? (
           nodes.map((node) => (
-            <tr key={node.nodeName}>
-              <td>{node.nodeName}</td>
-              <td>{node.account}</td>
+            <tr key={node.name}>
+              <td>{node.name}</td>
+              <td>{node.architecture}</td>
               <td>
                 <Badge
                   color={
-                    node.state === 'IDLE'
+                    node.state[0] === 'IDLE'
                       ? 'green'
-                      : node.state === 'ALLOCATED'
+                      : node.state[0] === 'ALLOCATED'
                       ? 'blue'
-                      : node.state === 'DOWN'
+                      : node.state[0] === 'DOWN'
                       ? 'red'
                       : 'yellow'
                   }
@@ -44,27 +47,27 @@ export default function NodesTable({nodes}: NodeTableProps) {
 
               <td>
               <div>
-                  <strong>Load:</strong> {node.cpu.load.toFixed(2)} <br />
-                  <strong>Allocated:</strong> {node.cpu.allocated} <br />
-                  <strong>Idle:</strong> {node.cpu.idle} <br />
-                  <strong>Total:</strong> {node.cpu.total}
+                  <strong>Load:</strong> {node.cpu_load.toFixed(2)} <br />
+                  <strong>Allocated:</strong> {node.alloc_cpus} <br />
+                  <strong>Idle:</strong> {node.alloc_idle_cpus} <br />
+                  <strong>Total:</strong> {node.effective_cpus}
                 </div>
               </td>
 
               <td>
                 <div>
-                  <strong>Available:</strong> {node.memory.available} MB <br />
-                  <strong>Total:</strong> {node.memory.total} MB
+                  <strong>Available:</strong> {} MB <br />
+                  <strong>Total:</strong> {node.real_memory} MB
                 </div>
               </td>
 
               <td>
-                {node.gpu.idle === 'N/A' ? (
+                {node.gpu_spec === 'N/A' ? (
                   'N/A'
                 ) : (
                   <div>
-                    <strong>Idle:</strong> {node.gpu.idle} <br />
-                    <strong>Total:</strong> {node.gpu.total}
+                    <strong>Idle:</strong> {} <br />
+                    <strong>Total:</strong> {}
                   </div>
                 )}
               </td>
