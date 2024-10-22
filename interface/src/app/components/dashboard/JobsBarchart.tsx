@@ -1,7 +1,10 @@
 import { BarChart } from '@mantine/charts';
 import '@mantine/charts/styles.css' 
-import { Job, JobStateInfo} from '../../../../utils/models/models';
 import { JobStates }  from '../../../../utils/models/job_state';
+import {JobSchema} from '../../schemas/job_schema';
+import { z } from 'zod';
+
+type Job = z.infer<typeof JobSchema>;
 
 interface JobsBarchartProps {
     jobs: Job[];
@@ -14,7 +17,7 @@ const jobStateMap = JobStates.reduce((map, stateInfo) => {
 
 const aggregateJobStates = (jobs: Job[]) => {
     const counts = jobs.reduce((acc, job) => {
-        const stateName = jobStateMap[job.state] || job.state;
+        const stateName = jobStateMap[job.job_state[0]] || job.job_state[0];
         acc[stateName] = (acc[stateName] || 0) + 1;
         return acc;
     }, {} as Record<string, number>);
