@@ -10,6 +10,7 @@ import {SlurmNodeResponseSchema, NodeSchema } from '../../schemas/node_schema';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
+import { Accordion } from '@mantine/core';
 
 type Node = z.infer<typeof NodeSchema>;
 
@@ -62,6 +63,24 @@ export default function NodesPage() {
     return <LoadingPage />;
 }
 
+const nodesByPartition: Record<string, Node[]> = filteredNodes.reduce((record, node) => {
+  if (node.partitions) {
+    node.partitions.forEach((partition) => {
+      if (!partition.includes('-booked')) { // Exclude partitions containing a tick
+        if (!record[partition]) {
+          record[partition] = [];
+        }
+        record[partition].push(node);
+      }
+    });
+  }
+  return record;
+}, {} as Record<string, Node[]>);
+
+if (loading || isValidating) {
+  return <LoadingPage />;
+}
+
   return (
     <div className={styles.container}>
       <Group className={styles.group}>
@@ -82,7 +101,18 @@ export default function NodesPage() {
         </div>
       </Group>
 
-      <NodesTable nodes={filteredNodes} />
+      <Accordion multiple>
+        {Object.entries(nodesByPartition).map(([partition, partitionNodes]) => (
+          <Accordion.Item value={partition} key={partition}>
+            <Accordion.Control>
+              {partition} ({partitionNodes.length} nodes)
+            </Accordion.Control>
+            <Accordion.Panel>
+              <NodesTable nodes={partitionNodes} />
+            </Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
 
     </div>
   );

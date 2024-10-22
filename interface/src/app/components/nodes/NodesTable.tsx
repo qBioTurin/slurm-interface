@@ -1,4 +1,4 @@
-import { Table, Badge, Accordion, rem } from '@mantine/core';
+import { Table, Badge} from '@mantine/core';
 import styles from './NodesTable.module.css';
 import { z } from 'zod';
 import { NodeSchema } from '../../schemas/node_schema';
