@@ -50,9 +50,9 @@ export default function JobsPage() {
     const filteredJobs = jobs.filter((job) => {
         const matchesSearchQuery = job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                                    job.user_name.toLowerCase().includes(searchQuery.toLowerCase());
-        const isRunningJob = job.job_state[0] === 'RUNNING';
-        
-        return matchesSearchQuery && (showRunning ? isRunningJob : !isRunningJob);
+    const showFilteredJobs = showRunning ? job.job_state[0] === 'RUNNING' : true;
+
+    return matchesSearchQuery && showFilteredJobs;
 });
 
     if (loading || isValidating) {
