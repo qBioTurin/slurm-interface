@@ -8,6 +8,7 @@ import {
 } from '@tabler/icons-react';
 import { z } from 'zod';
 import {JobSchema} from '../../../schemas/job_schema';
+import { formatDate, formatDuration } from '../../../../../utils/datetime';
 
 type Job = z.infer<typeof JobSchema>;
 
@@ -37,8 +38,9 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
       break;
   }
 
-  return (
+    return (
     <Timeline active={activeStep} bulletSize={24} lineWidth={2}>
+
       {/* Submitted Step */}
       <Timeline.Item
         bullet={<IconClipboardCheck size={12} />}
@@ -46,10 +48,10 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
       >
         <Text c="dimmed" size="sm">
           The job <strong>{job.name}</strong> has been submitted by{' '}
-          <strong>{job.user_name}</strong> on <strong>{job.submit_time.number}</strong>.
+          <strong>{job.user_name}</strong> on <strong> {formatDate(job.submit_time.number)} </strong>.
         </Text>
         <Text size="xs" mt={4}>
-          {job.start_time.number ? `Started: ${job.start_time.number}` : 'Pending Start'}
+          {job.start_time.number ? `Started: ${formatDate(job.start_time.number)}` : 'Pending Start'}
         </Text>
       </Timeline.Item>
 
@@ -75,7 +77,7 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
           The job is currently running on <strong>{job.job_resources && job.job_resources.nodes? job.job_resources.nodes.count : job.nodes}</strong> node(s).
         </Text>
         <Text size="xs" mt={4}>
-          Time Used: {} | Time Available: {job.eligible_time.number}
+          Estimated Time Remaining: {formatDuration(job.end_time.number - job.start_time.number)}
         </Text>
       </Timeline.Item>
 
@@ -88,7 +90,6 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
           The job is finishing up its tasks.
         </Text>
         <Text size="xs" mt={4}>
-          Expected End Time: {}
         </Text>
       </Timeline.Item>
 
@@ -102,7 +103,6 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
           The job has been terminated successfully.
         </Text>
         <Text size="xs" mt={4}>
-          Time Limit: {job.time_limit.number}
         </Text>
       </Timeline.Item>
     </Timeline>
