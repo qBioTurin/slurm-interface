@@ -4,10 +4,12 @@ import { useState } from 'react';
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
 import { Table, Pill, TextInput, Button, Switch, Group, Badge, Flex, rem, UnstyledButton, Text, Center, ScrollArea, keys } from '@mantine/core';
 import styles from './Reservations.module.css';
-import { Reservation, Node } from '../../../../utils/models/models';
-import { mockReservations } from '../../../../utils/models/mock';
+import { ReservationSchema } from "../../schemas/reservation_schema";
 import { useRouter } from 'next/navigation';
+import { FC } from 'react';
+import { z } from 'zod';
 
+type Reservation = z.infer<typeof ReservationSchema>;
 
 interface ThProps {
     children: React.ReactNode;
@@ -16,12 +18,16 @@ interface ThProps {
     onSort?(): void;
 }
 
+interface ReservationTableProps {
+    reservations: Reservation[];
+}
+
 function Th({ children, reversed, sorted, onSort }: ThProps) {
     const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
     if (!onSort) {
         return (
             <Table.Th className={styles.th}>
-                <Text>
+                <Text fw={700} fz="sm" >
                     {children}
                 </Text>
             </Table.Th>
@@ -31,7 +37,7 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
         <Table.Th className={styles.th}>
             <UnstyledButton onClick={onSort} className={styles.control}>
                 <Group justify="space-between">
-                    <Text fw={500} fz="sm">
+                    <Text fw={700} fz="sm">
                         {children}
                     </Text>
                     <Center className={styles.icon}>
@@ -47,18 +53,19 @@ function filterData(data: Reservation[], search: string): Reservation[] {
     const query = search.toLowerCase().trim();
     return data.filter((item) =>
         keys(data[0]).some((key) => {
-            if (key == 'NodeCnt' || key == 'CoreCnt') {
+            if (key == 'node_count' || key == 'core_count') {
                 return String(item[key]).toLowerCase().includes(query);
-            } else if (key == 'StartTime' || key == 'EndTime') {
-                return item[key].toUTCString().toLowerCase().includes(query);
-            } else if (key == 'ReservationName' || key == 'Duration' || key == 'PartitionName' || key == 'Licenses' || key == 'Features' || key == 'BurstBuffer') {
+            } else if (key == 'name' || key == 'partition') {
                 return item[key]?.toLowerCase().includes(query);
-            } else if (key == 'Users' || key == 'Accounts' || key == 'Groups') {
-                return item[key]?.some((value) => value.toLowerCase().includes(query));
-            } else if (key == 'Nodes') {
-                return item[key]?.some((node) => node.nodeName.toLowerCase().includes(query));
+            } else if (key == 'users') {
+                return item[key]?.toLowerCase().includes(query);
+            } else if (key == 'node_list') {
+                return item[key]?.toLowerCase().includes(query);
+            } else {
+                return item[key].toLocaleString().toLowerCase().includes(query);
             }
-        })
+        }
+        )
     );
 }
 
@@ -73,30 +80,22 @@ function sortData(
     }
 
     return filterData(
-        [...data].sort((a, b) => {
-            if (sortBy === 'StartTime' || sortBy === 'EndTime') {
-                const dateA = new Date(a[sortBy]);
-                const dateB = new Date(b[sortBy]);
-                if (payload.reversed) {
-                    return dateB.getTime() - dateA.getTime();
-                } else {
-                    return dateA.getTime() - dateB.getTime();
-                }
-            } else if (sortBy === 'NodeCnt') {
-                const nodeCntA = a.NodeCnt ?? -1;
-                const nodeCntB = b.NodeCnt ?? -1;
-                if (payload.reversed) {
-                    return nodeCntB - nodeCntA;
-                } else {
-                    return nodeCntA - nodeCntB;
-                }
-            } else {
-                if (payload.reversed) {
-                    return b[sortBy].toString().localeCompare(a[sortBy].toString());
-                } else {
-                    return a[sortBy].toString().localeCompare(b[sortBy].toString());
-                }
+        data.slice().sort((a, b) => {
+            if (sortBy === 'name' || sortBy === 'partition') {
+                return a[sortBy].localeCompare(b[sortBy]);
             }
+
+            if (sortBy === 'node_count' || sortBy === 'core_count') {
+                return a[sortBy] - b[sortBy];
+            }
+
+            if (sortBy === 'start_time' || sortBy === 'end_time') {
+                const dateA = new Date(a[sortBy].number);
+                const dateB = new Date(b[sortBy].number);
+                return dateA.getTime() - dateB.getTime();
+            }
+
+            return 0;
         }),
         payload.search
     );
@@ -104,9 +103,9 @@ function sortData(
 }
 
 
-export default function ReservationsTableSort() {
+export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) => {
     const [search, setSearch] = useState('');
-    const [sortedData, setSortedData] = useState<Reservation[]>(mockReservations);
+    const [sortedData, setSortedData] = useState<Reservation[]>(reservations);
     const [sortBy, setSortBy] = useState<keyof Reservation | null>(null);
     const [reverseSortDirection, setReverseSortDirection] = useState(false);
 
@@ -120,21 +119,21 @@ export default function ReservationsTableSort() {
         const reversed = field === sortBy ? !reverseSortDirection : false;
         setReverseSortDirection(reversed);
         setSortBy(field);
-        setSortedData(sortData(mockReservations, { sortBy: field, reversed, search }));
+        setSortedData(sortData(reservations, { sortBy: field, reversed, search }));
     };
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.currentTarget;
         setSearch(value);
-        setSortedData(sortData(mockReservations, { sortBy, reversed: reverseSortDirection, search: value }));
+        setSortedData(sortData(reservations, { sortBy, reversed: reverseSortDirection, search: value }));
     };
 
     const ths = (
         <Table.Tr>
             <Th
-                sorted={sortBy === 'ReservationName'}
+                sorted={sortBy === 'name'}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting('ReservationName')}
+                onSort={() => setSorting('name')}
             >
                 Name
             </Th>
@@ -142,9 +141,9 @@ export default function ReservationsTableSort() {
                 Users
             </Th>
             <Th
-                sorted={sortBy === 'NodeCnt'}
+                sorted={sortBy === 'node_count'}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting('NodeCnt')}
+                onSort={() => setSorting('node_count')}
             >
                 N. nodes
             </Th>
@@ -152,16 +151,16 @@ export default function ReservationsTableSort() {
                 Nodes
             </Th>
             <Th
-                sorted={sortBy === 'StartTime'}
+                sorted={sortBy === 'start_time'}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting('StartTime')}
+                onSort={() => setSorting('start_time')}
             >
                 Start time
             </Th>
             <Th
-                sorted={sortBy === 'EndTime'}
+                sorted={sortBy === 'end_time'}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting('EndTime')}
+                onSort={() => setSorting('end_time')}
             >
                 End time
             </Th>
@@ -170,19 +169,15 @@ export default function ReservationsTableSort() {
     );
 
     const rows = sortedData.map((row) => (
-        <Table.Tr key={row.ReservationName} onClick={() => handleRowClick(row.ReservationName)}>
-            <Table.Td>{row.ReservationName}</Table.Td>
+        <Table.Tr key={row.name} onClick={() => handleRowClick(row.name)}>
+            <Table.Td>{row.name}</Table.Td>
             <Table.Td>
-                {row.Users?.map((user) => (
-                    <Pill key={user} mr='0.5em' mb='0.5em' >
-                        {user}
-                    </Pill>
-                ))}</Table.Td>
-            <Table.Td>{row.NodeCnt}</Table.Td>
-            <Table.Td>{row.Nodes?.map((node) => (
-                <Pill key={node?.nodeName} mr='0.5em' mb='0.5em'>{node?.nodeName}</Pill>))}</Table.Td>
-            <Table.Td>{row.StartTime.toLocaleString()}</Table.Td>
-            <Table.Td>{row.EndTime.toLocaleString()}</Table.Td>
+                {row.users}
+            </Table.Td>
+            <Table.Td>{row.node_count}</Table.Td>
+            <Table.Td>{row.node_list}</Table.Td>
+            <Table.Td>{row.start_time.toLocaleString()}</Table.Td>
+            <Table.Td>{row.end_time.toLocaleString()}</Table.Td>
         </Table.Tr>
     ));
 
@@ -216,7 +211,7 @@ export default function ReservationsTableSort() {
                             rows
                         ) : (
                             <Table.Tr>
-                                <Table.Td colSpan={3}>
+                                <Table.Td colSpan={6} >
                                     <Text fw={500} ta="center">
                                         No reservations found
                                     </Text>
@@ -229,3 +224,6 @@ export default function ReservationsTableSort() {
         </div >
     );
 }
+
+
+export default ReservationTable;

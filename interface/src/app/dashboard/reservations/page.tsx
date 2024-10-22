@@ -11,10 +11,8 @@ import { useSlurmData } from '@/hooks/useSlurmData';
 
 type Reservation = z.infer<typeof ReservationSchema>;
 
-
 export default function ReservationsPage() {
 
-    const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
     const [reservations, setReservations] = useState<Reservation[]>([]); // fetched reservations
     const [isValidating, setIsValidating] = useState(false);
     const { data, loading, error } = useSlurmData('reservations');
@@ -46,6 +44,11 @@ export default function ReservationsPage() {
         }
     }, [data, loading]);
 
+    if (loading || isValidating) {
+        return <LoadingPage />;
+    }
 
-    return (<ReservationsTable />);
+
+
+    return (<ReservationsTable reservations={reservations} />);
 }
