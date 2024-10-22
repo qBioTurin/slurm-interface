@@ -1,3 +1,5 @@
+'use client'
+
 import styles from './JobsTable.module.css';
 import { Table, Button } from '@mantine/core';
 import Link from 'next/link';
