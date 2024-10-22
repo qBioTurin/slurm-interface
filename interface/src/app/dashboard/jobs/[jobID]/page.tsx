@@ -11,6 +11,7 @@ import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { useSlurmData } from '@/hooks/useSlurmData';
 import { z } from 'zod';
 import { JobSchema, SlurmJobResponseSchema } from '../../../schemas/job_schema';
+import { formatDate, formatDuration } from '../../../../../utils/datetime';
 
 type Job = z.infer<typeof JobSchema>;
 
@@ -80,19 +81,21 @@ const JobPage = ({ params }: JobPageProps) => {
         <Grid.Col span={6}>
           <InfoCard title="Job Metadata">
             <InfoField label="User" value={job.user_name} />
-            <InfoField label="Submission Time" value={job.submit_time.number} />
+            <InfoField label="Submission Time" value={formatDate(job.submit_time.number)} />
             <InfoField label="Quality of Service" value={job.qos} />
             <InfoField label="Priority" value={job.priority.number.toFixed(2)} />
           </InfoCard>
 
           <InfoCard title="Job Resources">
             <InfoField label="Partition" value={job.partition} />
-            <InfoField label="Nodes Count" value={job.nodes.toString()} />
+            <InfoField label="Nodes" value={job.nodes.toString()} />
           </InfoCard>
 
           <InfoCard title="Job Info">
-            {job.start_time && <InfoField label="Start Time" value={job.start_time.number} />}
-            {job.end_time && <InfoField label="End Time" value={job.end_time.number} />}
+            {job.start_time && <InfoField label="Start Time" value={formatDate(job.start_time.number)} />}
+            {job.end_time && <InfoField label="End Time" value={formatDate(job.end_time.number)} />}
+            <InfoField label="Accrue Time" value={formatDuration(job.accrue_time.number)} />
+            <InfoField label="Time Limit" value={formatDuration(job.time_limit.number)} />
           </InfoCard>
         </Grid.Col>
       </Grid>
