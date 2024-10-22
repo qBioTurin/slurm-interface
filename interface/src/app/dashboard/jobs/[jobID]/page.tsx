@@ -94,8 +94,6 @@ const JobPage = ({ params }: JobPageProps) => {
           <InfoCard title="Job Info">
             {job.start_time && <InfoField label="Start Time" value={formatDate(job.start_time.number)} />}
             {job.end_time && <InfoField label="End Time" value={formatDate(job.end_time.number)} />}
-            <InfoField label="Accrue Time" value={formatDuration(job.accrue_time.number)} />
-            <InfoField label="Time Limit" value={formatDuration(job.time_limit.number)} />
           </InfoCard>
         </Grid.Col>
       </Grid>

@@ -77,7 +77,6 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
           The job is currently running on <strong>{job.job_resources && job.job_resources.nodes? job.job_resources.nodes.count : job.nodes}</strong> node(s).
         </Text>
         <Text size="xs" mt={4}>
-          Estimated Time Remaining: {formatDuration(job.end_time.number - job.start_time.number)}
         </Text>
       </Timeline.Item>
 
