@@ -1,0 +1,81 @@
+.formStep {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .inputField {
+    width: 100%;
+    background-color: #fafafa;
+    padding: 0.75rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .inputField:focus {
+    border-color: #1a1fad;
+    outline: none;
+    box-shadow: 0 0 5px rgba(66, 105, 203, 0.5);
+  }
+  
+  .label {
+    font-weight: 500;
+    color: #424242;
+  }
+  
+  .optionalLabel {
+    font-size: 0.9rem;
+    color: #757575;
+  }
+  
+  .checkboxContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .summaryCard {
+    padding: 2rem;
+    background-color: #fafafa;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .summaryTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+  }
+  
+  .summaryTable th,
+  .summaryTable td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .summaryTable th {
+    background-color: #6200ea;
+    color: white;
+  }
+  
+  .summaryTable td {
+    background-color: white;
+  }
+  
+  .summaryTable tr:nth-child(even) td {
+    background-color: #f5f5f5;
+  }
+  
+  .summaryRow {
+    font-size: 1rem;
+  }
+  
+  .summaryKey {
+    font-weight: bold;
+  }
+  
+  .summaryValue {
+    color: #424242;
+  }
+  
