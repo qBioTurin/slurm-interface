@@ -1,13 +1,14 @@
 'use client';
 
 import { Text, Grid } from '@mantine/core';
-import {mockJobData} from '../../../../../../temp/job-106958';
 import { useState, useEffect } from 'react';
 import styles from './JobDetails.module.css';
 import {InfoCard} from '../../../components/jobs/job-details/InfoCard';
 import {InfoField} from '../../../components/jobs/job-details/InfoField';
 import JobStateBadge from '../../../components/jobs/JobStateBadge';
 import JobProgressTimeline from '../../../components/jobs/job-details/JobProgressTimeline';
+import LoadingPage from '@/components/LoadingPage/loadingPage';
+import { useSlurmData } from '@/hooks/useSlurmData';
 import { z } from 'zod';
 import {JobSchema, SlurmJobResponseSchema} from '../../../schemas/job_schema';
 
@@ -22,21 +23,41 @@ interface JobPageProps {
 const JobPage = ({ params }: JobPageProps) => {
   const { jobID } = params;
   const [job, setJob] = useState<Job | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
+
+  const id = parseInt(jobID);
+  const { data, loading, error } = useSlurmData(`jobs/${id}`);
 
   useEffect(() => {
-    const foundJob = mockJobData.jobs.find((j) => j.job_id === Number(jobID)); 
-    if (foundJob) {
-      try {
-          const validatedJob = SlurmJobResponseSchema.parse(foundJob);
-          setJob(validatedJob.jobs[0]);
-      } catch (error) {
-          console.error('Invalid job data:', error);
-          setJob(null); 
-      }
-  } else {
+    if (error) {
+      console.error(error);
       setJob(null);
+      return;
+    }
+
+    if (loading) {
+      return;
+    }
+
+    if (data) {
+      setIsValidating(true);
+      try {
+        const validatedData = SlurmJobResponseSchema.parse(data);
+        setJob(validatedData.jobs[0]);
+      } catch (error) {
+        console.error('Invalid job data:', error);
+        setJob(null);
+      } finally {
+        setIsValidating(false);
+      }
+    } else {
+      setJob(null);
+    }
+  }, [data, loading, error]);
+
+  if (loading || isValidating) {
+    return <LoadingPage />;
   }
-}, [jobID]);
 
   if (!job) {
     return <Text>Job {jobID} not found</Text>;
@@ -54,9 +75,9 @@ const JobPage = ({ params }: JobPageProps) => {
       <Grid>
         {/* Left Column: Job Timeline */}
         <Grid.Col span={6}>
-            {/* <InfoCard title="Job Timeline">
+            <InfoCard title="Job Timeline">
               <JobProgressTimeline job={job} />
-            </InfoCard> */}
+            </InfoCard>
         </Grid.Col>
           
         {/* Right Column: Job Info */}
