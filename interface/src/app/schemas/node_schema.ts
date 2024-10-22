@@ -58,7 +58,7 @@ export const NodeSchema = z.object({
     alloc_cpus: z.number().optional(),
     active_features: z.array(z.string()).optional(),
     reason_set_by_user: z.string().optional(),
-    free_mem: NumberSetInfiniteSchema.optional(),
+    free_mem: NumberSetInfiniteSchema,
     alloc_idle_cpus: z.number().optional(),
     extra: z.string().optional(),
     operating_system: z.string().optional(),

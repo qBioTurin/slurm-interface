@@ -10,6 +10,7 @@ interface NodeTableProps {
 }
 
 export default function NodesTable({nodes}: NodeTableProps) {
+
   return (
     <Table className={styles.table} striped highlightOnHover>
       <thead>
@@ -19,8 +20,6 @@ export default function NodesTable({nodes}: NodeTableProps) {
           <th>State</th>
           <th>CPU</th>
           <th>Memory</th>
-          <th>GPU</th>
-          <th>Reason</th>
         </tr>
       </thead>
       <tbody>
@@ -47,32 +46,19 @@ export default function NodesTable({nodes}: NodeTableProps) {
 
               <td>
               <div>
-                  <strong>Load:</strong> {node.cpu_load.toFixed(2)} <br />
-                  <strong>Allocated:</strong> {node.alloc_cpus} <br />
-                  <strong>Idle:</strong> {node.alloc_idle_cpus} <br />
-                  <strong>Total:</strong> {node.effective_cpus}
+                  <strong className={styles.boldText}>Load:</strong> {node.cpu_load.toFixed(2)} <br />
+                  <strong className={styles.boldText}>Allocated:</strong> {node.alloc_cpus} <br />
+                  <strong className={styles.boldText}>Idle:</strong> {node.alloc_idle_cpus} <br />
+                  <strong className={styles.boldText}>Total:</strong> {node.cpus}
                 </div>
               </td>
 
               <td>
                 <div>
-                  <strong>Available:</strong> {} MB <br />
-                  <strong>Total:</strong> {node.real_memory} MB
+                  <strong className={styles.boldText}>Available:</strong> {(node.free_mem.number / 1024).toFixed(2)} GB <br />
+                  <strong className={styles.boldText}>Total:</strong> {((node.real_memory ?? 0) / 1024).toFixed(2)} GB
                 </div>
               </td>
-
-              <td>
-                {node.gpu_spec === 'N/A' ? (
-                  'N/A'
-                ) : (
-                  <div>
-                    <strong>Idle:</strong> {} <br />
-                    <strong>Total:</strong> {}
-                  </div>
-                )}
-              </td>
-
-              <td>{node.reason || 'N/A'}</td>
             </tr>
           ))
         ) : (
@@ -85,4 +71,16 @@ export default function NodesTable({nodes}: NodeTableProps) {
       </tbody>
     </Table>
   );
+}
+
+function getGpuInfo(node: Node) { 
+  let gpuTotal = 0;
+  let gpuIdle = 0;
+  if (node.gpu_spec) {
+    const gpuSpec = node.gpu_spec.match(/gpu:(\d+)/);
+    gpuTotal = gpuSpec ? parseInt(gpuSpec[1], 10) : 0;
+    gpuIdle = gpuTotal - (Number(node.gres_used) || 0) - (Number(node.gres_drained) || 0);
+  }
+
+  return [gpuTotal,gpuIdle];
 }
