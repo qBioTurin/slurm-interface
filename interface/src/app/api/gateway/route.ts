@@ -5,7 +5,8 @@ const SLURM_JWT = process.env.SLURM_JWT;
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
-    const path = searchParams.get('path');  // API path to fetch, e.g. "jobs"
+    const path = searchParams.get('path');
+    console.log("Complete path:", `${SLURM_API_BASE_URL}${path}`);
     //const token = req.headers.get('Authorization') || '';  // Assuming JWT is passed in headers
 
     if (!path) {

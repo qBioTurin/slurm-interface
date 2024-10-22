@@ -3,14 +3,14 @@
 import { Text, Grid } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import styles from './JobDetails.module.css';
-import {InfoCard} from '../../../components/jobs/job-details/InfoCard';
-import {InfoField} from '../../../components/jobs/job-details/InfoField';
+import { InfoCard } from '../../../components/jobs/job-details/InfoCard';
+import { InfoField } from '../../../components/jobs/job-details/InfoField';
 import JobStateBadge from '../../../components/jobs/JobStateBadge';
 import JobProgressTimeline from '../../../components/jobs/job-details/JobProgressTimeline';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { useSlurmData } from '@/hooks/useSlurmData';
 import { z } from 'zod';
-import {JobSchema, SlurmJobResponseSchema} from '../../../schemas/job_schema';
+import { JobSchema, SlurmJobResponseSchema } from '../../../schemas/job_schema';
 
 type Job = z.infer<typeof JobSchema>;
 
@@ -26,16 +26,12 @@ const JobPage = ({ params }: JobPageProps) => {
   const [isValidating, setIsValidating] = useState(false);
 
   const id = parseInt(jobID);
-  const { data, loading, error } = useSlurmData(`jobs/${id}`);
+  const { data, loading, error } = useSlurmData(`job/${id}`);
 
   useEffect(() => {
     if (error) {
       console.error(error);
       setJob(null);
-      return;
-    }
-
-    if (loading) {
       return;
     }
 
@@ -65,7 +61,7 @@ const JobPage = ({ params }: JobPageProps) => {
 
   return (
     <div className={styles.container}>
-      
+
       {/* Job Header */}
       <div className={styles.header}>
         <h2 className={styles.title}>[{job.job_id}] {job.name}</h2>
@@ -75,11 +71,11 @@ const JobPage = ({ params }: JobPageProps) => {
       <Grid>
         {/* Left Column: Job Timeline */}
         <Grid.Col span={6}>
-            <InfoCard title="Job Timeline">
-              <JobProgressTimeline job={job} />
-            </InfoCard>
+          <InfoCard title="Job Timeline">
+            <JobProgressTimeline job={job} />
+          </InfoCard>
         </Grid.Col>
-          
+
         {/* Right Column: Job Info */}
         <Grid.Col span={6}>
           <InfoCard title="Job Metadata">
@@ -90,17 +86,17 @@ const JobPage = ({ params }: JobPageProps) => {
           </InfoCard>
 
           <InfoCard title="Job Resources">
-          <InfoField label="Partition" value={job.partition} />
-          <InfoField label="Nodes Count" value={job.nodes.toString()} />
+            <InfoField label="Partition" value={job.partition} />
+            <InfoField label="Nodes Count" value={job.nodes.toString()} />
           </InfoCard>
 
           <InfoCard title="Job Info">
             {job.start_time && <InfoField label="Start Time" value={job.start_time.number} />}
-            {job.end_time && <InfoField label="End Time" value={job.end_time.number} />} 
+            {job.end_time && <InfoField label="End Time" value={job.end_time.number} />}
           </InfoCard>
         </Grid.Col>
-    </Grid>
-  </div>
+      </Grid>
+    </div>
   );
 };
 
