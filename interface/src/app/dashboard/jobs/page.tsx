@@ -12,10 +12,11 @@ import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { useSlurmData } from '@/hooks/useSlurmData';
 
 type Job = z.infer<typeof JobSchema>;
+const currentUser = "scontald"; // TODO: get current user from auth context
 
 export default function JobsPage() {
     const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
-    const [showRunning, setShowRunning] = useState(true); // state toggle
+    const [showUserJobs, setShowUserJobs] = useState(true); // state toggle
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
     const [isValidating, setIsValidating] = useState(false); // page state
 
@@ -50,9 +51,11 @@ export default function JobsPage() {
     const filteredJobs = jobs.filter((job) => {
         const matchesSearchQuery = job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                                    job.user_name.toLowerCase().includes(searchQuery.toLowerCase());
-    const showFilteredJobs = showRunning ? job.job_state[0] === 'RUNNING' : true;
+        const matchesUserFilter  = showUserJobs
+        ? job.user_name.toLowerCase() === currentUser.toLowerCase()
+        : true;
 
-    return matchesSearchQuery && showFilteredJobs;
+        return matchesSearchQuery && matchesUserFilter ;
 });
 
     if (loading || isValidating) {
@@ -71,9 +74,9 @@ export default function JobsPage() {
                 />
 
                 <Switch
-                    label={showRunning ? "Running Jobs" : "All Jobs"}
-                    checked={showRunning}
-                    onChange={(event) => setShowRunning(event.currentTarget.checked)}
+                    label={showUserJobs ? "Your jobs" : "All Jobs"}
+                    checked={showUserJobs}
+                    onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
                 />
             </Group>
 
