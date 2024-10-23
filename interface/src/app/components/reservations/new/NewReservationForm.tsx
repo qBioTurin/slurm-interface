@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { mockNodes } from '../../../../../utils/models/mock';
-import { Stepper, Button, Group, TextInput, TagsInput, NumberInput, MultiSelect, Code } from '@mantine/core';
+import { Stepper, Button, Group, TextInput, TagsInput, NumberInput, MultiSelect, Code, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { IconCalendar, Icon } from '@tabler/icons-react';
+
+
+
 
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
+    const [additionalFields, setAdditionalFields] = useState<{ id: number; field1: string; field2: string }[]>([]);
+
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -12,40 +18,58 @@ export default function NewReservationForm() {
             name: '',
             StartTime: new Date(),
             EndTime: new Date(),
-            Duration: '',
             Users: new Array<string>(),
-            Groups: new Array<string>(),
-            Accounts: new Array<string>(),
             NodeCnt: 0,
             Nodes: new Array<string>(),
-            CoreCnt: 0,
             PartitionName: '',
-            Licenses: '',
-            Features: '',
-            Flags: new Array<string>(),
-            BurstBuffer: '',
         },
 
         validate: (values) => {
             return {};
         },
+
+
     });
+
+    const addFields = () => {
+        setAdditionalFields((prev) => [
+            ...prev,
+            { id: prev.length, field1: '', field2: '' },
+        ]);
+    };
+
+    const handleFieldChange = (id: number, field: 'field1' | 'field2', value: string) => {
+        setAdditionalFields((prev) =>
+            prev.map((item) =>
+                item.id === id ? { ...item, [field]: value } : item
+            )
+        );
+    };
 
     const nextStep = () =>
         setActive((current) => {
             if (form.validate().hasErrors) {
                 return current;
             }
-            return current < 3 ? current + 1 : current;
+            return current < 2 ? current + 1 : current;
         });
 
     const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
     return (
         <>
-            <Stepper active={active}>
-                <Stepper.Step label="Permissions" description=
-                    "Select users/groups or accounts">
+            <Stepper active={active} mt="xl">
+                <Stepper.Step label="New reservation" description=
+                    "Select resources and users access"
+                    icon={<IconCalendar style={{ width: rem(20), height: rem(20) }} />}
+                >
+
+                    <TextInput
+                        {...form.getInputProps('name')}
+                        label="Reservation Name"
+                        placeholder="Name"
+                        mt="md"
+                    />
 
                     <TagsInput
                         {...form.getInputProps('Users')}
@@ -54,23 +78,6 @@ export default function NewReservationForm() {
                         clearable
                     />
 
-                    <TagsInput
-                        {...form.getInputProps('Groups')}
-                        label="Groups"
-                        mt="md"
-                        clearable
-                    />
-
-                    <MultiSelect
-                        {...form.getInputProps('Accounts')}
-                        data={['biology', 'physics']}
-                        label="Accounts"
-                        mt="md"
-                        multiple
-                    />
-                </Stepper.Step>
-                <Stepper.Step label="Resource allocation" description="
-                    Select resources for your reservation">
 
                     <MultiSelect
                         {...form.getInputProps('Nodes')}
@@ -88,59 +95,40 @@ export default function NewReservationForm() {
                         mt="md"
                     />
 
-                    <NumberInput
-                        {...form.getInputProps('CoreCnt')}
-                        label="Core Count"
-                        min={0}
-                        mt="md"
-
-                    />
-
                     <TextInput
                         {...form.getInputProps('PartitionName')}
                         label="Partition Name"
                         placeholder="Partition Name"
                         mt="md" />
-                </Stepper.Step>
 
 
+                    {additionalFields.map((field) => (
 
-                <Stepper.Step label="Optional specifications" description="
-                    Select flag, features, etc.
-                ">
-                    <TextInput
-                        {...form.getInputProps('name')}
-                        label="Reservation Name"
-                        placeholder="Name"
-                        mt="md"
-                    />
-                    <TextInput
-                        label="Licenses"
-                        placeholder="Licenses"
-                        key={form.key('licenses')}
-                        {...form.getInputProps('licenses')}
-                        mt="md"
-                    />
-                    <TextInput
-                        mt="md"
-                        label="Features"
-                        placeholder="Features"
-                        key={form.key('features')}
-                        {...form.getInputProps('features')}
-                    />
-                    <TagsInput
-                        {...form.getInputProps('Flags')}
-                        label="Flags"
-                        placeholder='e.g. MAINT'
-                        mt="md"
-                        clearable
-                    />
-                    <TextInput
-                        {...form.getInputProps('BurstBuffer')}
-                        label="Burst Buffer"
-                        placeholder="Burst Buffer"
-                        mt="md"
-                    />
+                        <Group key={field.id} mt="md" grow>
+                            <TextInput
+                                {...form.getInputProps(field.field1)}
+                                key={form.key('field1')}
+                                label="Option"
+                                value={field.field1}
+                                onChange={(event) => handleFieldChange(field.id, 'field1', event.currentTarget.value)}
+                                placeholder="Option"
+                            />
+                            <TextInput
+                                {...form.getInputProps(field.field2)}
+                                key={form.key('field2')}
+                                label="Value"
+                                value={field.field2}
+                                onChange={(event) => handleFieldChange(field.id, 'field2', event.currentTarget.value)}
+                                placeholder="Value"
+                            />
+                        </Group>
+                    ))}
+
+                    <Button onClick={addFields} mt="md">
+                        Add Fields
+                    </Button>
+
+
                 </Stepper.Step>
 
                 <Stepper.Completed>
@@ -157,7 +145,7 @@ export default function NewReservationForm() {
                         Back
                     </Button>
                 )}
-                {active !== 3 && <Button onClick={nextStep}>Next step</Button>}
+                {active !== 3 && <Button onClick={nextStep}>Done</Button>}
             </Group>
         </>
     );
