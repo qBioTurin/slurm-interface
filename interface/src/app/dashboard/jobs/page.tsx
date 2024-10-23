@@ -118,7 +118,7 @@ export default function JobsPage() {
             {filteredJobs.length > 0 ? (
                <JobTable 
                jobs={filteredJobs} 
-               selectable={!showUserJobs}
+               selectable={showUserJobs}
                selectedJobs={selectedJobs}
                onSelect={handleJobSelect}
                onSelectAll={handleSelectAll}
