@@ -48,7 +48,5 @@ export default function ReservationsPage() {
         return <LoadingPage />;
     }
 
-
-
     return (<ReservationsTable reservations={reservations} />);
 }

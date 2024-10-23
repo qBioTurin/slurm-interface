@@ -102,7 +102,6 @@ function sortData(
 
 }
 
-
 export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) => {
     const [search, setSearch] = useState('');
     const [sortedData, setSortedData] = useState<Reservation[]>(reservations);
