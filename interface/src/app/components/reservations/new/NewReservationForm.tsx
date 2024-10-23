@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import { useForm } from '@mantine/form';
 import {z} from 'zod';
 import {ReservationSubmissionSchema} from '@/schemas/reservation_submission_schema';
+import {ReservationSummary} from './ReservationSummary';
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
@@ -29,7 +30,7 @@ export default function NewReservationForm() {
             users: [] as string[],
             // NodeCnt: 0,
             nodes: [] as string[],
-            PartitionName: '',
+            partition: '',
         },
         validate: {
             name: (value) => value.trim().length > 0 ? null : "Name is required",
@@ -53,6 +54,7 @@ export default function NewReservationForm() {
                 name: values.name,
                 users: values.users.join(','),
                 nodes: values.nodes? values.nodes.join(',') : [],
+                partition: values.partition,
             };
             console.log("Submitted Data:", formattedData);
         } catch (error) {
@@ -121,7 +123,7 @@ export default function NewReservationForm() {
                     /> */}
 
                     <TextInput
-                        {...form.getInputProps('PartitionName')}
+                        {...form.getInputProps('partition')}
                         label="Partition Name"
                         placeholder="Partition Name"
                         mt="md"   
@@ -131,9 +133,7 @@ export default function NewReservationForm() {
 
                 <Stepper.Completed>
                     Completed! Form values:
-                    <Code block mt="xl">
-                        {JSON.stringify(form.values, null, 2)}
-                    </Code>
+                    <ReservationSummary reservation={form.values} />
                 </Stepper.Completed>
             </Stepper >
 

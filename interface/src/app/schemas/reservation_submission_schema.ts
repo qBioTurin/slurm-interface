@@ -9,13 +9,16 @@ export const ReservationSubmissionSchema = z.object({
     // NodeCnt: z.number().min(0, { message: "Node count must be at least 0" }),
     nodes: z.array(z.string()).optional(),
     partition: z.string().optional(),
-    }).refine(data => data.end_time >= data.start_time, {
+    });
+  
+export const FilteredReservationSubmissionSchema = ReservationSubmissionSchema
+    .refine(data => data.end_time >= data.start_time, {
         message: "End time must be greater than start time",
         path: ["end_time"],
-    }).refine(data => {
-        return !dayjs(data.end_time).isSame(data.start_time, 'day') || data.end_time > data.start_time;
+    })
+    .refine(data => {
+    return !dayjs(data.end_time).isSame(data.start_time, 'day') || data.end_time > data.start_time;
     }, {
         message: "End time must be greater than start time.",
         path: ["end_time"],
 });
-  
