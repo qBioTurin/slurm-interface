@@ -19,6 +19,19 @@ const mockNodes = [
     { id: '5', nodeName: 'slurm-slave5' },
 ];
 
+const partitions = [
+    {name: 'broadwell-booked'},
+    {name: 'cascadelake-booked'},
+    {name: 'epito-booked'},
+    {name: 'gracehopper-booked'},
+];
+
+//  TODO: replace with actual users
+const currentUser = 'scontald';
+const users = [
+    {name: 'lbosio'}
+]
+
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     
@@ -27,10 +40,10 @@ export default function NewReservationForm() {
             name: '',
             start_time: new Date(),
             end_time: new Date(),
-            users: [] as string[],
+            users: [currentUser] as string[],
             // NodeCnt: 0,
             nodes: [] as string[],
-            partition: '',
+            // partition: '',
         },
         validate: {
             name: (value) => value.trim().length > 0 ? null : "Name is required",
@@ -54,7 +67,7 @@ export default function NewReservationForm() {
                 name: values.name,
                 users: values.users.join(','),
                 nodes: values.nodes? values.nodes.join(',') : [],
-                partition: values.partition,
+                // partition: values.partition,
             };
             console.log("Submitted Data:", formattedData);
         } catch (error) {
@@ -95,12 +108,17 @@ export default function NewReservationForm() {
                         mt="md"
                     />
 
-                    <TagsInput
-                        value={form.values.users}
-                        onChange={(value) => form.setFieldValue('users', value)}
-                        label="Users"
+                    <MultiSelect
+                        data={users.map((user) => user.name)}
+                        label="Select Additional Users"
+                        placeholder="Add users"
                         mt="md"
-                        clearable
+                        searchable
+                        value={form.values.users}
+                        onChange={(selectedUsers) => {
+                            const uniqueUsers = Array.from(new Set([currentUser, ...selectedUsers]));
+                            form.setFieldValue('users', uniqueUsers);
+                        }}
                     />
 
                     <MultiSelect
@@ -122,12 +140,16 @@ export default function NewReservationForm() {
                         mt="md"
                     /> */}
 
-                    <TextInput
-                        {...form.getInputProps('partition')}
-                        label="Partition Name"
-                        placeholder="Partition Name"
-                        mt="md"   
-                    />
+                    {/* <MultiSelect
+                        data={partitions.map((partition) => partition.name)}
+                        label="Partitions"
+                        placeholder="Select partition"
+                        mt="md"
+                        searchable
+                        value={form.values.nodes}
+                        onChange={(value) => form.setFieldValue('partition', value[0])}
+                        maxValues={1}
+                    /> */}
 
                 </Stepper.Step>
 
