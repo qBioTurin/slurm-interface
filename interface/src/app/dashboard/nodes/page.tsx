@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TextInput, Switch, Group, rem, Button, Text, SegmentedControl, Stack } from '@mantine/core';
+import { TextInput, Switch, Group, rem, Button, Text, SegmentedControl } from '@mantine/core';
 import styles from './Nodes.module.css';
 import { IconSearch, IconServer } from '@tabler/icons-react';
 

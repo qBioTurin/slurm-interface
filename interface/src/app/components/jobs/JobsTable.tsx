@@ -16,13 +16,22 @@ type Job = z.infer<typeof JobSchema>;
 interface JobTableProps {
     jobs: Job[];
     onSelect?: (jobId: number, selected: boolean) => void;
+    onSelectAll?: (isSelected: boolean) => void;
     selectable?: boolean;
     selectedJobs?: number[];
 }
 
-export const JobsTable: FC<JobTableProps> = ({ jobs, onSelect, selectable = false, selectedJobs = [] }) => {
+export const JobsTable: FC<JobTableProps> = ({
+    jobs,
+    onSelect,
+    onSelectAll,
+    selectable = false,
+    selectedJobs = []
+}) => {
     const [sortConfig, setSortConfig] = useState<SortConfig<Job>>({ key: null, direction: 'asc' });
     const sortedJobs = sortItems(jobs, sortConfig);
+    const allSelected = jobs.every((job) => selectedJobs.includes(job.job_id));
+    const someSelected = jobs.some((job) => selectedJobs.includes(job.job_id));
 
     const handleSort = (key: keyof Job) => {
         setSortConfig(prev => ({
@@ -44,6 +53,9 @@ export const JobsTable: FC<JobTableProps> = ({ jobs, onSelect, selectable = fals
                         <th>
                             <Checkbox
                                 size='md'
+                                checked={allSelected}
+                                indeterminate={!allSelected && someSelected}
+                                onChange={(event) => onSelectAll?.(event.currentTarget.checked)}
                             />
                         </th>
                     )}

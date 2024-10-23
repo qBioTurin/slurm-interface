@@ -61,14 +61,14 @@ export default function JobsPage() {
         return matchesSearchQuery && matchesUserFilter ;
     });
 
-    const handleSelect = (jobId: number, selected: boolean) => {
-        setSelectedJobs((prev) => {
-            if (selected) {
-                return [...prev, jobId];
-            } else {
-                return prev.filter(id => id !== jobId);
-            }
-        });
+    const handleJobSelect = (jobId: number, isSelected: boolean) => {
+        setSelectedJobs((prevSelectedJobs) =>
+            isSelected ? [...prevSelectedJobs, jobId] : prevSelectedJobs.filter((id) => id !== jobId)
+        );
+    };
+
+    const handleSelectAll = (isSelected: boolean) => {
+        setSelectedJobs(isSelected ? filteredJobs.map(job => job.job_id) : []);
     };
 
     if (loading || isValidating) {
@@ -93,6 +93,17 @@ export default function JobsPage() {
                     onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
                 />
 
+                {selectedJobs.length > 0 && (
+                    <Group>
+                        <Button onClick={() => setSelectedJobs([])} variant='outline'>
+                            Clear selection
+                        </Button>
+                        <Button color="red">
+                            {selectedJobs.length === 1 ? 'Cancel job' : 'Cancel jobs'}
+                        </Button>
+                    </Group>
+                )}
+
                 <Button className={styles.submitButton} onClick={() => router.push('/dashboard/jobs/submit')}>
                     Submit Jobs
                 </Button>
@@ -101,9 +112,10 @@ export default function JobsPage() {
             {filteredJobs.length > 0 ? (
                <JobTable 
                jobs={filteredJobs} 
-               selectable={showUserJobs}
+               selectable={!showUserJobs}
                selectedJobs={selectedJobs}
-               onSelect={handleSelect}
+               onSelect={handleJobSelect}
+               onSelectAll={handleSelectAll}
                 />
             ) : (
                 <p>No jobs found.</p>
