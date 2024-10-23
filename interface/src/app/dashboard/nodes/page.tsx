@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TextInput, Switch, Group, rem, Button, Text } from '@mantine/core';
+import { TextInput, Switch, Group, rem, Button, Text, SegmentedControl, Stack } from '@mantine/core';
 import styles from './Nodes.module.css';
 import { IconSearch, IconServer } from '@tabler/icons-react';
 
@@ -12,6 +12,7 @@ import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
 import { Accordion } from '@mantine/core';
+import { GraphHelpers } from 'next/dist/compiled/webpack/webpack';
 
 type Node = z.infer<typeof NodeSchema>;
 
@@ -21,6 +22,7 @@ export default function NodesPage() {
   const [nodes, setNodes] = useState<Node[]>([]); // fetched nodes
   const [isValidating, setIsValidating] = useState(false); // page state
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
+  const [nodeStateFilter, setNodeStateFilter] = useState<string>('ALL');
 
   const { data, loading, error } = useSlurmData('nodes');
 
@@ -58,7 +60,8 @@ export default function NodesPage() {
   const filteredNodes = nodes.filter((node) => {
     const matchSearch = node.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchFilter = !showIdleOnly || (node.state?.[0] ?? '') === 'IDLE';
-    return matchSearch && matchFilter;
+    const matchState = !nodeStateFilter || node.state.includes(nodeStateFilter);
+    return matchSearch && matchFilter && matchState;
   });
 
   if (loading || isValidating) {
@@ -112,13 +115,29 @@ export default function NodesPage() {
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.currentTarget.value)}
           />
-          <div className={styles.switch}>
+          {/* <div className={styles.switch}>
             <Switch
               label="Show idle nodes only"
               checked={showIdleOnly}
               onChange={(event) => setShowIdleOnly(event.currentTarget.checked)}
             />
-          </div>
+          </div> */}
+          <Group>
+            <Text size="sm" fw={500}>
+              Filter by state:
+            </Text>
+            <SegmentedControl
+              data={[
+                { value: 'ALL', label: 'All' },
+                { value: 'IDLE', label: 'Idle' },
+                { value: 'ALLOCATED', label: 'Allocated' },
+                { value: 'DOWN', label: 'Down' },
+                { value: 'MIXED', label: 'Mixed' },
+              ]}
+              value={nodeStateFilter}
+              onChange={setNodeStateFilter}
+            />
+          </Group>
 
         </Group>
 
