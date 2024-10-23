@@ -1,8 +1,8 @@
 import '@mantine/dates/styles.css';
 import { useState } from 'react';
 import { DateInput } from '@mantine/dates';
-import {Stepper, Button, Group, TextInput, TagsInput, NumberInput, MultiSelect, Code, rem } from '@mantine/core';
-import { IconCalendar } from '@tabler/icons-react';
+import {Stepper, Button, Group, TextInput, NumberInput, MultiSelect, rem, Alert } from '@mantine/core';
+import { IconCalendar, IconAlertCircle } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { useForm } from '@mantine/form';
 import {z} from 'zod';
@@ -34,6 +34,7 @@ const users = [
 
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
+    const [validationError, setValidationError] = useState<string | null>(null);
     
     const form = useForm({
         initialValues: {
@@ -46,17 +47,26 @@ export default function NewReservationForm() {
             // partition: '',
         },
         validate: {
-            name: (value) => value.trim().length > 0 ? null : "Name is required",
-            start_time: (value) => value instanceof Date ? null : "Start time is required",
-            end_time: (value) => value instanceof Date ? null : "End time is required",
             // NodeCnt: (value, values) => {
             //     if (values.nodes.length === 0 && value <= 0) {
             //         return "Node count is required if no nodes are specified.";
             //     }
             //     return null; // No error
             // },
-        },
-    });
+            name: (value) => value.trim().length > 0 ? null : "Name is required",
+            start_time: (value) => (value instanceof Date && !isNaN(value.getTime())) ? null : "Start time is required",
+            end_time: (value, values) => {
+                const startTime = values.start_time;
+                const endTime = value;
+                if (endTime < startTime) {
+                  return "End time must be after or equal to the start time.";
+                }
+                return null;
+              },
+            },
+          });
+            
+
 
     const onSubmit = async (values: ReservationSubmissionSchema) => {
         try {
@@ -70,13 +80,29 @@ export default function NewReservationForm() {
                 // partition: values.partition,
             };
             console.log("Submitted Data:", formattedData);
+            setValidationError(null);
         } catch (error) {
             console.error("Validation Error:", error);
+            setValidationError('There was an error while submitting the form.');
         }
     };
 
     return (
         <>
+
+{validationError && (
+        <Alert
+          icon={<IconAlertCircle size={16} />}
+          title="Validation Error"
+          color="red"
+          withCloseButton
+          closeButtonLabel="Close alert"
+          onClose={() => setValidationError(null)}
+          mt="md"
+        >
+          {validationError}
+        </Alert>
+      )}
             <Stepper active={active} mt="xl">
                 <Stepper.Step label="New reservation" 
                     description= "Select resources and users access"
@@ -168,11 +194,19 @@ export default function NewReservationForm() {
 
                 {active !== 3 && (
                     <Button onClick={() => {
-                        if (active === 2) {
-                            onSubmit(form.values);
-                        } else {
-                            setActive((current) => (current < 2 ? current + 1 : current));
-                        }
+                        const errorMessages = form.validate();
+                        const endTimeError = errorMessages.errors.end_time;
+
+                        if (endTimeError) {
+                            setValidationError(typeof endTimeError === 'string' ? endTimeError : String(endTimeError));
+                          } else {
+                            setValidationError(null);
+                            if (active === 2) {
+                              onSubmit(form.values);
+                            } else {
+                              setActive((current) => (current < 2 ? current + 1 : current));
+                            }
+                          }
                     }}>
                         Done
                     </Button>
