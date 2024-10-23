@@ -5,15 +5,28 @@ type Props = {
   form: UseFormReturnType<any>;
 };
 
-const NumberInputField = ({ label, form, fieldName }) => (
+
+type NumberInputFieldProps = {
+  label: string;
+  form: UseFormReturnType<any>;
+  fieldName: string;
+};
+
+type CheckboxFieldProps = {
+  label: string;
+  form: UseFormReturnType<any>;
+  fieldName: string;
+};
+
+const NumberInputField = ({ label, form, fieldName }: NumberInputFieldProps) => (
   <NumberInput
     label={label}
-    {...form.getInputProps(fieldName, { type: 'number' })}
+    {...form.getInputProps(fieldName)}
     min={1}
   />
 );
 
-const CheckboxField = ({ label, form, fieldName }) => (
+const CheckboxField = ({ label, form, fieldName }: CheckboxFieldProps) => (
   <Checkbox
     label={label}
     {...form.getInputProps(fieldName, { type: 'checkbox' })}
