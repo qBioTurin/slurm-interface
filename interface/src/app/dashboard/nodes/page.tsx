@@ -12,7 +12,6 @@ import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
 import { Accordion } from '@mantine/core';
-import { GraphHelpers } from 'next/dist/compiled/webpack/webpack';
 
 type Node = z.infer<typeof NodeSchema>;
 
@@ -82,8 +81,6 @@ export default function NodesPage() {
         : prevSelectedNodes.filter((node) => !partitionNodes.includes(node))
     );
   };
-
-
 
   const nodesByPartition: Record<string, Node[]> = filteredNodes.reduce((record, node) => {
     if (node.partitions) {

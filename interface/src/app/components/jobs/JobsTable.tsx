@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './JobsTable.module.css';
-import { Table, Button } from '@mantine/core';
+import { Table, Button, Checkbox  } from '@mantine/core';
 import Link from 'next/link';
 import JobStateBadge from './JobStateBadge';
 import { JobSchema } from '../../schemas/job_schema';
@@ -15,9 +15,12 @@ type Job = z.infer<typeof JobSchema>;
 
 interface JobTableProps {
     jobs: Job[];
+    onSelect?: (jobId: number, selected: boolean) => void;
+    selectable?: boolean;
+    selectedJobs?: number[];
 }
 
-export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
+export const JobsTable: FC<JobTableProps> = ({ jobs, onSelect, selectable = false, selectedJobs = [] }) => {
     const [sortConfig, setSortConfig] = useState<SortConfig<Job>>({ key: null, direction: 'asc' });
     const sortedJobs = sortItems(jobs, sortConfig);
 
@@ -37,6 +40,13 @@ export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
         <Table className={styles.table} striped highlightOnHover>
             <thead>
                 <tr>
+                {selectable && ( // only show this column if selectable is true
+                        <th>
+                            <Checkbox
+                                size='md'
+                            />
+                        </th>
+                    )}
                     <th onClick={() => handleSort('job_id')}>Job ID {getSortIcon('job_id')}</th>
                     <th onClick={() => handleSort('name')}>Job Name {getSortIcon('name')}</th>
                     <th onClick={() => handleSort('user_name')}>User {getSortIcon('user_name')}</th>
@@ -51,6 +61,17 @@ export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
 
                     return (
                     <tr key={job.job_id}>
+
+                         {selectable && ( // only show this column if selectable is true
+                            <td>
+                                <Checkbox
+                                    size='md'
+                                    checked={selectedJobs.includes(job.job_id)}
+                                    onChange={(event) => onSelect?.(job.job_id, event.currentTarget.checked)}
+                                />
+                            </td>
+                        )}
+
                         <td>
                             <Link href={`/dashboard/jobs/${job.job_id}`} passHref>
                                 <Button>

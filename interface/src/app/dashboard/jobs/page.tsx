@@ -20,6 +20,7 @@ export default function JobsPage() {
     const [showUserJobs, setShowUserJobs] = useState(true); // state toggle
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
     const [isValidating, setIsValidating] = useState(false); // page state
+    const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
     const router = useRouter();
 
     const { data, loading, error } = useSlurmData('jobs');
@@ -58,7 +59,17 @@ export default function JobsPage() {
         : true;
 
         return matchesSearchQuery && matchesUserFilter ;
-});
+    });
+
+    const handleSelect = (jobId: number, selected: boolean) => {
+        setSelectedJobs((prev) => {
+            if (selected) {
+                return [...prev, jobId];
+            } else {
+                return prev.filter(id => id !== jobId);
+            }
+        });
+    };
 
     if (loading || isValidating) {
         return <LoadingPage />;
@@ -66,6 +77,7 @@ export default function JobsPage() {
 
     return (
         <div className={styles.container}>
+
             <Group className={styles.group}>
                 <TextInput
                     className={styles.searchInput}
@@ -87,7 +99,12 @@ export default function JobsPage() {
             </Group>
 
             {filteredJobs.length > 0 ? (
-                <JobTable jobs={filteredJobs} />
+               <JobTable 
+               jobs={filteredJobs} 
+               selectable={showUserJobs}
+               selectedJobs={selectedJobs}
+               onSelect={handleSelect}
+                />
             ) : (
                 <p>No jobs found.</p>
             )}
