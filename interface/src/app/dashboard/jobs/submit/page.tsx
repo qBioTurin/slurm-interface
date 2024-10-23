@@ -1,14 +1,14 @@
 'use client'
 
 import { useState } from 'react';
-import { Stepper, Button, Group, rem } from '@mantine/core';
+import { Stepper, Button, Group,} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconUserCheck, IconSettings, IconAdjustmentsHorizontal, IconCircleCheck } from '@tabler/icons-react';
 import {z} from 'zod';
-import StepInfo from './StepInfo';
-import StepSpecs from './StepSpecs';
-import StepOptional from './StepOptional';
-import StepConfirmation from './StepConfirmation';
+import StepInfo from '../../../components/jobs/submit/StepInfo';
+import StepSpecs from '../../../components/jobs/submit/StepSpecs';
+import StepOptional from '../../../components/jobs/submit/StepOptional';
+import StepConfirmation from '../../../components/jobs/submit/StepConfirmation';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import styles from './SubmitJobForm.module.css';
 
