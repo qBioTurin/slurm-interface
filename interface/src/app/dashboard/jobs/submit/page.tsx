@@ -21,12 +21,12 @@ const SubmitJobForm = () => {
         const form = useForm({
           resolver: zodResolver(JobSubmissionSchema),
           defaultValues: {
-            name: '', //debug
+            name: '',
             script: '',
             current_working_directory: '',
             nodes: 1,
             tasks: 1,
-            description: '',
+            // description: '',
             environment: { PATH: '' },
             // partition: '',
             // specify_nodes: '',

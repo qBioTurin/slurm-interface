@@ -12,10 +12,11 @@ export default function StepSpecs({ form }: Props) {
     <>
       <NumberInput
         label="Number of Nodes"
-        {...register('nodes', { valueAsNumber: true })}
-        error={errors.nodes?.message}
+        value={form.watch('nodes')}
         min={1}
+        onChange={(value) => form.setValue('nodes', value || 1)} 
       />
+
       {/* <TextInput
         label="Specify Nodes (optional)"
         {...register('specify_nodes')}
@@ -26,11 +27,12 @@ export default function StepSpecs({ form }: Props) {
         data={['general', 'gpu', 'debug']}
         {...register('partition')}
       /> */}
+
       <NumberInput
         label="Number of Tasks"
-        {...register('tasks', { valueAsNumber: true })}
-        error={errors.tasks?.message}
+        value={form.watch('tasks')}
         min={1}
+        onChange={(value) => form.setValue('tasks', value || 1)} 
       />
     </>
   );

@@ -10,7 +10,7 @@ export const JobSubmissionSchema = z.object({
     nodes: z.number().min(1, 'Number of nodes is required'),
     current_working_directory: z.string(),
     environment: EnvironmentSchema,
-    script: z.string().min(1, 'Command line is required'),
+    script: z.string().min(1, 'Script is required'),
     // description: z.string().optional(),
     // partition: z.string().optional(),
     // specify_nodes: z.string().optional(),

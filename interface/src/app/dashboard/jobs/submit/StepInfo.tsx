@@ -15,7 +15,7 @@ export default function StepInfo({ form }: Props) {
         {...form.register("name", { required: true })}
         required
       />
-{/* 
+    {/* 
       <Textarea
         label="Description (optional)"
         placeholder="Enter job description"
@@ -27,7 +27,7 @@ export default function StepInfo({ form }: Props) {
       <TextInput
         label="Script"
         placeholder="Enter script"
-        {...form.register("command", { required: true })}
+        {...form.register("script", { required: true })}
         required
       />
 
@@ -35,7 +35,7 @@ export default function StepInfo({ form }: Props) {
         label="Current Working Directory"
         placeholder="Enter working directory"
         {...form.register("current_working_directory")}
-        defaultValue="/tmp" 
+        defaultValue=""
       />
 
       <Textarea
