@@ -1,8 +1,11 @@
+import '@mantine/dates/styles.css';
 import { useState } from 'react';
 import { mockNodes } from '../../../../../utils/models/mock';
+import { DateInput, TimeInput } from '@mantine/dates';
 import { Stepper, Button, Group, TextInput, TagsInput, NumberInput, MultiSelect, Code, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconCalendar, Icon } from '@tabler/icons-react';
+import dayjs from 'dayjs';
 
 
 
@@ -70,6 +73,33 @@ export default function NewReservationForm() {
                         placeholder="Name"
                         mt="md"
                     />
+
+                    <DateInput
+                        {...form.getInputProps('StartTime')}
+                        label="Start Time"
+                        valueFormat="DD/MM/YYYY HH:mm:ss"
+                        placeholder="Start Time"
+                        mt="md"
+                        withAsterisk
+                        dateParser={(s) =>
+                            dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate().getTime()
+                                ? dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()
+                                : new Date(s)
+                        }
+                    />
+                    <DateInput
+                        {...form.getInputProps('EndTime')}
+                        valueFormat="DD/MM/YYYY HH:mm:ss"
+                        label="End Time"
+                        placeholder="End Time"
+                        dateParser={(s) =>
+                            dayjs(s, "DD/MM/YYYY HH:mm:ss",).toDate().getTime()
+                                ? dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()
+                                : new Date(s)
+                        }
+                        mt="md"
+                    />
+
 
                     <TagsInput
                         {...form.getInputProps('Users')}
