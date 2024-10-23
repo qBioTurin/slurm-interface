@@ -59,6 +59,9 @@ export default function NodesPage() {
   const filteredNodes = nodes.filter((node) => {
     const matchSearch = node.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchFilter = !showIdleOnly || (node.state?.[0] ?? '') === 'IDLE';
+    if (nodeStateFilter === 'ALL') {
+      return matchSearch && matchFilter;
+    }
     const matchState = !nodeStateFilter || node.state.includes(nodeStateFilter);
     return matchSearch && matchFilter && matchState;
   });
