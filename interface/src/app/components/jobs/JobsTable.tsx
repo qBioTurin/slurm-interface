@@ -43,7 +43,7 @@ export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
                     <th onClick={() => handleSort('partition')}>Partition {getSortIcon('partition')}</th>
                     <th>State</th>
                     <th onClick={() => handleSort('nodes')}>Nodes {getSortIcon('nodes')}</th>
-                    <th onClick={() => handleSort('resv_name')}>Reservation {getSortIcon('resv_name')}</th>
+                    {/* <th onClick={() => handleSort('resv_name')}>Reservation {getSortIcon('resv_name')}</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -63,7 +63,7 @@ export const JobsTable: FC<JobTableProps> = ({ jobs }) => {
                         <td>{job.partition}</td>
                         <td> <JobStateBadge state={job.job_state[0]} /> </td>
                         <td>{job.nodes}</td>
-                        <td>{job.resv_name}</td>
+                        {/* <td>{job.resv_name}</td> */}
                     </tr>
                 );
                 })}
