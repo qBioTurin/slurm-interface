@@ -1,4 +1,4 @@
-import { Table, Badge} from '@mantine/core';
+import { Table, Badge, Checkbox } from '@mantine/core';
 import styles from './NodesTable.module.css';
 import { z } from 'zod';
 import { NodeSchema } from '../../schemas/node_schema';
@@ -7,72 +7,93 @@ type Node = z.infer<typeof NodeSchema>;
 
 interface NodeTableProps {
   nodes: Node[];
+  selectedNodes: string[];
+  onNodeSelect: (nodeName: string, isSelected: boolean) => void;
+  onSelectAll: (isSelected: boolean) => void;
 }
 
-export default function NodesTable({ nodes }: NodeTableProps) {
-return (
-          <Table className={styles.table} striped highlightOnHover>
-            <thead>
-              <tr>
-                <th>Node Name</th>
-                <th>Architecture</th>
-                <th>State</th>
-                <th>CPU</th>
-                <th>Memory</th>
-              </tr>
-            </thead>
-            <tbody>
-              {nodes.length > 0 ? (
-                nodes.map((node) => (
-                  <tr key={node.name}>
-                    <td>{node.name}</td>
-                    <td>{node.architecture}</td>
-                    <td>
-                      <Badge
-                        color={
-                          node.state[0] === 'IDLE'
-                            ? 'green'
-                            : node.state[0] === 'ALLOCATED'
-                            ? 'blue'
-                            : node.state[0] === 'DOWN'
-                            ? 'red'
-                            : 'yellow'
-                        }
-                      >
-                        {node.state}
-                      </Badge>
-                    </td>
+export default function NodesTable({ nodes, selectedNodes, onNodeSelect, onSelectAll }: NodeTableProps) {
+  const allSelected = nodes.every((node) => selectedNodes.includes(node.name));
+  const someSelected = nodes.some((node) => selectedNodes.includes(node.name));
 
-                    <td>
-                    <div>
-                        <strong className={styles.boldText}>Load:</strong> {node.cpu_load.toFixed(2)} <br />
-                        <strong className={styles.boldText}>Allocated:</strong> {node.alloc_cpus} <br />
-                        <strong className={styles.boldText}>Idle:</strong> {node.alloc_idle_cpus} <br />
-                        <strong className={styles.boldText}>Total:</strong> {node.cpus}
-                      </div>
-                    </td>
+  return (
+    <Table className={styles.table} striped highlightOnHover>
+      <thead>
+        <tr>
+          <th>
+            <Checkbox
+              size='md'
+              checked={allSelected}
+              indeterminate={!allSelected && someSelected}
+              onChange={(event) => onSelectAll(event.currentTarget.checked)}
+            />
+          </th>
+          <th>Node Name</th>
+          <th>Architecture</th>
+          <th>State</th>
+          <th>CPU</th>
+          <th>Memory</th>
+        </tr>
+      </thead>
+      <tbody>
+        {nodes.length > 0 ? (
+          nodes.map((node) => (
+            <tr key={node.name}>
+              <td>
+                <Checkbox
+                  size='md'
+                  checked={selectedNodes.includes(node.name)}
+                  onChange={(event) => onNodeSelect(node.name, event.currentTarget.checked)}
+                />
+              </td>
+              <td>{node.name}</td>
+              <td>{node.architecture}</td>
+              <td>
+                <Badge
+                  color={
+                    node.state[0] === 'IDLE'
+                      ? 'green'
+                      : node.state[0] === 'ALLOCATED'
+                        ? 'blue'
+                        : node.state[0] === 'DOWN'
+                          ? 'red'
+                          : 'yellow'
+                  }
+                >
+                  {node.state}
+                </Badge>
+              </td>
 
-                    <td>
-                      <div>
-                        <strong className={styles.boldText}>Available:</strong> {(node.free_mem.number / 1024).toFixed(2)} GB <br />
-                        <strong className={styles.boldText}>Total:</strong> {((node.real_memory ?? 0) / 1024).toFixed(2)} GB
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={7} className={styles.noNodes}>
-                    No nodes found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
+              <td>
+                <div>
+                  <strong className={styles.boldText}>Load:</strong> {node.cpu_load.toFixed(2)} <br />
+                  <strong className={styles.boldText}>Allocated:</strong> {node.alloc_cpus} <br />
+                  <strong className={styles.boldText}>Idle:</strong> {node.alloc_idle_cpus} <br />
+                  <strong className={styles.boldText}>Total:</strong> {node.cpus}
+                </div>
+              </td>
+
+              <td>
+                <div>
+                  <strong className={styles.boldText}>Available:</strong> {(node.free_mem.number / 1024).toFixed(2)} GB <br />
+                  <strong className={styles.boldText}>Total:</strong> {((node.real_memory ?? 0) / 1024).toFixed(2)} GB
+                </div>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={8} className={styles.noNodes}>
+              No nodes found
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </Table>
   );
 }
 
-function getGpuInfo(node: Node) { 
+function getGpuInfo(node: Node) {
   let gpuTotal = 0;
   let gpuIdle = 0;
   if (node.gpu_spec) {
@@ -81,5 +102,5 @@ function getGpuInfo(node: Node) {
     gpuIdle = gpuTotal - (Number(node.gres_used) || 0) - (Number(node.gres_drained) || 0);
   }
 
-  return [gpuTotal,gpuIdle];
+  return [gpuTotal, gpuIdle];
 }
