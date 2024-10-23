@@ -1,39 +1,37 @@
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturnType } from '@mantine/form';
 import { TextInput, NumberInput, Select } from '@mantine/core';
 
 type Props = {
-  form: UseFormReturn<any>;
+  form: UseFormReturnType<any>;
 };
 
+const NumberInputField = ({ label, form, fieldName }) => (
+  <NumberInput
+    label={label}
+    value={form.watch(fieldName)}
+    min={1}
+    onChange={(value) => form.setValue(fieldName, value || 1)}
+  />
+);
+
 export default function StepSpecs({ form }: Props) {
-  const { register, formState: { errors }, setValue, watch } = form;
 
   return (
     <>
-      <NumberInput
-        label="Number of Nodes"
-        value={form.watch('nodes')}
-        min={1}
-        onChange={(value) => form.setValue('nodes', value || 1)} 
-      />
+      <NumberInputField label="Number of Nodes" form={form} fieldName="nodes" />
 
       {/* <TextInput
         label="Specify Nodes (optional)"
-        {...register('specify_nodes')}
-        error={errors.specify_nodes?.message}
+        {...form.getInputProps('specify_nodes')}
       /> */}
+
       {/* <Select
         label="Partition (optional)"
         data={['general', 'gpu', 'debug']}
-        {...register('partition')}
+        {...form.getInputProps('partition')}
       /> */}
 
-      <NumberInput
-        label="Number of Tasks"
-        value={form.watch('tasks')}
-        min={1}
-        onChange={(value) => form.setValue('tasks', value || 1)} 
-      />
+      <NumberInputField label="Number of Tasks" form={form} fieldName="tasks" />
     </>
   );
 }

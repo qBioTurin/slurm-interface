@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Stepper, Button, Group, rem } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { IconUserCheck, IconSettings, IconAdjustmentsHorizontal, IconCircleCheck } from '@tabler/icons-react';
-import * as z from 'zod';
+import {z} from 'zod';
 import StepInfo from './StepInfo';
 import StepSpecs from './StepSpecs';
 import StepOptional from './StepOptional';
@@ -15,19 +14,24 @@ import styles from './SubmitJobForm.module.css';
 
 type JobSubmissionSchema = z.infer<typeof JobSubmissionSchema>;
 
+const validateJobSubmission = (values: JobSubmissionSchema) => {
+  const parsed = JobSubmissionSchema.safeParse(values);
+  return parsed.success ? null : parsed.error.format();
+};
+
 const SubmitJobForm = () => {
         const [active, setActive] = useState(0);
-      
+        const [errors, setErrors] = useState({});
+
         const form = useForm({
-          resolver: zodResolver(JobSubmissionSchema),
-          defaultValues: {
+          initialValues: {
             name: '',
             script: '',
             current_working_directory: '',
             nodes: 1,
             tasks: 1,
-            // description: '',
             environment: { PATH: '' },
+            // description: '',
             // partition: '',
             // specify_nodes: '',
             // immediate: false,
@@ -39,15 +43,26 @@ const SubmitJobForm = () => {
         });
       
         const nextStep = () => {
+          const validationErrors = validateJobSubmission(form.values)
           const isLastStep = active === 3; // Confirm step
+          if (validationErrors) {
+            setErrors(validationErrors);
+            console.log('Validation errors:', validationErrors);
+            return;
+          }
+
           if (isLastStep) {
             console.log(form.getValues());
           } else {
             setActive((current) => Math.min(current + 1, 3));
+            setErrors({}); 
           }
         };
       
-        const prevStep = () => setActive((current) => Math.max(current - 1, 0));
+        const prevStep = () => {
+          setActive((current) => Math.max(current - 1, 0));
+          setErrors({});
+        };
 
         return (
           <div className={styles.pageContainer}>
