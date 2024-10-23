@@ -1,120 +1,104 @@
 import '@mantine/dates/styles.css';
 import { useState } from 'react';
-import { mockNodes } from '../../../../../utils/models/mock';
-import { DateInput, TimeInput } from '@mantine/dates';
-import { Stepper, Button, Group, TextInput, TagsInput, NumberInput, MultiSelect, Code, rem } from '@mantine/core';
-import { IconCalendar, Icon } from '@tabler/icons-react';
+import { DateInput } from '@mantine/dates';
+import {Stepper, Button, Group, TextInput, TagsInput, NumberInput, MultiSelect, Code, rem } from '@mantine/core';
+import { IconCalendar } from '@tabler/icons-react';
 import dayjs from 'dayjs';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from '@mantine/form';
 import {z} from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {ReservationSubmissionSchema} from '@/schemas/reservation_submission_schema';
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
+const mockNodes = [
+    { id: '1', nodeName: 'slurm-slave1' },
+    { id: '2', nodeName: 'slurm-slave2' },
+    { id: '3', nodeName: 'slurm-slave3' },
+    { id: '4', nodeName: 'slurm-slave4' },
+    { id: '5', nodeName: 'slurm-slave5' },
+];
+
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
-    // const [additionalFields, setAdditionalFields] = useState<{ id: number; field1: string; field2: string }[]>([]);
-
-    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<ReservationSubmissionSchema>({
-        resolver: zodResolver(ReservationSubmissionSchema),
-        defaultValues: {
+    
+    const form = useForm({
+        initialValues: {
             name: '',
-            StartTime: new Date(),
-            EndTime: new Date(),
-            Users: [],
-            NodeCnt: 0,
-            Nodes: [],
+            start_time: new Date(),
+            end_time: new Date(),
+            users: [] as string[],
+            // NodeCnt: 0,
+            nodes: [] as string[],
             PartitionName: '',
-        }
+        },
+        validate: {
+            name: (value) => value.trim().length > 0 ? null : "Name is required",
+            start_time: (value) => value instanceof Date ? null : "Start time is required",
+            end_time: (value) => value instanceof Date ? null : "End time is required",
+            // NodeCnt: (value, values) => {
+            //     if (values.nodes.length === 0 && value <= 0) {
+            //         return "Node count is required if no nodes are specified.";
+            //     }
+            //     return null; // No error
+            // },
+        },
     });
 
-    const validateTimes = (startTime: Date, endTime: Date) => {
-        const errors: Record<string, string> = {};
-
-        if (endTime < startTime) {
-            errors.EndTime = "End time must be greater than or equal to Start time.";
-        } else if (dayjs(endTime).isSame(startTime, 'day') && endTime <= startTime) {
-            errors.EndTime = "If the dates are the same, end time must be greater than start time.";
+    const onSubmit = async (values: ReservationSubmissionSchema) => {
+        try {
+            await ReservationSubmissionSchema.parseAsync(values);
+            const formattedData = {
+                start_time: values.start_time.toISOString(),
+                end_time: values.end_time.toISOString(),
+                name: values.name,
+                users: values.users.join(','),
+                nodes: values.nodes? values.nodes.join(',') : [],
+            };
+            console.log("Submitted Data:", formattedData);
+        } catch (error) {
+            console.error("Validation Error:", error);
         }
-
-        return errors;
     };
-
-    const onSubmit: SubmitHandler<ReservationSubmissionSchema> = (data) => {
-        const timeErrors = validateTimes(data.StartTime, data.EndTime);
-
-        if (Object.keys(timeErrors).length > 0) {
-            return;
-        }
-        console.log("Submitted Data:", data);
-    };
-
-
-    const nextStep = () =>
-        setActive((current) => {
-            if (Object.keys(errors).length > 0) {
-                return current;
-            }
-            return current < 2 ? current + 1 : current;
-        });
-
-    const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
     return (
         <>
             <Stepper active={active} mt="xl">
-                <Stepper.Step label="New reservation" description=
-                    "Select resources and users access"
+                <Stepper.Step label="New reservation" 
+                    description= "Select resources and users access"
                     icon={<IconCalendar style={{ width: rem(20), height: rem(20) }} />}
                 >
 
                     <TextInput
-                        {...register('name')}
                         label="Reservation Name"
                         placeholder="Name"
                         mt="md"
-                        error={errors.name?.message}
+                        {...form.getInputProps('name')}
                     />
 
                     <DateInput
                         label="Start Time"
                         valueFormat="DD/MM/YYYY HH:mm:ss"
                         placeholder="Start Time"
-                        {...register('StartTime')}
-                        error={errors.StartTime?.message}
-                        withAsterisk
-                        onChange={(date) => {
-                            if (date) {
-                                setValue('StartTime', date);
-                            }
-                        }}
+                        {...form.getInputProps('start_time')}
                         dateParser={(s) => dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()}
+                        mt="md"
                     />
 
                     <DateInput
                         label="End Time"
                         valueFormat="DD/MM/YYYY HH:mm:ss"
                         placeholder="End Time"
-                        {...register('EndTime')}
-                        error={errors.EndTime?.message}
-                        withAsterisk
-                        onChange={(date) => {
-                            if (date) {
-                                setValue('EndTime', date);
-                            }
-                        }}
+                        {...form.getInputProps('end_time')}
                         dateParser={(s) => dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()}
                         mt="md"
                     />
 
                     <TagsInput
-                        value={watch('Users') || []}
-                        onChange={(value) => setValue('Users', value as [string, ...string[]])}
+                        value={form.values.users}
+                        onChange={(value) => form.setFieldValue('users', value)}
                         label="Users"
                         mt="md"
                         clearable
-                        error={errors.Users?.message}
                     />
 
                     <MultiSelect
@@ -123,34 +107,24 @@ export default function NewReservationForm() {
                         placeholder="Select nodes"
                         mt="md"
                         searchable
-                        value={watch('Nodes')}
-                        onChange={(value) => setValue('Nodes', value)}
-                        error={errors.Nodes?.message}
+                        value={form.values.nodes}
+                        onChange={(value) => form.setFieldValue('nodes', value)}
+
                     />
 
-                    <NumberInput
+                    {/* <NumberInput
                         label="Node Count"
-                        {...register('NodeCnt', { valueAsNumber: true })}
+                        {...form.getInputProps('NodeCnt')}
                         min={0}
                         max={200} // arbitrary value
                         mt="md"
-                        error={errors.NodeCnt?.message}
-                        value={watch('NodeCnt') ?? 0}
-                        onChange={(value) => {
-                            if (typeof value === 'number') {
-                                setValue('NodeCnt', value);
-                            } else {
-                                setValue('NodeCnt', 0);
-                            }
-                        }}
-                    />
+                    /> */}
 
                     <TextInput
-                        {...register('PartitionName')}
+                        {...form.getInputProps('PartitionName')}
                         label="Partition Name"
                         placeholder="Partition Name"
-                        mt="md" 
-                        error={errors.PartitionName?.message}    
+                        mt="md"   
                     />
 
                 </Stepper.Step>
@@ -158,20 +132,26 @@ export default function NewReservationForm() {
                 <Stepper.Completed>
                     Completed! Form values:
                     <Code block mt="xl">
-                        {JSON.stringify(watch(), null, 2)}
+                        {JSON.stringify(form.values, null, 2)}
                     </Code>
                 </Stepper.Completed>
             </Stepper >
 
             <Group justify="flex-end" mt="xl">
                 {active !== 0 && (
-                    <Button variant="default" onClick={prevStep}>
+                    <Button variant="default" onClick={() => setActive((current) => (current > 0 ? current - 1 : current))}>
                         Back
                     </Button>
                 )}
-                
+
                 {active !== 3 && (
-                    <Button onClick={handleSubmit(onSubmit)}>
+                    <Button onClick={() => {
+                        if (active === 2) {
+                            onSubmit(form.values);
+                        } else {
+                            setActive((current) => (current < 2 ? current + 1 : current));
+                        }
+                    }}>
                         Done
                     </Button>
                 )}

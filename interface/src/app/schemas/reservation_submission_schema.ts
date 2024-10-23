@@ -1,12 +1,21 @@
 import { z } from 'zod';
+import dayjs from 'dayjs';
 
 export const ReservationSubmissionSchema = z.object({
-    name: z.string().min(1, 'Reservation name is required'),
-    StartTime: z.union([z.string(), z.date()]).transform((val) => new Date(val)),
-    EndTime: z.union([z.string(), z.date()]).transform((val) => new Date(val)),
-    Users: z.array(z.string()).nonempty('At least one user must be specified'),
-    NodeCnt: z.number().min(1, 'At least 1 node must be specified'),
-    Nodes: z.array(z.string()).optional(),
-    PartitionName: z.string().optional(),
-  });
+    name: z.string().min(1, { message: "Name is required" }),
+    start_time: z.date(),
+    end_time: z.date(),
+    users: z.array(z.string()),
+    // NodeCnt: z.number().min(0, { message: "Node count must be at least 0" }),
+    nodes: z.array(z.string()).optional(),
+    partition: z.string().optional(),
+    }).refine(data => data.end_time >= data.start_time, {
+        message: "End time must be greater than start time",
+        path: ["end_time"],
+    }).refine(data => {
+        return !dayjs(data.end_time).isSame(data.start_time, 'day') || data.end_time > data.start_time;
+    }, {
+        message: "End time must be greater than start time.",
+        path: ["end_time"],
+});
   
