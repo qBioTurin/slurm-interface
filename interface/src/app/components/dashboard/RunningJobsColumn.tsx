@@ -1,7 +1,7 @@
 import React from 'react';
 import { JobSchema } from '../../schemas/job_schema';
 import { z } from 'zod';
-import { Table, ScrollArea, Button} from '@mantine/core';
+import { Table, ScrollArea, Button } from '@mantine/core';
 import styles from './JobColumns.module.css';
 import Link from 'next/link';
 
@@ -12,7 +12,7 @@ interface RunningJobsColumnProps {
 }
 
 const getRowClass = (jobState: string[]) => {
-    const state = jobState[0]; 
+    const state = jobState[0];
 
     if (state === 'RUNNING') return styles.greenRow;
     if (state === 'COMPLETED' || state === 'COMPLETING') return styles.blueRow;
@@ -41,7 +41,7 @@ const RunningJobsColumn: React.FC<RunningJobsColumnProps> = ({ jobs }) => {
                             </tr>
                         </thead>
                         <tbody>
-                        {jobs.map((job) => (
+                            {jobs.map((job) => (
                                 <tr key={job.job_id} className={getRowClass(job.job_state)}>
                                     <td>
                                         <Link href={`/dashboard/jobs/${job.job_id}`} passHref>
@@ -49,8 +49,8 @@ const RunningJobsColumn: React.FC<RunningJobsColumnProps> = ({ jobs }) => {
                                         </Link>
                                     </td>
                                     <td>{job.name}</td>
-                                    <td>{new Date(job.start_time.number! * 1000).toLocaleString()}</td>
-                                    <td>{job.end_time.number ? new Date(job.end_time.number! * 1000).toLocaleString() : 'N/A'}</td>
+                                    <td>{new Date(job.start_time.number! * 1000).toLocaleTimeString()}</td>
+                                    <td>{job.end_time.number ? new Date(job.end_time.number! * 1000).toLocaleTimeString() : 'N/A'}</td>
                                     <td>{job.nodes}</td>
                                     <td>{job.job_state[0]}</td>
                                 </tr>
