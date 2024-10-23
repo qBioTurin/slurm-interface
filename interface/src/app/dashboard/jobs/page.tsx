@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TextInput, Group, rem, Switch, Button } from '@mantine/core';
+import { TextInput, Group, rem, Switch, Button, ActionIcon } from '@mantine/core';
 import JobTable from '../../components/jobs/JobsTable';
 import { IconSearch } from '@tabler/icons-react';
 import {JobSchema, SlurmJobResponseSchema} from '../../schemas/job_schema';
@@ -11,6 +11,7 @@ import styles from './JobsPage.module.css';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { useSlurmData } from '@/hooks/useSlurmData';
 import { useRouter } from 'next/navigation';
+import {IconTrash, IconPlayerPause} from '@tabler/icons-react';
 
 type Job = z.infer<typeof JobSchema>;
 const currentUser = "scontald"; // TODO: get current user from auth context
@@ -98,9 +99,14 @@ export default function JobsPage() {
                         <Button onClick={() => setSelectedJobs([])} variant='outline'>
                             Clear selection
                         </Button>
-                        <Button color="red">
-                            {selectedJobs.length === 1 ? 'Cancel job' : 'Cancel jobs'}
-                        </Button>
+
+                        <ActionIcon size="lg" color='red' className={styles.cancelJobButton} title={selectedJobs.length === 1 ? 'Cancel job' : 'Cancel jobs'} onClick={() => {}}>
+                            <IconTrash size={40} />
+                        </ActionIcon>
+
+                        <ActionIcon size="lg" color='yellow' className={styles.stopJobButton} title={selectedJobs.length === 1 ? 'Stop job' : 'Stop jobs'} onClick={() => {}}>
+                            <IconPlayerPause size={40} />
+                        </ActionIcon>
                     </Group>
                 )}
 
@@ -112,7 +118,7 @@ export default function JobsPage() {
             {filteredJobs.length > 0 ? (
                <JobTable 
                jobs={filteredJobs} 
-               selectable={showUserJobs}
+               selectable={!showUserJobs}
                selectedJobs={selectedJobs}
                onSelect={handleJobSelect}
                onSelectAll={handleSelectAll}
