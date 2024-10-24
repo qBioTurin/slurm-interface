@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
                 //'X-SLURM-USER-TOKEN': SLURM_JWT_TESTING || '',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(req.body),
+            body: req.body,
         });
 
         if (!slurmResponse.ok) {

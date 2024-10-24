@@ -11,7 +11,7 @@ export function usePostSlurmData(path: string) {
             const response = await fetch(`/api/gateway?path=${path}`, {
                 method: 'POST',
                 headers: {
-                    'X-SLURM-USER-TOKEN': process.env.SLURM_JWT_TESTING || '',
+                    //'X-SLURM-USER-TOKEN': process.env.SLURM_JWT_TESTING || '',
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),

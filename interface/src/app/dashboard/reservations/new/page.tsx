@@ -2,14 +2,16 @@
 
 import '@mantine/dates/styles.css';
 import { useState } from 'react';
-import {Stepper, Button, Group } from '@mantine/core';
+import { Stepper, Button, Group } from '@mantine/core';
 import { IconCalendar } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
-import {z} from 'zod';
-import {ReservationSubmissionSchema} from '@/schemas/reservation_submission_schema';
-import {ReservationSummary} from '../../../components/reservations/new/ReservationSummary';
+import { z } from 'zod';
+import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
+import { ReservationSummary } from '../../../components/reservations/new/ReservationSummary';
 import ValidationError from '../../../components/reservations/new/ValidationError';
 import ReservationStep from '../../../components/reservations/new/ReservationSteps';
+import { usePostSlurmData } from '@/hooks/usePostSlurmData';
+
 import dayjs from 'dayjs';
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
@@ -23,21 +25,22 @@ const mockNodes = [
 ];
 
 const partitions = [
-    {name: 'broadwell-booked'},
-    {name: 'cascadelake-booked'},
-    {name: 'epito-booked'},
-    {name: 'gracehopper-booked'},
+    { name: 'broadwell-booked' },
+    { name: 'cascadelake-booked' },
+    { name: 'epito-booked' },
+    { name: 'gracehopper-booked' },
 ];
 
 //  TODO: replace with actual users
-const currentUser = 'scontald';
+const currentUser = 'lbosio';
 const users = [
-    {name: 'lbosio'}
+    { name: 'scontald' }
 ]
 
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const [validationError, setValidationError] = useState<string | null>(null);
+    const { data, error, loading, callPost } = usePostSlurmData('reservations');
 
     const form = useForm({
         initialValues: {
@@ -62,27 +65,33 @@ export default function NewReservationForm() {
                 const startTime = values.start_time;
                 const endTime = value;
                 if (endTime < startTime) {
-                  return "End time must be after or equal to the start time.";
+                    return "End time must be after or equal to the start time.";
                 }
                 return null;
-              },
             },
-          });
-            
+        },
+    });
+
     const onSubmit = async (values: ReservationSubmissionSchema) => {
         try {
             await ReservationSubmissionSchema.parseAsync(values);
             const formattedData = {
                 start_time: dayjs(values.start_time).format('YYYY-MM-DDTHH:mm:ss'),
-                end_time:dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
+                end_time: dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
                 name: values.name,
                 users: values.users.join(','),
-                nodes: values.nodes? values.nodes.join(',') : [],
+                nodes: values.nodes ? values.nodes.join(',') : [],
                 // partition: values.partition,
             };
             const jsonData = JSON.stringify(formattedData, null, 2);
             console.log("Submitted Data:", jsonData);
             setValidationError(null);
+            try {
+                await callPost(formattedData);
+            } catch (error) {
+                console.error("Error submitting reservation:", error);
+                setValidationError('There was an error while submitting the form.');
+            }
         } catch (error) {
             console.error("Validation Error:", error);
             setValidationError('There was an error while submitting the form.');
@@ -91,17 +100,17 @@ export default function NewReservationForm() {
 
     return (
         <>
-        <ValidationError validationError={validationError} setValidationError={setValidationError} />
+            <ValidationError validationError={validationError} setValidationError={setValidationError} />
 
-        <Stepper active={active} mt="xl">
-            <Stepper.Step label="New reservation" description="Select resources and users access" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
-            <ReservationStep form={form} users={users} mockNodes={mockNodes}/>
-            </Stepper.Step>
-            <Stepper.Completed>
-            Completed! Form values:
-            <ReservationSummary reservation={form.values} />
-            </Stepper.Completed>
-        </Stepper >
+            <Stepper active={active} mt="xl">
+                <Stepper.Step label="New reservation" description="Select resources and users access" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
+                    <ReservationStep form={form} users={users} mockNodes={mockNodes} />
+                </Stepper.Step>
+                <Stepper.Completed>
+                    Completed! Form values:
+                    <ReservationSummary reservation={form.values} />
+                </Stepper.Completed>
+            </Stepper >
 
             <Group justify="flex-end" mt="xl">
                 {active !== 0 && (
@@ -117,14 +126,14 @@ export default function NewReservationForm() {
 
                         if (endTimeError) {
                             setValidationError(typeof endTimeError === 'string' ? endTimeError : String(endTimeError));
-                          } else {
+                        } else {
                             setValidationError(null);
                             if (active === 2) {
-                              onSubmit(form.values);
+                                onSubmit(form.values);
                             } else {
-                              setActive((current) => (current < 2 ? current + 1 : current));
+                                setActive((current) => (current < 2 ? current + 1 : current));
                             }
-                          }
+                        }
                     }}>
                         Done
                     </Button>
