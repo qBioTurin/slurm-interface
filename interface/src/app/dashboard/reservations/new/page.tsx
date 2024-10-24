@@ -92,10 +92,11 @@ export default function NewReservationForm() {
                 nodes: values.nodes ? values.nodes.join(',') : [],
             };
             const jsonData = JSON.stringify(formattedData, null, 2);
-            console.log("Submitted Data:", jsonData);
+            console.log("Submitted Data:", jsonData); //debug
+            console.log("Typeof submitted Data:", typeof jsonData); //debug
             setValidationError(null);
             try {
-                await callPost(formattedData);
+                await callPost(jsonData);
             } catch (error) {
                 console.error("Error submitting reservation:", error);
                 setValidationError('There was an error while submitting the form.');

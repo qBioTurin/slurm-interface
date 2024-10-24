@@ -1,28 +1,34 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 export function usePostSlurmData(path: string) {
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const callPost = useCallback(async (data: any) => {
+    const callPost = useCallback(async (requestBody: any) => {
+    const DEBUG_KEY = ""; //debug, insert actual key
+        
         try {
             setLoading(true);
-            const response = await fetch(`/api/gateway?path=${path}`, {
+           
+            const request = new Request(`/api/gateway?path=${path}`, {
                 method: 'POST',
                 headers: {
-                    //'X-SLURM-USER-TOKEN': process.env.SLURM_JWT_TESTING || '',
+                    'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: requestBody,
+                // @ts-expect-error
+                duplex: 'half',
             });
+            
+            console.log("Request body typeof:", typeof requestBody); //debug
+            console.log("Request body:", requestBody); //debug
 
-            if (!response.ok) {
-                throw new Error(`Error fetching data: ${response.statusText}`);
-            }
+            const response = await fetch(request);
+            console.log("Response:", response);
+            setData(requestBody);
 
-            const jsonData = await response.json();
-            setData(jsonData);
         } catch (err: any) {
             setError(err.message || 'Unknown error');
         } finally {

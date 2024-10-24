@@ -44,24 +44,39 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
 
-    console.log("Complete path:", `${SLURM_API_TESTING_URL}${path}`);
+    console.log("Gateway Request:", req); //debug
+    const DEBUG_KEY = ""; //debug, insert actual key	
 
-    console
     try {
+        const requestBody = await req.json();
+
+        console.log("Gateway Request body typeof:", typeof requestBody); //debug
+        console.log("Gateway Request body:", requestBody); //debug
+        console.log("Gateway Stringify Request body:", JSON.stringify(requestBody, null, 2)); 
+
         const slurmResponse = await fetch(`${SLURM_API_TESTING_URL}${path}`, {
             method: 'POST',
             headers: {
                 //'X-SLURM-USER-TOKEN': SLURM_JWT_TESTING || '',
+                'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
                 'Content-Type': 'application/json',
             },
-            body: req.body,
+            body: JSON.stringify(requestBody),
         });
 
-        if (!slurmResponse.ok) {
-            throw new Error(`Failed to fetch from SLURM API TESTING: ${slurmResponse.statusText}`);
-        }
+        // if (!slurmResponse.ok) {
+        //     throw new Error(`Failed to fetch from SLURM API TESTING: ${slurmResponse.statusText}`);
+        // }
 
-        const data = await slurmResponse.json();
+        console.log("Gateway Response:", slurmResponse); //debug
+        console.log("Gateway Response body typeof:", typeof slurmResponse.body);  //debug
+        console.log("Gateway Response status:", slurmResponse.status);  //debug
+        console.log("Gateway Response headers:", slurmResponse.headers); //debug
+
+        const data = await slurmResponse.text();
+
+        console.log("Gateway Response Data:", data); //debug    
+
         return NextResponse.json(data);
 
     } catch (error: any) {
