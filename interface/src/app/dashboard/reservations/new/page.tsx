@@ -57,7 +57,19 @@ export default function NewReservationForm() {
         },
         validate: {
             name: (value) => value.trim().length > 0 ? null : "Name is required",
-            start_time: (value) => (value instanceof Date && !isNaN(value.getTime())) ? null : "Start time is required",
+            // start time should be at least 1 minute from the current time
+            start_time: (value) => {
+                const nowPlusOneMinute = new Date(Date.now() + 1 * 60000);
+    
+                if (value instanceof Date && !isNaN(value.getTime())) {
+                    if (value < nowPlusOneMinute) {
+                        return "Start time must be at least 1 minute from the current time.";
+                    }
+                    return null;
+                }
+                return "Start time is required"; 
+            },
+            // end time should be after start time
             end_time: (value, values) => {
                 const startTime = values.start_time;
                 const endTime = value;
