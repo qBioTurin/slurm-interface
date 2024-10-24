@@ -37,6 +37,11 @@ const users = [
     { name: 'scontald' }
 ]
 
+const getCurrentDateAtMidnight = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+};
+
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const [validationError, setValidationError] = useState<string | null>(null);
@@ -45,20 +50,12 @@ export default function NewReservationForm() {
     const form = useForm({
         initialValues: {
             name: '',
-            start_time: new Date(),
-            end_time: new Date(),
+            start_time: getCurrentDateAtMidnight(),
+            end_time: getCurrentDateAtMidnight(),
             users: [currentUser] as string[],
-            // NodeCnt: 0,
             nodes: [] as string[],
-            // partition: '',
         },
         validate: {
-            // NodeCnt: (value, values) => {
-            //     if (values.nodes.length === 0 && value <= 0) {
-            //         return "Node count is required if no nodes are specified.";
-            //     }
-            //     return null; // No error
-            // },
             name: (value) => value.trim().length > 0 ? null : "Name is required",
             start_time: (value) => (value instanceof Date && !isNaN(value.getTime())) ? null : "Start time is required",
             end_time: (value, values) => {
@@ -81,7 +78,6 @@ export default function NewReservationForm() {
                 name: values.name,
                 users: values.users.join(','),
                 nodes: values.nodes ? values.nodes.join(',') : [],
-                // partition: values.partition,
             };
             const jsonData = JSON.stringify(formattedData, null, 2);
             console.log("Submitted Data:", jsonData);

@@ -10,6 +10,7 @@ interface ReservationStepProps {
   }
 
 export default function ReservationStep({ form, users, mockNodes }: ReservationStepProps) {
+
   return (
     <>
       <TextInput
@@ -22,20 +23,24 @@ export default function ReservationStep({ form, users, mockNodes }: ReservationS
       <DateTimePicker
         label="Start Time"
         valueFormat="YYYY-MM-DDTHH:mm:ss"
-        value={dayjs(form.values.start_time).toDate()}
+        value={form.values.start_time.getTime() === new Date(0).getTime() ? null : form.values.start_time}
         placeholder="Start Time"
         {...form.getInputProps('start_time')}
-        onChange={(value) => form.setFieldValue('start_time', dayjs(value,"YYYY-MM-DDTHH:mm:ss" ).toDate())}
+        onChange={(value) => {
+          form.setFieldValue('start_time', value);
+      }}
         mt="md"
       />
 
       <DateTimePicker
         label="End Time"
         valueFormat="YYYY-MM-DDTHH:mm:ss"
-        value={dayjs(form.values.start_time).toDate()}
+        value={form.values.end_time.getTime() === new Date(0).getTime() ? null : form.values.end_time}
         placeholder="End Time"
         {...form.getInputProps('end_time')}
-        onChange={(value) => form.setFieldValue('end_time', dayjs(value,"YYYY-MM-DDTHH:mm:ss" ).toDate())}
+        onChange={(value) => {
+          form.setFieldValue('end_time',value);
+      }}
         mt="md"
       />
 
