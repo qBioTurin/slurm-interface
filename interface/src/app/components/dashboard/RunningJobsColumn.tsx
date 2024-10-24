@@ -45,7 +45,7 @@ const RunningJobsColumn: React.FC<RunningJobsColumnProps> = ({ jobs }) => {
                                 <tr key={job.job_id} className={getRowClass(job.job_state)}>
                                     <td>
                                         <Link href={`/dashboard/jobs/${job.job_id}`} passHref>
-                                            <a className={styles.link}>{job.job_id}</a> {/* Styled clickable link */}
+                                            <span className={styles.link}>{job.job_id}</span> 
                                         </Link>
                                     </td>
                                     <td>{job.name}</td>
