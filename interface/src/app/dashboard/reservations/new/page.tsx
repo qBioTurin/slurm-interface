@@ -131,9 +131,15 @@ export default function NewReservationForm() {
                     <Button onClick={() => {
                         const errorMessages = form.validate();
                         const endTimeError = errorMessages.errors.end_time;
+                        
+                        const allErrors = [
+                            errorMessages.errors.name,
+                            errorMessages.errors.start_time,
+                            endTimeError,
+                        ].filter(Boolean) as string[];
 
-                        if (endTimeError) {
-                            setValidationError(typeof endTimeError === 'string' ? endTimeError : String(endTimeError));
+                        if (allErrors.length > 0) {
+                            setValidationError(allErrors.join(', '));
                         } else {
                             setValidationError(null);
                             if (active === 2) {
