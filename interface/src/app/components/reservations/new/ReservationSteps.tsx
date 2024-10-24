@@ -1,5 +1,5 @@
 import { TextInput, MultiSelect } from '@mantine/core';
-import {DateInput} from '@mantine/dates';
+import {DateTimePicker} from '@mantine/dates';
 import dayjs from 'dayjs';
 import { UseFormReturnType } from '@mantine/form';
 
@@ -19,21 +19,23 @@ export default function ReservationStep({ form, users, mockNodes }: ReservationS
         {...form.getInputProps('name')}
       />
 
-      <DateInput
+      <DateTimePicker
         label="Start Time"
-        valueFormat="DD/MM/YYYY HH:mm:ss"
+        valueFormat="YYYY-MM-DDTHH:mm:ss"
+        value={dayjs(form.values.start_time).toDate()}
         placeholder="Start Time"
         {...form.getInputProps('start_time')}
-        dateParser={(s) => dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()}
+        onChange={(value) => form.setFieldValue('start_time', dayjs(value,"YYYY-MM-DDTHH:mm:ss" ).toDate())}
         mt="md"
       />
 
-      <DateInput
+      <DateTimePicker
         label="End Time"
-        valueFormat="DD/MM/YYYY HH:mm:ss"
+        valueFormat="YYYY-MM-DDTHH:mm:ss"
+        value={dayjs(form.values.start_time).toDate()}
         placeholder="End Time"
         {...form.getInputProps('end_time')}
-        dateParser={(s) => dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()}
+        onChange={(value) => form.setFieldValue('end_time', dayjs(value,"YYYY-MM-DDTHH:mm:ss" ).toDate())}
         mt="md"
       />
 

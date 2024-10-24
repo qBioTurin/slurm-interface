@@ -10,6 +10,7 @@ import {ReservationSubmissionSchema} from '@/schemas/reservation_submission_sche
 import {ReservationSummary} from '../../../components/reservations/new/ReservationSummary';
 import ValidationError from '../../../components/reservations/new/ValidationError';
 import ReservationStep from '../../../components/reservations/new/ReservationSteps';
+import dayjs from 'dayjs';
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
@@ -37,7 +38,7 @@ const users = [
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const [validationError, setValidationError] = useState<string | null>(null);
-    
+
     const form = useForm({
         initialValues: {
             name: '',
@@ -72,14 +73,15 @@ export default function NewReservationForm() {
         try {
             await ReservationSubmissionSchema.parseAsync(values);
             const formattedData = {
-                start_time: values.start_time.toISOString(),
-                end_time: values.end_time.toISOString(),
+                start_time: dayjs(values.start_time).format('YYYY-MM-DDTHH:mm:ss'),
+                end_time:dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
                 name: values.name,
                 users: values.users.join(','),
                 nodes: values.nodes? values.nodes.join(',') : [],
                 // partition: values.partition,
             };
-            console.log("Submitted Data:", formattedData);
+            const jsonData = JSON.stringify(formattedData, null, 2);
+            console.log("Submitted Data:", jsonData);
             setValidationError(null);
         } catch (error) {
             console.error("Validation Error:", error);
@@ -93,7 +95,7 @@ export default function NewReservationForm() {
 
         <Stepper active={active} mt="xl">
             <Stepper.Step label="New reservation" description="Select resources and users access" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
-            <ReservationStep form={form} users={users} mockNodes={mockNodes} />
+            <ReservationStep form={form} users={users} mockNodes={mockNodes}/>
             </Stepper.Step>
             <Stepper.Completed>
             Completed! Form values:
