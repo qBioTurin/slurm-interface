@@ -73,7 +73,16 @@ export async function POST(req: NextRequest) {
         console.log("Gateway Response status:", slurmResponse.status);  //debug
         console.log("Gateway Response headers:", slurmResponse.headers); //debug
 
-        const data = await slurmResponse.text();
+        let data;
+        const contentType = slurmResponse.headers.get('content-type');
+
+        if (contentType && contentType.includes('application/json')) {
+            data = await slurmResponse.json();
+        } else {
+            data = await slurmResponse.text();
+        }
+
+        console.log("Response Data:", data);
 
         console.log("Gateway Response Data:", data); //debug    
 
