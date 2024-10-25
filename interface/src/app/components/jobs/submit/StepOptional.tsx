@@ -5,7 +5,6 @@ type Props = {
   form: UseFormReturnType<any>;
 };
 
-
 type NumberInputFieldProps = {
   label: string;
   form: UseFormReturnType<any>;

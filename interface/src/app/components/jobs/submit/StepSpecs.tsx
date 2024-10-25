@@ -5,12 +5,17 @@ type Props = {
   form: UseFormReturnType<any>;
 };
 
-const NumberInputField = ({ label, form, fieldName }) => (
+type NumberInputFieldProps = {
+  label: string;
+  form: UseFormReturnType<any>;
+  fieldName: string;
+};
+
+const NumberInputField = ({ label, form, fieldName }: NumberInputFieldProps) => (
   <NumberInput
     label={label}
-    value={form.watch(fieldName)}
+    {...form.getInputProps(fieldName)}
     min={1}
-    onChange={(value) => form.setValue(fieldName, value || 1)}
   />
 );
 
