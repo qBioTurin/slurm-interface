@@ -4,17 +4,17 @@ import { useState, useEffect } from 'react';
 import { TextInput, Group, rem, Switch, Button, ActionIcon } from '@mantine/core';
 import JobTable from '../../components/jobs/JobsTable';
 import { IconSearch } from '@tabler/icons-react';
-import {JobSchema, SlurmJobResponseSchema} from '../../schemas/job_schema';
+import { JobSchema, SlurmJobResponseSchema } from '../../schemas/job_schema';
 import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
 import styles from './JobsPage.module.css';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { useSlurmData } from '@/hooks/useSlurmData';
 import { useRouter } from 'next/navigation';
-import {IconTrash, IconPlayerPause} from '@tabler/icons-react';
+import { IconTrash, IconPlayerPause } from '@tabler/icons-react';
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = "scontald"; // TODO: get current user from auth context
+const currentUser = "testslurm"; // TODO: get current user from auth context
 
 export default function JobsPage() {
     const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
@@ -34,7 +34,7 @@ export default function JobsPage() {
         if (loading) {
             return;
         }
-    
+
         if (data) {
             setIsValidating(true);
             try {
@@ -54,12 +54,12 @@ export default function JobsPage() {
 
     const filteredJobs = jobs.filter((job) => {
         const matchesSearchQuery = job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                   job.user_name.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesUserFilter  = showUserJobs
-        ? job.user_name.toLowerCase() === currentUser.toLowerCase()
-        : true;
+            job.user_name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesUserFilter = showUserJobs
+            ? job.user_name.toLowerCase() === currentUser.toLowerCase()
+            : true;
 
-        return matchesSearchQuery && matchesUserFilter ;
+        return matchesSearchQuery && matchesUserFilter;
     });
 
     const handleJobSelect = (jobId: number, isSelected: boolean) => {
@@ -100,11 +100,11 @@ export default function JobsPage() {
                             Clear selection
                         </Button>
 
-                        <ActionIcon size="lg" color='red' className={styles.cancelJobButton} title={selectedJobs.length === 1 ? 'Cancel job' : 'Cancel jobs'} onClick={() => {}}>
+                        <ActionIcon size="lg" color='red' className={styles.cancelJobButton} title={selectedJobs.length === 1 ? 'Cancel job' : 'Cancel jobs'} onClick={() => { }}>
                             <IconTrash size={40} />
                         </ActionIcon>
 
-                        <ActionIcon size="lg" color='yellow' className={styles.stopJobButton} title={selectedJobs.length === 1 ? 'Stop job' : 'Stop jobs'} onClick={() => {}}>
+                        <ActionIcon size="lg" color='yellow' className={styles.stopJobButton} title={selectedJobs.length === 1 ? 'Stop job' : 'Stop jobs'} onClick={() => { }}>
                             <IconPlayerPause size={40} />
                         </ActionIcon>
                     </Group>
@@ -116,12 +116,12 @@ export default function JobsPage() {
             </Group>
 
             {filteredJobs.length > 0 ? (
-               <JobTable 
-               jobs={filteredJobs} 
-               selectable={showUserJobs}
-               selectedJobs={selectedJobs}
-               onSelect={handleJobSelect}
-               onSelectAll={handleSelectAll}
+                <JobTable
+                    jobs={filteredJobs}
+                    selectable={showUserJobs}
+                    selectedJobs={selectedJobs}
+                    onSelect={handleJobSelect}
+                    onSelectAll={handleSelectAll}
                 />
             ) : (
                 <p>No jobs found.</p>

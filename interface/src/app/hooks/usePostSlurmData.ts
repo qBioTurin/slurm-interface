@@ -6,7 +6,7 @@ export function usePostSlurmData(path: string) {
     const [loading, setLoading] = useState<boolean>(false);
 
     const callPost = useCallback(async (requestBody: any) => {
-        const DEBUG_KEY = ""; //debug, insert actual key
+        const DEBUG_KEY = ""; //debug, insert testing key
 
         try {
             setLoading(true);
@@ -34,8 +34,6 @@ export function usePostSlurmData(path: string) {
         } finally {
             setLoading(false);
         }
-
-        //curl -H X-SLURM-USER-TOKEN:$SLURM_JWT -X DELETE 'https://slurm-controller.di.unito.it/api/slurm/v0.0.41/job/228'
 
     }, [path]);
 

@@ -10,8 +10,7 @@ export async function GET(req: NextRequest) {
     const path = searchParams.get('path');
     //const token = req.headers.get('Authorization') || '';  // Assuming JWT is passed in headers
     var DEBUG_API_URL = SLURM_API_BASE_URL;
-    const DEBUG_KEY = ""; //debug, insert actual key	
-
+    var DEBUG_KEY = ""; //debug, SLURM_JWT	
 
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
@@ -19,6 +18,7 @@ export async function GET(req: NextRequest) {
 
     if (path.includes("job")) {
         DEBUG_API_URL = SLURM_API_TESTING_URL + 'api/slurm/v0.0.41/';
+        DEBUG_KEY = "" //SLURM_JWT_TESTING
     }
 
     console.log("Complete path:", DEBUG_API_URL + path); //debug

@@ -8,14 +8,11 @@ export function useSlurmData(path: string) {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const DEBUG_KEY = ""; //debug, insert actual key
-
     const fetchData = useCallback(async () => {
         try {
             const response = await fetch(`/api/gateway?path=${path}`, {
                 method: 'GET',
                 headers: {
-                    'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
                     'Content-Type': 'application/json',
                 },
             });
