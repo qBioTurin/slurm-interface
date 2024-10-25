@@ -8,7 +8,7 @@ import { useForm } from '@mantine/form';
 import { z } from 'zod';
 import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
 import { ReservationSummary } from '../../../components/reservations/new/ReservationSummary';
-import ValidationError from '../../../components/reservations/new/ValidationError';
+import ValidationError from '../../../components/commons/ValidationError';
 import ReservationStep from '../../../components/reservations/new/ReservationSteps';
 import { usePostSlurmData } from '@/hooks/usePostSlurmData';
 
@@ -32,9 +32,10 @@ const partitions = [
 ];
 
 //  TODO: replace with actual users
-const currentUser = 'lbosio';
+const currentUser = 'testslurm';
 const users = [
-    { name: 'scontald' }
+    { name: 'scontald' },
+    {name: 'lbosio'}
 ]
 
 const getCurrentDateAtMidnight = () => {
