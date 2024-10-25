@@ -1,5 +1,7 @@
 import React from 'react';
-import { Card, Text, List, ThemeIcon } from '@mantine/core';
+
+import { Card, Text, List, ThemeIcon} from '@mantine/core';
+import { IconAlertCircle } from '@tabler/icons-react';
 
 type ReservationSummaryProps = {
   reservation: {
@@ -46,7 +48,6 @@ export const ReservationSummary = ({ reservation }: ReservationSummaryProps) => 
         )}
       </Card>
     </div>
-
   );
 };
 

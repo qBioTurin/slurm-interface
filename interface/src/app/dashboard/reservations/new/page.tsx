@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
 import { ReservationSummary, ReservationStep, ValidationError } from '@/components';
 import { usePostData } from '@/hooks';
+import Credit from '../../../components/reservations/new/Credits';
 
 import dayjs from 'dayjs';
 
@@ -41,10 +42,16 @@ const getCurrentDateAtMidnight = () => {
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 };
 
+const calculateDurationMinutes = (start: Date, end: Date) => {
+    return Math.max(0, (end.getTime() - start.getTime()) / 60000);
+};
+
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const [validationError, setValidationError] = useState<string | null>(null);
     const { data, error, loading, callPost } = usePostData('reservations');
+    const [userCredits, setUserCredits] = useState(100.0); // example credits
+    const [hasInsufficientCredits, setHasInsufficientCredits] = useState(false);
 
     const form = useForm({
         initialValues: {
@@ -81,6 +88,11 @@ export default function NewReservationForm() {
     });
 
     const onSubmit = async (values: ReservationSubmissionSchema) => {
+        if (hasInsufficientCredits) {
+            setValidationError("Insufficient credits for this reservation.");
+            return;
+        }
+
         try {
             await ReservationSubmissionSchema.parseAsync(values);
             const formattedData = {
@@ -109,6 +121,12 @@ export default function NewReservationForm() {
     return (
         <>
             <ValidationError validationError={validationError} setValidationError={setValidationError} />
+            
+            <Credit
+                userCredits={userCredits} 
+                durationMinutes={calculateDurationMinutes(form.values.start_time, form.values.end_time)} 
+                onInsufficientCredits={setHasInsufficientCredits} 
+            />
 
             <Stepper active={active} mt="xl">
                 <Stepper.Step label="New reservation" description="Select resources and users access" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
