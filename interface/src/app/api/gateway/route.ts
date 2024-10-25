@@ -9,16 +9,24 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
     //const token = req.headers.get('Authorization') || '';  // Assuming JWT is passed in headers
+    var DEBUG_API_URL = SLURM_API_BASE_URL;
+    const DEBUG_KEY = ""; //debug, insert actual key	
+
 
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
 
+    if (path.includes("job")) {
+        DEBUG_API_URL = SLURM_API_TESTING_URL + 'api/slurm/v0.0.41/';
+    }
+
+    console.log("Complete path:", DEBUG_API_URL + path); //debug
     try {
-        const slurmResponse = await fetch(`${SLURM_API_BASE_URL}${path}`, {
+        const slurmResponse = await fetch(`${DEBUG_API_URL}${path}`, {
             method: 'GET',
             headers: {
-                'X-SLURM-USER-TOKEN': SLURM_JWT || '',
+                'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
                 'Content-Type': 'application/json',
             },
         });
@@ -52,7 +60,7 @@ export async function POST(req: NextRequest) {
 
         console.log("Gateway Request body typeof:", typeof requestBody); //debug
         console.log("Gateway Request body:", requestBody); //debug
-        console.log("Gateway Stringify Request body:", JSON.stringify(requestBody, null, 2)); 
+        console.log("Gateway Stringify Request body:", JSON.stringify(requestBody, null, 2));
 
         const slurmResponse = await fetch(`${SLURM_API_TESTING_URL}${path}`, {
             method: 'POST',
@@ -85,7 +93,6 @@ export async function POST(req: NextRequest) {
         console.log("Response Data:", data);
 
         console.log("Gateway Response Data:", data); //debug    
-
         return NextResponse.json(data);
 
     } catch (error: any) {

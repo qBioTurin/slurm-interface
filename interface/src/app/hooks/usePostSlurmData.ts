@@ -6,11 +6,11 @@ export function usePostSlurmData(path: string) {
     const [loading, setLoading] = useState<boolean>(false);
 
     const callPost = useCallback(async (requestBody: any) => {
-    const DEBUG_KEY = ""; //debug, insert actual key
-        
+        const DEBUG_KEY = ""; //debug, insert actual key
+
         try {
             setLoading(true);
-           
+
             const request = new Request(`/api/gateway?path=${path}`, {
                 method: 'POST',
                 headers: {
@@ -21,7 +21,7 @@ export function usePostSlurmData(path: string) {
                 // @ts-expect-error
                 duplex: 'half',
             });
-            
+
             console.log("Request body typeof:", typeof requestBody); //debug
             console.log("Request body:", requestBody); //debug
 
@@ -34,6 +34,8 @@ export function usePostSlurmData(path: string) {
         } finally {
             setLoading(false);
         }
+
+        //curl -H X-SLURM-USER-TOKEN:$SLURM_JWT -X DELETE 'https://slurm-controller.di.unito.it/api/slurm/v0.0.41/job/228'
 
     }, [path]);
 

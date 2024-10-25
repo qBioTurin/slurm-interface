@@ -1,17 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
 
+
+
 // This hook fetches data from the Slurm REST API using the provided path
 export function useSlurmData(path: string) {
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
+    const DEBUG_KEY = ""; //debug, insert actual key
+
     const fetchData = useCallback(async () => {
         try {
             const response = await fetch(`/api/gateway?path=${path}`, {
                 method: 'GET',
                 headers: {
-                    'X-SLURM-USER-TOKEN': process.env.SLURM_JWT || '',
+                    'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
                     'Content-Type': 'application/json',
                 },
             });
