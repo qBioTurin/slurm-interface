@@ -11,13 +11,13 @@ import { useSlurmData } from '@/hooks/useSlurmData';
 
 type Reservation = z.infer<typeof ReservationSchema>;
 
+
 export default function ReservationsPage() {
 
     const [reservations, setReservations] = useState<Reservation[]>([]); // fetched reservations
     const [isValidating, setIsValidating] = useState(false);
     const { data, loading, error } = useSlurmData('reservations');
 
-    //parse data from the API
     useEffect(() => {
         if (error) {
             return;

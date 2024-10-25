@@ -145,43 +145,49 @@ import { NumberSetInfiniteSchema, SlurmSchema, PluginSchema, ClientSchema, MetaS
 
 */
 
+export const OptionalNumberSetInfiniteSchema = z.object({
+  number: z.number().optional(),
+  set: z.boolean().optional(),
+  infinite: z.boolean().optional(),
+});
+
 export const CoreSpecializationSchema = z.object({
-    node: z.string(),
-    core: z.string(),
+  node: z.string(),
+  core: z.string(),
 });
 
 export const PurgeCompletedSchema = z.object({
-    time: NumberSetInfiniteSchema
+  time: NumberSetInfiniteSchema
 });
 
 export const ReservationSchema = z.object({
-    end_time: NumberSetInfiniteSchema,
-    flags: z.array(z.string()),
-    groups: z.string(),
-    users: z.string(),
-    max_start_delay: z.number(),
-    features: z.string(),
-    start_time: NumberSetInfiniteSchema,
-    burst_buffer: z.string(),
-    licenses: z.string(),
-    partition: z.string(),
-    watts: NumberSetInfiniteSchema,
-    core_specializations: z.array(CoreSpecializationSchema),
-    name: z.string(),
-    tres: z.string(),
-    accounts: z.string(),
-    node_count: z.number(),
-    node_list: z.string(),
-    purge_completed: PurgeCompletedSchema,
-    core_count: z.number(),
+  end_time: NumberSetInfiniteSchema,
+  flags: z.array(z.string()),
+  groups: z.string(),
+  users: z.string(),
+  max_start_delay: z.number(),
+  features: z.string(),
+  start_time: NumberSetInfiniteSchema,
+  burst_buffer: z.string(),
+  licenses: z.string(),
+  partition: z.string(),
+  watts: OptionalNumberSetInfiniteSchema,
+  core_specializations: z.array(CoreSpecializationSchema),
+  name: z.string(),
+  tres: z.string(),
+  accounts: z.string(),
+  node_count: z.number(),
+  node_list: z.string(),
+  purge_completed: PurgeCompletedSchema,
+  core_count: z.number(),
 });
 
 export const SlurmReservationResponseSchema = z.object({
-    reservations: z.array(ReservationSchema),
-    meta: MetaSchema.optional(),
-    last_update: NumberSetInfiniteSchema.optional(),
-    warnings: z.array(WarningsSchema).optional(),
-    errors: z.array(ErrorsSchema).optional(),
+  reservations: z.array(ReservationSchema),
+  meta: MetaSchema.optional(),
+  last_update: NumberSetInfiniteSchema.optional(),
+  warnings: z.array(WarningsSchema).optional(),
+  errors: z.array(ErrorsSchema).optional(),
 });
 
 

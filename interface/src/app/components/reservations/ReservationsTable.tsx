@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
 import { Table, Pill, TextInput, Button, Switch, Group, Badge, Flex, rem, UnstyledButton, Text, Center, ScrollArea, keys } from '@mantine/core';
 import styles from './Reservations.module.css';
 import { ReservationSchema } from "../../schemas/reservation_schema";
+import { NumberSetInfiniteSchema } from "../../schemas/common_schema";
+import { formatDate, formatDuration } from '../../../../utils/datetime';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { z } from 'zod';
@@ -61,6 +63,8 @@ function filterData(data: Reservation[], search: string): Reservation[] {
                 return item[key]?.toLowerCase().includes(query);
             } else if (key == 'node_list') {
                 return item[key]?.toLowerCase().includes(query);
+            } else if (key == 'start_time' || key == 'end_time') {
+                return formatDate(item[key].number).toLowerCase().includes(query);
             } else {
                 return item[key].toLocaleString().toLowerCase().includes(query);
             }
@@ -73,33 +77,33 @@ function sortData(
     data: Reservation[],
     payload: { sortBy: keyof Reservation | null; reversed: boolean; search: string }
 ): Reservation[] {
-    const { sortBy } = payload;
+    const { sortBy, reversed } = payload;
 
     if (!sortBy) {
         return filterData(data, payload.search);
     }
 
-    return filterData(
-        data.slice().sort((a, b) => {
-            if (sortBy === 'name' || sortBy === 'partition') {
-                return a[sortBy].localeCompare(b[sortBy]);
-            }
+    const sortedData = data.slice().sort((a, b) => {
+        let comparison = 0;
 
-            if (sortBy === 'node_count' || sortBy === 'core_count') {
-                return a[sortBy] - b[sortBy];
-            }
+        if (sortBy === 'name' || sortBy === 'users' || sortBy === 'node_list' || sortBy === 'partition') {
+            comparison = a[sortBy].localeCompare(b[sortBy]);
+        } else if (sortBy === 'start_time' || sortBy === 'end_time' || sortBy == 'watts') {
+            const aTime = a[sortBy].number || 0;
+            const bTime = b[sortBy].number || 0;
+            comparison = aTime - bTime;
+        } else if (sortBy == 'purge_completed') {
+            comparison = a[sortBy].time.number - b[sortBy].time.number;
+        } else if (sortBy === 'node_count' || sortBy === 'core_count' || sortBy === 'max_start_delay') {
+            comparison = a[sortBy] - b[sortBy];
+        } else if (sortBy === 'flags' || sortBy == 'core_specializations') {
+            comparison = a[sortBy].length - b[sortBy].length;
+        }
 
-            if (sortBy === 'start_time' || sortBy === 'end_time') {
-                const dateA = new Date(a[sortBy].number);
-                const dateB = new Date(b[sortBy].number);
-                return dateA.getTime() - dateB.getTime();
-            }
+        return reversed ? -comparison : comparison;
+    });
 
-            return 0;
-        }),
-        payload.search
-    );
-
+    return filterData(sortedData, payload.search);
 }
 
 export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) => {
@@ -129,56 +133,37 @@ export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) =>
 
     const ths = (
         <Table.Tr>
-            <Th
-                sorted={sortBy === 'name'}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting('name')}
-            >
+            <Th sorted={sortBy === 'name'} reversed={reverseSortDirection} onSort={() => setSorting('name')}>
                 Name
             </Th>
-            <Th>
-                Users
-            </Th>
-            <Th
-                sorted={sortBy === 'node_count'}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting('node_count')}
-            >
+            <Th>Users</Th>
+            <Th sorted={sortBy === 'node_count'} reversed={reverseSortDirection} onSort={() => setSorting('node_count')}>
                 N. nodes
             </Th>
-            <Th>
-                Nodes
-            </Th>
-            <Th
-                sorted={sortBy === 'start_time'}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting('start_time')}
-            >
+            <Th>Nodes</Th>
+            <Th sorted={sortBy === 'start_time'} reversed={reverseSortDirection} onSort={() => setSorting('start_time')}>
                 Start time
             </Th>
-            <Th
-                sorted={sortBy === 'end_time'}
-                reversed={reverseSortDirection}
-                onSort={() => setSorting('end_time')}
-            >
+            <Th sorted={sortBy === 'end_time'} reversed={reverseSortDirection} onSort={() => setSorting('end_time')}>
                 End time
             </Th>
-
         </Table.Tr>
     );
 
     const rows = sortedData.map((row) => (
         <Table.Tr key={row.name} onClick={() => handleRowClick(row.name)}>
             <Table.Td>{row.name}</Table.Td>
-            <Table.Td>
-                {row.users}
-            </Table.Td>
+            <Table.Td>{row.users}</Table.Td>
             <Table.Td>{row.node_count}</Table.Td>
             <Table.Td>{row.node_list}</Table.Td>
-            <Table.Td>{row.start_time.toLocaleString()}</Table.Td>
-            <Table.Td>{row.end_time.toLocaleString()}</Table.Td>
+            <Table.Td>{formatDate(row.start_time.number)}</Table.Td>
+            <Table.Td>{formatDate(row.end_time.number)}</Table.Td>
         </Table.Tr>
     ));
+
+    useEffect(() => {
+        setSortedData(sortData(reservations, { sortBy, reversed: reverseSortDirection, search }));
+    }, [reservations]);
 
 
     return (
