@@ -13,6 +13,7 @@ import { useFetchData } from '@/hooks/useFetchData';
 import { useDeleteSlurmData } from '@/hooks/useDeleteSlurmData';
 import { useRouter } from 'next/navigation';
 import { IconTrash, IconPlayerPause } from '@tabler/icons-react';
+import { revalidatePath } from "next/cache";
 
 type Job = z.infer<typeof JobSchema>;
 const currentUser = "testslurm"; // TODO: get current user from auth context
@@ -65,7 +66,8 @@ export default function JobsPage() {
         }
 
         setSelectedJobs([]);
-        router.push('/dashboard/jobs');
+
+        router.refresh();
     };
 
 
@@ -88,7 +90,7 @@ export default function JobsPage() {
             <Group className={styles.group}>
                 <TextInput
                     className={styles.searchInput}
-                    placeholder="Search Jobs"
+                    placeholder="Search jobs"
                     leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.currentTarget.value)}

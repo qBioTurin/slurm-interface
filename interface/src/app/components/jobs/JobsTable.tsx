@@ -1,12 +1,12 @@
 'use client'
 
 import styles from './JobsTable.module.css';
-import { Table, Button, Checkbox  } from '@mantine/core';
+import { Table, Button, Checkbox } from '@mantine/core';
 import Link from 'next/link';
 import JobStateBadge from './JobStateBadge';
 import { JobSchema } from '../../schemas/job_schema';
 import { sortItems, SortConfig } from '../../../../utils/sort';
-import { IconChevronDown, IconChevronUp} from '@tabler/icons-react';
+import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { z } from 'zod';
 import { FC } from 'react';
 import { useState } from 'react';
@@ -49,7 +49,7 @@ export const JobsTable: FC<JobTableProps> = ({
         <Table className={styles.table} striped highlightOnHover>
             <thead>
                 <tr>
-                {selectable && ( // only show this column if selectable is true
+                    {selectable && ( // only show this column if selectable is true
                         <th>
                             <Checkbox
                                 size='md'
@@ -72,37 +72,37 @@ export const JobsTable: FC<JobTableProps> = ({
                 {sortedJobs.map((job: any) => {
 
                     return (
-                    <tr key={job.job_id}>
+                        <tr key={job.job_id}>
 
-                         {selectable && ( // only show this column if selectable is true
+                            {selectable && ( // only show this column if selectable is true
+                                <td>
+                                    <Checkbox
+                                        size='md'
+                                        checked={selectedJobs.includes(job.job_id)}
+                                        onChange={(event) => onSelect?.(job.job_id, event.currentTarget.checked)}
+                                    />
+                                </td>
+                            )}
+
                             <td>
-                                <Checkbox
-                                    size='md'
-                                    checked={selectedJobs.includes(job.job_id)}
-                                    onChange={(event) => onSelect?.(job.job_id, event.currentTarget.checked)}
-                                />
+                                <Link href={`/dashboard/jobs/${job.job_id}`} passHref>
+                                    <Button>
+                                        {job.job_id}
+                                    </Button>
+                                </Link>
                             </td>
-                        )}
-
-                        <td>
-                            <Link href={`/dashboard/jobs/${job.job_id}`} passHref>
-                                <Button>
-                                    {job.job_id}
-                                </Button>
-                            </Link>
-                        </td>
-                        <td>{job.name}</td>
-                        <td>{job.user_name}</td>
-                        <td>{job.partition}</td>
-                        <td> <JobStateBadge state={job.job_state[0]} /> </td>
-                        <td>{job.nodes}</td>
-                        {/* <td>{job.resv_name}</td> */}
-                    </tr>
-                );
+                            <td>{job.name}</td>
+                            <td>{job.user_name}</td>
+                            <td>{job.partition}</td>
+                            <td> <JobStateBadge state={job.job_state[0]} /> </td>
+                            <td>{job.nodes}</td>
+                            {/* <td>{job.resv_name}</td> */}
+                        </tr>
+                    );
                 })}
             </tbody>
         </Table>
     );
-}; 
+};
 
 export default JobsTable;

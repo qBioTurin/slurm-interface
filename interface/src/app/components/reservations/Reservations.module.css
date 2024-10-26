@@ -5,6 +5,13 @@
     padding: 20px;
 }
 
+.searchInput {
+    width: 300px;
+    padding: 10px 10px 10px 0px;
+    font-size: 16px;
+}
+
+
 .table {
     width: 100%;
     border-collapse: collapse;

@@ -176,9 +176,10 @@ export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) =>
 
         <div className={styles.container}>
             <ScrollArea>
-                <Group justify="end">
+                <Group >
                     <TextInput
-                        placeholder="Search by any field"
+                        className={styles.searchInput}
+                        placeholder="Search reservations"
                         mb="md"
                         leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
                         value={search}
