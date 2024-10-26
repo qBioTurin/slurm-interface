@@ -38,8 +38,12 @@ export default function JobsPage() {
     }, [data]);
 
     const filteredJobs = jobs.filter((job) => {
-        const matchesSearchQuery = job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            job.user_name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSearchQuery = job.job_id.toString().includes(searchQuery) ||
+            job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            job.user_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            job.partition.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            job.job_state[0].toLowerCase().includes(searchQuery.toLowerCase()) ||
+            job.nodes.toString().includes(searchQuery);
         const matchesUserFilter = showUserJobs
             ? job.user_name.toLowerCase() === currentUser.toLowerCase()
             : true;
