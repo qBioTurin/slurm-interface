@@ -9,7 +9,8 @@ import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
 import styles from './JobsPage.module.css';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
-import { useSlurmData } from '@/hooks/useSlurmData';
+import { useFetchData } from '@/hooks/useFetchData';
+import { useDeleteSlurmData } from '@/hooks/useDeleteSlurmData';
 import { useRouter } from 'next/navigation';
 import { IconTrash, IconPlayerPause } from '@tabler/icons-react';
 
@@ -24,7 +25,8 @@ export default function JobsPage() {
     const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
     const router = useRouter();
 
-    const { data, loading, error } = useSlurmData('jobs');
+    const { data, loading, error } = useFetchData('jobs');
+    const { deleteData } = useDeleteSlurmData();
 
     useEffect(() => {
         if (error) {
@@ -68,6 +70,22 @@ export default function JobsPage() {
         );
     };
 
+    const handleDeleteSelectedJobs = () => {
+        console.log('delete clicked');
+        for (const id of selectedJobs) {
+            deleteData(`job/${id}`)
+                .then(() => {
+                    console.log('Job deleted');
+                })
+                .catch((error) => {
+                    console.error('Error deleting job:', error);
+                });
+        }
+
+        setSelectedJobs([]);
+    };
+
+
     const handleSelectAll = (isSelected: boolean) => {
         setSelectedJobs(isSelected ? filteredJobs.map(job => job.job_id) : []);
     };
@@ -75,6 +93,7 @@ export default function JobsPage() {
     if (loading || isValidating) {
         return <LoadingPage />;
     }
+
 
     return (
         <div className={styles.container}>
@@ -94,21 +113,23 @@ export default function JobsPage() {
                     onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
                 />
 
-                {selectedJobs.length > 0 && (
-                    <Group>
-                        <Button onClick={() => setSelectedJobs([])} variant='outline'>
-                            Clear selection
-                        </Button>
+                {selectedJobs.length > 0 &&
+                    showUserJobs &&
+                    (
+                        <Group>
+                            <Button onClick={() => setSelectedJobs([])} variant='outline'>
+                                Clear selection
+                            </Button>
 
-                        <ActionIcon size="lg" color='red' className={styles.cancelJobButton} title={selectedJobs.length === 1 ? 'Cancel job' : 'Cancel jobs'} onClick={() => { }}>
-                            <IconTrash size={40} />
-                        </ActionIcon>
+                            <ActionIcon size="lg" variant='outline' aria-label={selectedJobs.length == 1 ? 'Cancel job' : 'Cancel jobs'} color='red' onClick={handleDeleteSelectedJobs}>
+                                <IconTrash />
+                            </ActionIcon>
 
-                        <ActionIcon size="lg" color='yellow' className={styles.stopJobButton} title={selectedJobs.length === 1 ? 'Stop job' : 'Stop jobs'} onClick={() => { }}>
-                            <IconPlayerPause size={40} />
-                        </ActionIcon>
-                    </Group>
-                )}
+                            <ActionIcon size="lg" color='yellow' className={styles.stopJobButton} title={selectedJobs.length === 1 ? 'Stop job' : 'Stop jobs'} onClick={() => { }}>
+                                <IconPlayerPause />
+                            </ActionIcon>
+                        </Group>
+                    )}
 
                 <Button className={styles.submitButton} onClick={() => router.push('/dashboard/jobs/submit')}>
                     Submit Jobs

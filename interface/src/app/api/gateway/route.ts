@@ -10,15 +10,15 @@ export async function GET(req: NextRequest) {
     const path = searchParams.get('path');
     //const token = req.headers.get('Authorization') || '';  // Assuming JWT is passed in headers
     var DEBUG_API_URL = SLURM_API_BASE_URL;
-    var DEBUG_KEY = ""; //debug, SLURM_JWT	
+    var DEBUG_KEY = process.env.SLURM_JWT;
 
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
 
-    if (path.includes("job")) {
+    if (path.includes("job") || path.includes("reservations")) {
         DEBUG_API_URL = SLURM_API_TESTING_URL + 'api/slurm/v0.0.41/';
-        DEBUG_KEY = "" //SLURM_JWT_TESTING
+        DEBUG_KEY = SLURM_JWT_TESTING;
     }
 
     console.log("Complete path:", DEBUG_API_URL + path); //debug
@@ -53,7 +53,6 @@ export async function POST(req: NextRequest) {
     }
 
     console.log("Gateway Request:", req); //debug
-    const DEBUG_KEY = ""; //debug, insert actual key	
 
     try {
         const requestBody = await req.json();
@@ -65,16 +64,12 @@ export async function POST(req: NextRequest) {
         const slurmResponse = await fetch(`${SLURM_API_TESTING_URL}${path}`, {
             method: 'POST',
             headers: {
-                //'X-SLURM-USER-TOKEN': SLURM_JWT_TESTING || '',
-                'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
+                'X-SLURM-USER-TOKEN': SLURM_JWT_TESTING || '',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestBody),
         });
 
-        // if (!slurmResponse.ok) {
-        //     throw new Error(`Failed to fetch from SLURM API TESTING: ${slurmResponse.statusText}`);
-        // }
 
         console.log("Gateway Response:", slurmResponse); //debug
         console.log("Gateway Response body typeof:", typeof slurmResponse.body);  //debug
@@ -93,6 +88,36 @@ export async function POST(req: NextRequest) {
         console.log("Response Data:", data);
 
         console.log("Gateway Response Data:", data); //debug    
+        return NextResponse.json(data);
+
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const path = searchParams.get('path');
+    //const token = req.headers.get('Authorization') || '';  
+    if (!path) {
+        return NextResponse.json({ error: 'API path is required' }, { status: 400 });
+    }
+    const url = '';
+
+    try {
+        const slurmResponse = await fetch(`${url}${path}`, {
+            method: 'DELETE',
+            headers: {
+                'X-SLURM-USER-TOKEN': SLURM_JWT_TESTING || '',
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!slurmResponse.ok) {
+            throw new Error(`Failed to fetch from SLURM API: ${slurmResponse.statusText}`);
+        }
+
+        const data = await slurmResponse.json();
         return NextResponse.json(data);
 
     } catch (error: any) {
