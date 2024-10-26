@@ -1,15 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
+import useValidation from './useValidation';
 
-
-
-// This hook fetches data from the Slurm REST API using the provided path
-export function useSlurmData(path: string) {
+// Fetch data from the API and validate it using zod schemas
+export function useFetchData(path: string, responseSchema: any) {
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const { validate, errorValidation } = useValidation();
 
     const fetchData = useCallback(async () => {
         try {
+            setLoading(true);
             const response = await fetch(`/api/gateway?path=${path}`, {
                 method: 'GET',
                 headers: {
@@ -22,9 +23,14 @@ export function useSlurmData(path: string) {
             }
 
             const jsonData = await response.json();
-            setData(jsonData);
 
+            // Parse the data using using the validation hook
+            const validatedData = validate(jsonData, responseSchema, path);
+            if (errorValidation) {
+                throw new Error(errorValidation);
+            }
 
+            setData(validatedData);
         } catch (err: any) {
             setError(err.message || 'Unknown error');
         } finally {

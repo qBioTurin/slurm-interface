@@ -8,7 +8,7 @@ import { InfoField } from '../../../components/jobs/job-details/InfoField';
 import JobStateBadge from '../../../components/jobs/JobStateBadge';
 import JobProgressTimeline from '../../../components/jobs/job-details/JobProgressTimeline';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
-import { useSlurmData } from '@/hooks/useSlurmData';
+import { useFetchData } from '@/hooks/useFetchData';
 import { z } from 'zod';
 import { JobSchema, SlurmJobResponseSchema } from '../../../schemas/job_schema';
 import { formatDate, formatDuration } from '../../../../../utils/datetime';
@@ -27,7 +27,7 @@ const JobPage = ({ params }: JobPageProps) => {
   const [isValidating, setIsValidating] = useState(false);
 
   const id = parseInt(jobID);
-  const { data, loading, error } = useSlurmData(`job/${id}`);
+  const { data, loading, error } = useFetchData(`job/${id}`);
 
   useEffect(() => {
     if (error) {

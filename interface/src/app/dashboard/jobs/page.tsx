@@ -18,41 +18,23 @@ type Job = z.infer<typeof JobSchema>;
 const currentUser = "testslurm"; // TODO: get current user from auth context
 
 export default function JobsPage() {
+    const { data, error } = useFetchData('jobs', SlurmJobResponseSchema);
     const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
     const [showUserJobs, setShowUserJobs] = useState(true); // state toggle
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
-    const [isValidating, setIsValidating] = useState(false); // page state
+    const [loading, setLoading] = useState(false); // page state
     const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
     const router = useRouter();
-
-    const { data, loading, error } = useFetchData('jobs');
     const { deleteData } = useDeleteSlurmData();
 
+
     useEffect(() => {
-        if (error) {
-            return;
-        }
-
-        if (loading) {
-            return;
-        }
-
+        setLoading(true);
         if (data) {
-            setIsValidating(true);
-            try {
-                const validatedData = SlurmJobResponseSchema.parse(data);
-                setJobs(validatedData.jobs);
-            } catch (error) {
-                const validationError = fromError(error);
-                console.error('Error validating job data:', validationError.toString());
-                setJobs([]);
-            } finally {
-                setIsValidating(false);
-            }
-        } else {
-            console.warn("Data is null or undefined, skipping validation.");
+            setJobs(data);
         }
-    }, [data, loading]);
+        setLoading(false);
+    }, [data]);
 
     const filteredJobs = jobs.filter((job) => {
         const matchesSearchQuery = job.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -83,6 +65,7 @@ export default function JobsPage() {
         }
 
         setSelectedJobs([]);
+        router.push('/dashboard/jobs');
     };
 
 
@@ -90,8 +73,12 @@ export default function JobsPage() {
         setSelectedJobs(isSelected ? filteredJobs.map(job => job.job_id) : []);
     };
 
-    if (loading || isValidating) {
+    if (loading) {
         return <LoadingPage />;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
     }
 
 

@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import { TextInput, Switch, Group, rem, Button, Text, SegmentedControl } from '@mantine/core';
 import styles from './Nodes.module.css';
 import { IconSearch, IconServer } from '@tabler/icons-react';
-
 import NodesTable from '../../components/nodes/NodesTable';
-import { useSlurmData } from '@/hooks/useSlurmData';
+import { useFetchData } from '@/hooks/useFetchData';
 import { SlurmNodeResponseSchema, NodeSchema } from '../../schemas/node_schema';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
 import { z } from 'zod';
@@ -19,42 +18,19 @@ export default function NodesPage() {
   const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
   const [showIdleOnly, setShowIdleOnly] = useState<boolean>(false); // switch state
   const [nodes, setNodes] = useState<Node[]>([]); // fetched nodes
-  const [isValidating, setIsValidating] = useState(false); // page state
+  const [loading, setLoading] = useState(false); // page state
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [nodeStateFilter, setNodeStateFilter] = useState<string>('ALL');
-
-  const { data, loading, error } = useSlurmData('nodes');
+  const { data, error } = useFetchData('nodes', SlurmNodeResponseSchema);
 
   useEffect(() => {
-    if (error) {
-      return;
-    }
-
-    if (loading) {
-      return;
-    }
-
+    setLoading(true);
     if (data) {
-      setIsValidating(true);
-      try {
-        const validatedData = SlurmNodeResponseSchema.parse(data);
-        const validatedNodes = validatedData.nodes;
-        if (validatedNodes) {
-          setNodes(validatedNodes);
-        } else {
-          console.warn("Validated nodes are undefined, skipping setNodes.");
-        }
-      } catch (error) {
-        const validationError = fromError(error);
-        console.error('Error validating node data:', validationError.toString());
-        setNodes([]);
-      } finally {
-        setIsValidating(false);
-      }
-    } else {
-      console.warn("Data is null or undefined, skipping validation.");
+      setNodes(data);
     }
-  }, [data, loading]);
+    setLoading(false);
+  }
+    , [data]);
 
   const filteredNodes = nodes.filter((node) => {
     const matchSearch = node.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -66,9 +42,6 @@ export default function NodesPage() {
     return matchSearch && matchFilter && matchState;
   });
 
-  if (loading || isValidating) {
-    return <LoadingPage />;
-  }
 
   const handleNodeSelect = (nodeName: string, isSelected: boolean) => {
     setSelectedNodes((prevSelectedNodes) =>
@@ -99,8 +72,12 @@ export default function NodesPage() {
     return record;
   }, {} as Record<string, Node[]>);
 
-  if (loading || isValidating) {
+  if (loading) {
     return <LoadingPage />;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   return (

@@ -10,11 +10,17 @@ export async function GET(req: NextRequest) {
     const path = searchParams.get('path');
     //const token = req.headers.get('Authorization') || '';  // Assuming JWT is passed in headers
     var DEBUG_API_URL = SLURM_API_BASE_URL;
-    var DEBUG_KEY = process.env.SLURM_JWT;
+    var DEBUG_KEY = SLURM_JWT;
 
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
+
+    // console.log("Print env vars:");
+    // console.log("SLURM_API_BASE_URL:", process.env.SLURM_API_URL);
+    // console.log("SLURM_JWT:", process.env.SLURM_JWT);
+    // console.log("SLURM_API_TESTING_URL:", process.env.SLURM_API_TESTING_URL);
+    // console.log("SLURM_JWT_TESTING:", process.env.SLURM_JWT_TESTING);
 
     if (path.includes("job") || path.includes("reservations")) {
         DEBUG_API_URL = SLURM_API_TESTING_URL + 'api/slurm/v0.0.41/';

@@ -8,6 +8,7 @@ import { ReservationSchema } from "../../schemas/reservation_schema";
 import { NumberSetInfiniteSchema } from "../../schemas/common_schema";
 import { formatDate, formatDuration } from '../../../../utils/datetime';
 import { useRouter } from 'next/navigation';
+import LoadingPage from '../LoadingPage/loadingPage';
 import { FC } from 'react';
 import { z } from 'zod';
 
@@ -164,6 +165,11 @@ export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) =>
     useEffect(() => {
         setSortedData(sortData(reservations, { sortBy, reversed: reverseSortDirection, search }));
     }, [reservations]);
+
+
+    if (reservations.length == 0) {
+        return <LoadingPage />;
+    }
 
 
     return (

@@ -3,7 +3,7 @@
 import { Grid } from '@mantine/core';
 import JobsBarchart from '../../components/dashboard/JobsBarchart';
 import LoadingPage from '@/components/LoadingPage/loadingPage';
-import { useSlurmData } from '@/hooks/useSlurmData';
+import { useFetchData } from '@/hooks/useFetchData';
 import { JobSchema, SlurmJobResponseSchema } from '../../schemas/job_schema';
 import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
@@ -17,40 +17,29 @@ const currentUser = "scontald"; // TODO: get current user from auth context
 
 export default function DashBoard() {
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
-    const [isValidating, setIsValidating] = useState(false); // page state
+    const [loading, setLoading] = useState(false); // page state
 
-    const { data, loading, error } = useSlurmData('jobs');
+    const { data, error } = useFetchData('jobs', SlurmJobResponseSchema);
 
     useEffect(() => {
-        if (error) {
-            return;
-        }
-
-        if (loading) {
-            return;
-        }
-
+        setLoading(true);
         if (data) {
-            setIsValidating(true);
-            try {
-                const validatedData = SlurmJobResponseSchema.parse(data);
-                setJobs(validatedData.jobs);
-            } catch (error) {
-                const validationError = fromError(error);
-                console.error('Error validating job data:', validationError.toString());
-                setJobs([]);
-            } finally {
-                setIsValidating(false);
-            }
-        } else {
-            console.warn("Data is null or undefined, skipping validation.");
+            setJobs(data);
         }
-    }, [data, loading]);
+        setLoading(false);
+    }, [data]);
 
-    //const userJobs = jobs.filter((job) => job.user_name === currentUser);
     const userJobs = jobs;
     const runningCompletedJobs = userJobs.filter(job => job.job_state[0] != 'PENDING');
     const pendingJobs = userJobs.filter(job => job.job_state[0] === 'PENDING');
+
+    if (loading) {
+        return <LoadingPage />;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className={styles.container}>
