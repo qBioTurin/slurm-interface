@@ -15,3 +15,5 @@ export const InfoCard = ({ title, children }: InfoCardProps) => {
     </div>
   )
 };
+
+export default InfoCard;

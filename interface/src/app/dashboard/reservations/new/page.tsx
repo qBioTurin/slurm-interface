@@ -10,7 +10,7 @@ import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_sc
 import { ReservationSummary } from '../../../components/reservations/new/ReservationSummary';
 import ValidationError from '../../../components/commons/ValidationError';
 import ReservationStep from '../../../components/reservations/new/ReservationSteps';
-import { usePostSlurmData } from '@/hooks/usePostSlurmData';
+import { usePostData } from '@/hooks/usePostData';
 
 import dayjs from 'dayjs';
 
@@ -35,7 +35,7 @@ const partitions = [
 const currentUser = 'testslurm';
 const users = [
     { name: 'scontald' },
-    {name: 'lbosio'}
+    { name: 'lbosio' }
 ]
 
 const getCurrentDateAtMidnight = () => {
@@ -46,7 +46,7 @@ const getCurrentDateAtMidnight = () => {
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const [validationError, setValidationError] = useState<string | null>(null);
-    const { data, error, loading, callPost } = usePostSlurmData('reservations');
+    const { data, error, loading, callPost } = usePostData('reservations');
 
     const form = useForm({
         initialValues: {
@@ -61,14 +61,14 @@ export default function NewReservationForm() {
             // start time should be at least 1 minute from the current time
             start_time: (value) => {
                 const nowPlusOneMinute = new Date(Date.now() + 1 * 60000);
-    
+
                 if (value instanceof Date && !isNaN(value.getTime())) {
                     if (value < nowPlusOneMinute) {
                         return "Start time must be at least 1 minute from the current time.";
                     }
                     return null;
                 }
-                return "Start time is required"; 
+                return "Start time is required";
             },
             // end time should be after start time
             end_time: (value, values) => {
@@ -133,7 +133,7 @@ export default function NewReservationForm() {
                     <Button onClick={() => {
                         const errorMessages = form.validate();
                         const endTimeError = errorMessages.errors.end_time;
-                        
+
                         const allErrors = [
                             errorMessages.errors.name,
                             errorMessages.errors.start_time,

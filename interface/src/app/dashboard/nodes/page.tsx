@@ -1,22 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TextInput, Switch, Group, rem, Button, Text, SegmentedControl } from '@mantine/core';
 import styles from './Nodes.module.css';
+import { Accordion, TextInput, Group, rem, Button, Text, SegmentedControl } from '@mantine/core';
 import { IconSearch, IconServer } from '@tabler/icons-react';
-import NodesTable from '../../components/nodes/NodesTable';
-import { useFetchData } from '@/hooks/useFetchData';
-import { SlurmNodeResponseSchema, NodeSchema } from '../../schemas/node_schema';
-import LoadingPage from '@/components/LoadingPage/loadingPage';
+import { useFetchData } from '@/hooks';
+import { SlurmNodeResponseSchema, NodeSchema } from '@/schemas/node_schema';
+import { LoadingPage, NodesTable } from '@/components';
 import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
-import { Accordion } from '@mantine/core';
 
 type Node = z.infer<typeof NodeSchema>;
 
 export default function NodesPage() {
   const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
-  const [showIdleOnly, setShowIdleOnly] = useState<boolean>(false); // switch state
   const [nodes, setNodes] = useState<Node[]>([]); // fetched nodes
   const [loading, setLoading] = useState(false); // page state
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
@@ -29,17 +26,16 @@ export default function NodesPage() {
       setNodes(data);
     }
     setLoading(false);
-  }
-    , [data]);
+  }, [data]);
 
   const filteredNodes = nodes.filter((node) => {
     const matchSearch = node.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchFilter = !showIdleOnly || (node.state?.[0] ?? '') === 'IDLE';
+
     if (nodeStateFilter === 'ALL') {
-      return matchSearch && matchFilter;
+      return matchSearch;
     }
     const matchState = !nodeStateFilter || node.state.includes(nodeStateFilter);
-    return matchSearch && matchFilter && matchState;
+    return matchSearch && matchState;
   });
 
 
@@ -92,13 +88,6 @@ export default function NodesPage() {
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.currentTarget.value)}
           />
-          {/* <div className={styles.switch}>
-            <Switch
-              label="Show idle nodes only"
-              checked={showIdleOnly}
-              onChange={(event) => setShowIdleOnly(event.currentTarget.checked)}
-            />
-          </div> */}
           <Group>
             <Text size="sm" fw={500}>
               Filter by state:

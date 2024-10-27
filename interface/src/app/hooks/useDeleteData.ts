@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function useDeleteSlurmData() {
+export function useDeleteData() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 

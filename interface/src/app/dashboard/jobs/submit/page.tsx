@@ -1,19 +1,16 @@
 'use client'
 
 import { useState } from 'react';
+import styles from './SubmitJobForm.module.css';
 import { Stepper, Button, Group, Notification } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useRouter } from 'next/navigation';
 import { IconUserCheck, IconSettings, IconAdjustmentsHorizontal, IconCircleCheck, IconX } from '@tabler/icons-react';
-import { z } from 'zod';
-import StepInfo from '../../../components/jobs/submit/StepInfo';
-import StepSpecs from '../../../components/jobs/submit/StepSpecs';
-import StepOptional from '../../../components/jobs/submit/StepOptional';
-import StepConfirmation from '../../../components/jobs/submit/StepConfirmation';
-import ValidationError from '@/components/commons/ValidationError';
+import { StepInfo, StepSpecs, StepOptional, StepConfirmation } from '@/components';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
-import styles from './SubmitJobForm.module.css';
-import { usePostSlurmData } from '@/hooks/usePostSlurmData';
+import { usePostData } from '@/hooks';
+import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+import ValidationError from '@/components/commons/ValidationError';
 
 
 type JobSubmissionSchema = z.infer<typeof JobSubmissionSchema>;
@@ -27,7 +24,7 @@ const SubmitJobForm = () => {
   const [active, setActive] = useState(0);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const { data, error, loading, callPost } = usePostSlurmData('api/slurm/v0.0.41/job/submit');
+  const { data, error, loading, callPost } = usePostData('api/slurm/v0.0.41/job/submit');
   const router = useRouter();
 
   const form = useForm({

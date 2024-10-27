@@ -13,7 +13,7 @@ import { useState } from 'react';
 
 type Job = z.infer<typeof JobSchema>;
 
-interface JobTableProps {
+interface JobsTableProps {
     jobs: Job[];
     onSelect?: (jobId: number, selected: boolean) => void;
     onSelectAll?: (isSelected: boolean) => void;
@@ -21,7 +21,7 @@ interface JobTableProps {
     selectedJobs?: number[];
 }
 
-export const JobsTable: FC<JobTableProps> = ({
+export const JobsTable: FC<JobsTableProps> = ({
     jobs,
     onSelect,
     onSelectAll,

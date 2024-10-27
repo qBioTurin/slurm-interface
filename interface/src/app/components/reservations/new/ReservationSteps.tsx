@@ -1,13 +1,12 @@
 import { TextInput, MultiSelect } from '@mantine/core';
-import {DateTimePicker} from '@mantine/dates';
-import dayjs from 'dayjs';
+import { DateTimePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
 
 interface ReservationStepProps {
-    form: UseFormReturnType<any>;
-    users: { name: string }[];
-    mockNodes: { id: string; nodeName: string }[];
-  }
+  form: UseFormReturnType<any>;
+  users: { name: string }[];
+  mockNodes: { id: string; nodeName: string }[];
+}
 
 export default function ReservationStep({ form, users, mockNodes }: ReservationStepProps) {
 
@@ -28,7 +27,7 @@ export default function ReservationStep({ form, users, mockNodes }: ReservationS
         {...form.getInputProps('start_time')}
         onChange={(value) => {
           form.setFieldValue('start_time', value);
-      }}
+        }}
         mt="md"
       />
 
@@ -39,8 +38,8 @@ export default function ReservationStep({ form, users, mockNodes }: ReservationS
         placeholder="End Time"
         {...form.getInputProps('end_time')}
         onChange={(value) => {
-          form.setFieldValue('end_time',value);
-      }}
+          form.setFieldValue('end_time', value);
+        }}
         mt="md"
       />
 
@@ -67,7 +66,7 @@ export default function ReservationStep({ form, users, mockNodes }: ReservationS
         onChange={(value) => form.setFieldValue('nodes', value)}
       />
 
-    {/* <NumberInput
+      {/* <NumberInput
         label="Node Count"
         {...form.getInputProps('NodeCnt')}
         min={0}
@@ -75,7 +74,7 @@ export default function ReservationStep({ form, users, mockNodes }: ReservationS
         mt="md"
     /> */}
 
-    {/* <MultiSelect
+      {/* <MultiSelect
         data={partitions.map((partition) => partition.name)}
         label="Partitions"
         placeholder="Select partition"

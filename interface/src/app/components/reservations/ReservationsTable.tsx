@@ -176,7 +176,7 @@ export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) =>
 
         <div className={styles.container}>
             <ScrollArea>
-                <Group >
+                <Group className={styles.group}>
                     <TextInput
                         className={styles.searchInput}
                         placeholder="Search reservations"

@@ -1,16 +1,14 @@
 'use client'
 
-import { Grid } from '@mantine/core';
-import JobsBarchart from '../../components/dashboard/JobsBarchart';
-import LoadingPage from '@/components/LoadingPage/loadingPage';
-import { useFetchData } from '@/hooks/useFetchData';
-import { JobSchema, SlurmJobResponseSchema } from '../../schemas/job_schema';
-import { z } from 'zod';
-import { fromError } from 'zod-validation-error';
 import { useState, useEffect } from 'react';
 import styles from './Dashboard.module.css';
-import RunningJobsColumn from '../../components/dashboard/RunningJobsColumn';
-import PendingJobsColumn from '../../components/dashboard/PendingJobsColumn';
+import { Grid } from '@mantine/core';
+import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components';
+import { useFetchData } from '@/hooks';
+import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
+import { z } from 'zod';
+import { fromError } from 'zod-validation-error';
+
 
 type Job = z.infer<typeof JobSchema>;
 const currentUser = "scontald"; // TODO: get current user from auth context

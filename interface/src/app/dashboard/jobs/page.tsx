@@ -1,32 +1,29 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import styles from './JobsPage.module.css';
 import { TextInput, Group, rem, Switch, Button, ActionIcon } from '@mantine/core';
-import JobTable from '../../components/jobs/JobsTable';
-import { IconSearch } from '@tabler/icons-react';
-import { JobSchema, SlurmJobResponseSchema } from '../../schemas/job_schema';
+import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
+import { LoadingPage, JobsTable } from '@/components/';
+import { useFetchData, useDeleteData } from '@/hooks';
+import { useRouter } from 'next/navigation';
+import { IconTrash, IconPlayerPause, IconSearch } from '@tabler/icons-react';
 import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
-import styles from './JobsPage.module.css';
-import LoadingPage from '@/components/LoadingPage/loadingPage';
-import { useFetchData } from '@/hooks/useFetchData';
-import { useDeleteSlurmData } from '@/hooks/useDeleteSlurmData';
-import { useRouter } from 'next/navigation';
-import { IconTrash, IconPlayerPause } from '@tabler/icons-react';
-import { revalidatePath } from "next/cache";
+
 
 type Job = z.infer<typeof JobSchema>;
 const currentUser = "testslurm"; // TODO: get current user from auth context
 
 export default function JobsPage() {
     const { data, error } = useFetchData('jobs', SlurmJobResponseSchema);
+    const { deleteData } = useDeleteData();
     const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
     const [showUserJobs, setShowUserJobs] = useState(true); // state toggle
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
     const [loading, setLoading] = useState(false); // page state
     const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
     const router = useRouter();
-    const { deleteData } = useDeleteSlurmData();
 
 
     useEffect(() => {
@@ -130,7 +127,7 @@ export default function JobsPage() {
             </Group>
 
             {filteredJobs.length > 0 ? (
-                <JobTable
+                <JobsTable
                     jobs={filteredJobs}
                     selectable={showUserJobs}
                     selectedJobs={selectedJobs}

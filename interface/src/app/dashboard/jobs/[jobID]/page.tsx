@@ -3,15 +3,11 @@
 import { Text, Grid } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import styles from './JobDetails.module.css';
-import { InfoCard } from '../../../components/jobs/job-details/InfoCard';
-import { InfoField } from '../../../components/jobs/job-details/InfoField';
-import JobStateBadge from '../../../components/jobs/JobStateBadge';
-import JobProgressTimeline from '../../../components/jobs/job-details/JobProgressTimeline';
-import LoadingPage from '@/components/LoadingPage/loadingPage';
-import { useFetchData } from '@/hooks/useFetchData';
+import { InfoCard, InfoField, JobStateBadge, JobProgressTimeline, LoadingPage } from '@/components';
+import { useFetchData } from '@/hooks';
 import { z } from 'zod';
-import { JobSchema, SlurmJobResponseSchema } from '../../../schemas/job_schema';
-import { formatDate, formatDuration } from '../../../../../utils/datetime';
+import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
+import { formatDate } from '../../../../../utils/datetime';
 
 type Job = z.infer<typeof JobSchema>;
 
@@ -27,7 +23,7 @@ const JobPage = ({ params }: JobPageProps) => {
   const [isValidating, setIsValidating] = useState(false);
 
   const id = parseInt(jobID);
-  const { data, loading, error } = useFetchData(`job/${id}`);
+  const { data, loading, error } = useFetchData(`job/${id}`, SlurmJobResponseSchema);
 
   useEffect(() => {
     if (error) {

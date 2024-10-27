@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-export function usePostSlurmData(path: string) {
+export function usePostData(path: string) {
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
