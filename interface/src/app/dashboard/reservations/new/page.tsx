@@ -7,10 +7,8 @@ import { IconCalendar } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import { z } from 'zod';
 import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
-import { ReservationSummary } from '../../../components/reservations/new/ReservationSummary';
-import ValidationError from '../../../components/commons/ValidationError';
-import ReservationStep from '../../../components/reservations/new/ReservationSteps';
-import { usePostData } from '@/hooks/usePostData';
+import { ReservationSummary, ReservationStep, ValidationError } from '@/components';
+import { usePostData } from '@/hooks';
 
 import dayjs from 'dayjs';
 

@@ -1,5 +1,3 @@
-import LoadingPage from "./LoadingPage/loadingPage";
-
 // Dashboard components
 import RunningJobsColumn from "./dashboard/RunningJobsColumn";
 import PendingJobsColumn from "./dashboard/PendingJobsColumn";
@@ -22,9 +20,15 @@ import StepSpecs from "./jobs/submit/StepSpecs";
 import StepOptional from "./jobs/submit/StepOptional";
 import StepConfirmation from "./jobs/submit/StepConfirmation";
 
+// Reservation submission components
+import ReservationSummary from "./reservations/new/ReservationSummary";
+import ReservationStep from "./reservations/new/ReservationSteps";
+
+// Common components
+import ValidationError from "./commons/ValidationError";
+import LoadingPage from "./commons/LoadingPage/loadingPage";
 
 export {
-    LoadingPage,
     RunningJobsColumn,
     PendingJobsColumn,
     JobsBarchart,
@@ -39,4 +43,8 @@ export {
     StepSpecs,
     StepOptional,
     StepConfirmation,
+    ReservationSummary,
+    ReservationStep,
+    ValidationError,
+    LoadingPage
 };
