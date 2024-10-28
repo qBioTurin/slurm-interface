@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     // console.log("SLURM_API_TESTING_URL:", process.env.SLURM_API_TESTING_URL);
     // console.log("SLURM_JWT_TESTING:", process.env.SLURM_JWT_TESTING);
 
-    if (path.includes("job") || path.includes("reservations")) {
+    if (path.includes("job") || path.includes("reservation")) {
         DEBUG_API_URL = SLURM_API_TESTING_URL + 'api/slurm/v0.0.41/';
         DEBUG_KEY = SLURM_JWT_TESTING;
     }

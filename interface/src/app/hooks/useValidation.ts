@@ -6,7 +6,7 @@ export default function useValidation() {
         path: string) => {
 
         var type = "";
-        //if path contains jobs, return the jobs schema
+
         if (path.includes('job')) {
             type = 'jobs';
         } else if (path.includes('node')) {

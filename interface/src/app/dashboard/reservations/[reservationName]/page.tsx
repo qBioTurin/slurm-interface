@@ -1,16 +1,21 @@
 'use client';
 
-import { Text, TextInput, NumberInput, Button, Code, Group, MultiSelect, TagsInput, Modal, Flex } from '@mantine/core';
+import { Text, TextInput, Button, Code, Group, MultiSelect, Modal, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { DateInput, TimeInput } from '@mantine/dates';
-import { Reservation, Node } from '../../../../../utils/models/models';
-import { mockNodes, mockReservations } from '../../../../../utils/models/mock';
+import { DateTimePicker } from '@mantine/dates';
+import { ReservationSchema, SlurmReservationResponseSchema } from '@/schemas/reservation_schema';
 import { useState, useEffect } from 'react';
 import styles from './ReservationForm.module.css';
 import { useDisclosure } from '@mantine/hooks';
+import { useFetchData } from '@/hooks';
 import '@mantine/dates/styles.css';
 import dayjs from 'dayjs';
+import { z } from 'zod';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { LoadingPage } from '@/components';
+
+
+type Reservation = z.infer<typeof ReservationSchema>;
 
 interface EditReservationProps {
     params: {
@@ -20,65 +25,82 @@ interface EditReservationProps {
 
 dayjs.extend(customParseFormat);
 
+const mockNodes = [
+    { id: '1', nodeName: 'slurm-slave1' },
+    { id: '2', nodeName: 'slurm-slave2' },
+    { id: '3', nodeName: 'slurm-slave3' },
+    { id: '4', nodeName: 'slurm-slave4' },
+    { id: '5', nodeName: 'slurm-slave5' },
+];
+
+const users = [
+    { name: 'scontald' },
+    { name: 'lbosio' }
+]
+
+const getNodeNames = (nodes: string) => {
+    const partition = nodes.split('[');
+    const nodeName = partition[0];
+    const nodeRange = partition[1].split(']')[0];
+    console.log("Node Range: ", nodeRange);
+    console.log("Node Name: ", nodeName);
+    const startRange = nodeRange.split('-')[0];
+    const endRange = nodeRange.split('-')[1];
+
+    // Get all numbers in the range
+    const numbers = [];
+    for (let i = parseInt(startRange); i <= parseInt(endRange); i++) {
+        numbers.push(i);
+    }
+
+    // Compose node names
+    const nodeNames = numbers.map((nodeNumber) => nodeName + nodeNumber);
+    return nodeNames;
+}
+
 
 export default function EditReservation({ params }: EditReservationProps) {
     const { reservationName } = params;
     const [reservation, setReservation] = useState<Reservation | null>(null);
     const [submittedValues, setSubmittedValues] = useState<typeof form.values | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
-
-    const form = useForm({
-        initialValues: {
-            name: '',
-            StartTime: new Date(),
-            EndTime: new Date(),
-            Duration: '',
-            Users: new Array<string>(),
-            Groups: new Array<string>(),
-            Accounts: new Array<string>(),
-            NodeCnt: 0,
-            Nodes: new Array<string>(),
-            CoreCnt: 0,
-            PartitionName: '',
-            Licenses: '',
-            Features: '',
-            Flags: new Array<string>(),
-            BurstBuffer: '',
-        },
-        validate: {
-        },
-    });
+    const [loading, setLoading] = useState<boolean>(false);
+    const { data, error } = useFetchData(`reservation/${reservationName}`, SlurmReservationResponseSchema);
+    const form = useForm(
+        {
+            initialValues: {
+                name: '',
+                start_time: new Date(),
+                end_time: new Date(),
+                users: [] as string[],
+                nodes: [] as string[]
+            },
+            validate: {
+            },
+        });
 
     useEffect(() => {
-        const foundReservation = mockReservations.find((r) => r.ReservationName === reservationName);
-        setReservation(foundReservation || null);
-    }, [reservationName]);
+        setLoading(true);
+        if (data) {
+            setReservation(data[0]);
 
-    useEffect(() => {
-        if (reservation) {
             form.setValues({
-                name: reservation.ReservationName,
-                StartTime: reservation.StartTime,
-                EndTime: reservation.EndTime,
-                Duration: reservation.Duration,
-                Users: reservation.Users,
-                Groups: reservation.Groups,
-                Accounts: reservation.Accounts,
-                NodeCnt: reservation.NodeCnt,
-                Nodes: reservation.Nodes?.map((node) => node.nodeName) || new Array<string>(),
-                CoreCnt: reservation.CoreCnt,
-                PartitionName: reservation.PartitionName,
-                Licenses: reservation.Licenses,
-                Features: reservation.Features,
-                Flags: reservation.Flags,
-                BurstBuffer: reservation.BurstBuffer,
+                name: data[0].name,
+                start_time: new Date(data[0].start_time.number * 1000),
+                end_time: new Date(data[0].end_time.number * 1000),
+                users: data[0].users.split(',') as string[],
+                nodes: getNodeNames(data[0].node_list),
             });
-        }
-    }, [reservation]);
 
+        }
+        setLoading(false);
+
+    }, [data]);
 
     if (!reservation) {
-        return <Text>Loading reservation details...</Text>;
+        return <LoadingPage />;
+    } else if (!reservation && !loading) {
+        return <Text>Reservation not found</Text>;
     }
 
     return (
@@ -90,85 +112,54 @@ export default function EditReservation({ params }: EditReservationProps) {
                 disabled
             />
 
-            <DateInput
-                {...form.getInputProps('StartTime')}
+            <DateTimePicker
                 label="Start Time"
-                valueFormat="DD/MM/YYYY HH:mm:ss"
+                valueFormat="YYYY-MM-DDTHH:mm:ss"
+                value={form.values.start_time.getTime() === new Date(0).getTime() ? null : form.values.start_time}
                 placeholder="Start Time"
+                {...form.getInputProps('start_time')}
+                onChange={(value) => {
+                    if (value)
+                        form.setFieldValue('start_time', value);
+                }}
                 mt="md"
-                withAsterisk
-                dateParser={(s) =>
-                    dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate().getTime()
-                        ? dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()
-                        : new Date(s)
-                }
             />
-            <DateInput
-                {...form.getInputProps('EndTime')}
-                valueFormat="DD/MM/YYYY HH:mm:ss"
+
+            <DateTimePicker
                 label="End Time"
+                valueFormat="YYYY-MM-DDTHH:mm:ss"
+                value={form.values.end_time.getTime() === new Date(0).getTime() ? null : form.values.end_time}
                 placeholder="End Time"
-                dateParser={(s) =>
-                    dayjs(s, "DD/MM/YYYY HH:mm:ss",).toDate().getTime()
-                        ? dayjs(s, "DD/MM/YYYY HH:mm:ss").toDate()
-                        : new Date(s)
-                }
+                {...form.getInputProps('end_time')}
+                onChange={(value) => {
+                    if (value)
+                        form.setFieldValue('end_time', value);
+                }}
                 mt="md"
-            />
-
-            <TagsInput
-                {...form.getInputProps('Users')}
-                label="Users"
-                defaultValue={reservation.Users}
-                mt="md"
-                clearable
-            />
-
-            <TagsInput
-                {...form.getInputProps('Groups')}
-                label="Groups"
-                defaultValue={reservation.Groups}
-                mt="md"
-                clearable
             />
 
             <MultiSelect
-                {...form.getInputProps('Accounts')}
-                data={['biology', 'physics']}
-                label="Accounts"
+                data={users.map((user) => user.name)}
+                label="Select Additional Users"
+                placeholder="Add users"
                 mt="md"
-                multiple
+                searchable
+                value={form.values.users}
+                onChange={(selectedUsers) => {
+                    const uniqueUsers = Array.from(new Set([...selectedUsers, users[0].name]));
+                    form.setFieldValue('users', uniqueUsers);
+                }}
             />
 
             <MultiSelect
-                {...form.getInputProps('Nodes')}
+                {...form.getInputProps('nodes')}
                 data={mockNodes.map((node) => node.nodeName)}
                 label="Nodes"
                 placeholder="Select nodes"
                 mt="md"
                 searchable
+                value={form.values.nodes}
             />
-
-            <NumberInput
-                {...form.getInputProps('NodeCnt')}
-                label="Node Count"
-                min={0}
-                mt="md"
-            />
-
-            <NumberInput
-                {...form.getInputProps('CoreCnt')}
-                label="Core Count"
-                min={0}
-                mt="md"
-
-            />
-
-            <TextInput
-                {...form.getInputProps('PartitionName')}
-                label="Partition Name"
-                placeholder="Partition Name"
-                mt="md" />
 
             <Flex
                 gap="md"
@@ -178,11 +169,7 @@ export default function EditReservation({ params }: EditReservationProps) {
                 wrap="wrap"
                 mt="md"
             >
-                <TextInput {...form.getInputProps('Licenses')} label="Licenses" placeholder="Licenses" />
-                <TextInput {...form.getInputProps('Features')} label="Features" placeholder="Features" />
-                <TextInput {...form.getInputProps('BurstBuffer')} label="Burst Buffer" placeholder="Burst Buffer" />
             </Flex>
-
 
             <Group justify="space-between" mt='lg'>
                 <Button type="submit" className={styles.submitButton}>
@@ -191,8 +178,6 @@ export default function EditReservation({ params }: EditReservationProps) {
                 <Button color="rgba(219, 13, 13, 1)" onClick={open}>Delete</Button>
 
             </Group>
-
-
 
             <Modal opened={opened} onClose={close} title="Are you sure you want to delete this reservation?">
                 <Group justify="end">
