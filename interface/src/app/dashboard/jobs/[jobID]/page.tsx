@@ -20,40 +20,27 @@ interface JobPageProps {
 const JobPage = ({ params }: JobPageProps) => {
   const { jobID } = params;
   const [job, setJob] = useState<Job | null>(null);
-  const [isValidating, setIsValidating] = useState(false);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const id = parseInt(jobID);
-  const { data, loading, error } = useFetchData(`job/${id}`, SlurmJobResponseSchema);
+  const { data, error } = useFetchData(`job/${id}`, SlurmJobResponseSchema);
 
   useEffect(() => {
-    if (error) {
-      console.error(error);
-      setJob(null);
-      return;
-    }
-
+    setLoading(true);
     if (data) {
-      setIsValidating(true);
-      try {
-        const validatedData = SlurmJobResponseSchema.parse(data);
-        setJob(validatedData.jobs[0]);
-      } catch (error) {
-        console.error('Invalid job data:', error);
-        setJob(null);
-      } finally {
-        setIsValidating(false);
-      }
-    } else {
-      setJob(null);
+      setJob(data[0]);
     }
-  }, [data, loading, error]);
 
-  if (loading || isValidating) {
-    return <LoadingPage />;
+    setLoading(false);
+  });
+
+  if (error) {
+    return <Text>Failed to load job data</Text>;
   }
 
   if (!job) {
-    return <Text>Job {jobID} not found</Text>;
+    return <LoadingPage />;
+  } else if (!job && !loading) {
+    return <Text>Job not found</Text>;
   }
 
   return (
