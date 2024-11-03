@@ -8,23 +8,11 @@ const SLURM_JWT_TESTING = process.env.SLURM_JWT_TESTING;
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
-    //const token = req.headers.get('Authorization') || '';  // Assuming JWT is passed in headers
-    var DEBUG_API_URL = SLURM_API_BASE_URL;
-    var DEBUG_KEY = SLURM_JWT;
+    var DEBUG_API_URL = SLURM_API_TESTING_URL + 'api/slurm/v0.0.41/';
+    var DEBUG_KEY = SLURM_JWT_TESTING;
 
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
-    }
-
-    // console.log("Print env vars:");
-    // console.log("SLURM_API_BASE_URL:", process.env.SLURM_API_URL);
-    // console.log("SLURM_JWT:", process.env.SLURM_JWT);
-    // console.log("SLURM_API_TESTING_URL:", process.env.SLURM_API_TESTING_URL);
-    // console.log("SLURM_JWT_TESTING:", process.env.SLURM_JWT_TESTING);
-
-    if (path.includes("job") || path.includes("reservation")) {
-        DEBUG_API_URL = SLURM_API_TESTING_URL + 'api/slurm/v0.0.41/';
-        DEBUG_KEY = SLURM_JWT_TESTING;
     }
 
     console.log("Complete path:", DEBUG_API_URL + path); //debug
@@ -52,20 +40,19 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
-    //const token = req.headers.get('Authorization') || '';  // Assuming JWT is passed in headers
 
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
 
-    console.log("Gateway Request:", req); //debug
+    // console.log("Gateway Request:", req); //debug
 
     try {
         const requestBody = await req.json();
 
-        console.log("Gateway Request body typeof:", typeof requestBody); //debug
-        console.log("Gateway Request body:", requestBody); //debug
-        console.log("Gateway Stringify Request body:", JSON.stringify(requestBody, null, 2));
+        // console.log("Gateway Request body typeof:", typeof requestBody); //debug
+        // console.log("Gateway Request body:", requestBody); //debug
+        // console.log("Gateway Stringify Request body:", JSON.stringify(requestBody, null, 2));
 
         const slurmResponse = await fetch(`${SLURM_API_TESTING_URL}${path}`, {
             method: 'POST',
@@ -76,11 +63,10 @@ export async function POST(req: NextRequest) {
             body: JSON.stringify(requestBody),
         });
 
-
-        console.log("Gateway Response:", slurmResponse); //debug
-        console.log("Gateway Response body typeof:", typeof slurmResponse.body);  //debug
-        console.log("Gateway Response status:", slurmResponse.status);  //debug
-        console.log("Gateway Response headers:", slurmResponse.headers); //debug
+        // console.log("Gateway Response:", slurmResponse); //debug
+        // console.log("Gateway Response body typeof:", typeof slurmResponse.body);  //debug
+        // console.log("Gateway Response status:", slurmResponse.status);  //debug
+        // console.log("Gateway Response headers:", slurmResponse.headers); //debug
 
         let data;
         const contentType = slurmResponse.headers.get('content-type');
@@ -104,11 +90,11 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
-    //const token = req.headers.get('Authorization') || '';  
+
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
-    const url = '';
+    const url = SLURM_API_TESTING_URL;
 
     try {
         const slurmResponse = await fetch(`${url}${path}`, {

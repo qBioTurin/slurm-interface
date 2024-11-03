@@ -60,7 +60,7 @@ export default function NodesTable({ nodes, selectedNodes, onNodeSelect, onSelec
                           : 'yellow'
                   }
                 >
-                  {node.state}
+                  {node.state[0]}
                 </Badge>
               </td>
 
