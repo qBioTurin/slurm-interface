@@ -114,10 +114,6 @@ export default function JobsPage() {
                             <ActionIcon size="lg" variant='outline' aria-label={selectedJobs.length == 1 ? 'Cancel job' : 'Cancel jobs'} color='red' onClick={handleDeleteSelectedJobs}>
                                 <IconTrash />
                             </ActionIcon>
-
-                            <ActionIcon size="lg" color='yellow' className={styles.stopJobButton} title={selectedJobs.length === 1 ? 'Stop job' : 'Stop jobs'} onClick={() => { }}>
-                                <IconPlayerPause />
-                            </ActionIcon>
                         </Group>
                     )}
 
