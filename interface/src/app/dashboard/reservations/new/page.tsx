@@ -1,7 +1,7 @@
 'use client'
 
 import '@mantine/dates/styles.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Stepper, Button, Group } from '@mantine/core';
 import { IconCalendar } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
 import { ReservationSummary, ReservationStep, ValidationError } from '@/components';
 import { usePostData } from '@/hooks';
+import { useRouter, useSearchParams } from 'next/navigation';
 // import Credit from '../../../components/reservations/new/Credits'; // CREDITS VALIDATION
 
 import dayjs from 'dayjs';
@@ -24,6 +25,11 @@ type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
 const currentUser = 'scontald';
 
+const parseInitialNodes = (nodes: string[]) => {
+    const parsed = nodes.map((node) => decodeURIComponent(node));
+    return parsed;
+}
+
 const getCurrentDateAtMidnight = () => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -37,8 +43,17 @@ export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const [validationError, setValidationError] = useState<string | null>(null);
     const { data, error, loading, callPost } = usePostData('reservations');
+    const [initialNodes, setInitialNodes] = useState<string[]>([]);
+    const searchParams = useSearchParams();
     // const [userCredits, setUserCredits] = useState(100.0); // CREDITS VALIDATION
     // const [hasInsufficientCredits, setHasInsufficientCredits] = useState(false); // CREDITS VALIDATION
+
+
+    useEffect(() => {
+        const nodes = searchParams.getAll('nodes');
+        setInitialNodes(parseInitialNodes(nodes));
+        form.setFieldValue('nodes', nodes.join(', '));
+    }, [searchParams]);
 
     const form = useForm({
         initialValues: {
