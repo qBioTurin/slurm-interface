@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from './Nodes.module.css';
 import { Accordion, TextInput, Group, rem, Button, Text, SegmentedControl } from '@mantine/core';
-import { IconSearch, IconServer } from '@tabler/icons-react';
+import { IconCalendar, IconPlayerPlay, IconSearch, IconServer } from '@tabler/icons-react';
 import { useFetchData } from '@/hooks';
 import { SlurmNodeResponseSchema, NodeSchema } from '@/schemas/node_schema';
 import { LoadingPage, NodesTable } from '@/components';
@@ -62,6 +62,13 @@ export default function NodesPage() {
     router.push(`/dashboard/jobs/submit?${query}`);
   }
 
+  const handleReserveNodes = () => {
+    const query = selectedNodes.map((node) => `nodes=${encodeURIComponent(node)}`).join('&');
+    router.push(`/dashboard/reservations/new?${query}`);
+  }
+
+
+
   const nodesByPartition: Record<string, Node[]> = filteredNodes.reduce((record, node) => {
     if (node.partitions) {
       node.partitions.forEach((partition) => {
@@ -97,9 +104,6 @@ export default function NodesPage() {
             onChange={(event) => setSearchQuery(event.currentTarget.value)}
           />
           <Group>
-            <Text size="sm" fw={500}>
-              Filter by state:
-            </Text>
             <SegmentedControl
               data={[
                 { value: 'ALL', label: 'All' },
@@ -118,8 +122,16 @@ export default function NodesPage() {
         {selectedNodes.length > 0 && (
           <Group justify='flex-end'>
             <Button onClick={() => setSelectedNodes([])} variant='outline'>Clear selection</Button>
-            <Button onClick={handleSubmitJobForNodes}>
-              {selectedNodes.length === 1 ? `Run jobs on ${selectedNodes.length} node` : `Run jobs on ${selectedNodes.length} nodes`}
+            <Button onClick={handleSubmitJobForNodes}
+              leftSection={<IconPlayerPlay style={{ width: rem(16), height: rem(16) }} />}
+            >
+              Run job(s)
+              {/* {selectedNodes.length === 1 ? `Run job(s) on ${selectedNodes.length} node` : `Run jobs on ${selectedNodes.length} nodes`} */}
+            </Button>
+            <Button onClick={handleReserveNodes} variant="light"
+              leftSection={<IconCalendar style={{ width: rem(16), height: rem(16) }} />}
+            >
+              {selectedNodes.length === 1 ? `Reserve ${selectedNodes.length} node` : `Reserve ${selectedNodes.length} nodes`}
             </Button>
           </Group>
         )}
