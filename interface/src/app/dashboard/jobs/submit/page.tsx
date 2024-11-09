@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './SubmitJobForm.module.css';
 import { Stepper, Button, Group, Notification } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -8,10 +8,9 @@ import { IconUserCheck, IconSettings, IconAdjustmentsHorizontal, IconCircleCheck
 import { StepInfo, StepSpecs, StepOptional, StepConfirmation } from '@/components';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import { usePostData } from '@/hooks';
-import { useRouter } from 'next/navigation';
 import { z } from 'zod';
+import { useRouter, useSearchParams } from 'next/navigation';
 import ValidationError from '@/components/commons/ValidationError';
-
 
 type JobSubmissionSchema = z.infer<typeof JobSubmissionSchema>;
 
@@ -20,12 +19,27 @@ const validateJobSubmission = (values: JobSubmissionSchema) => {
   return parsed.success ? null : parsed.error.format();
 };
 
+const parseInitialNodes = (nodes: string[]) => {
+  const parsed = nodes.map((node) => decodeURIComponent(node));
+  return parsed;
+}
+
 const SubmitJobForm = () => {
   const [active, setActive] = useState(0);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const { data, error, loading, callPost } = usePostData('api/slurm/v0.0.41/job/submit');
+  const [initialNodes, setInitialNodes] = useState<string[]>([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const nodes = searchParams.getAll('nodes');
+    setInitialNodes(parseInitialNodes(nodes));
+    form.setFieldValue('specify_nodes', nodes.join(', '));
+    form.setFieldValue('nodes', nodes.length);
+  }, [searchParams]);
+
 
   const form = useForm({
     initialValues: {
@@ -37,7 +51,7 @@ const SubmitJobForm = () => {
       environment: { PATH: '/bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin' },
       // description: '',
       // partition: '',
-      // specify_nodes: '',
+      specify_nodes: '',
       // immediate: false,
       // tmp_disk_space: undefined,
       // min_memory_per_cpu: undefined,
@@ -50,6 +64,7 @@ const SubmitJobForm = () => {
       current_working_directory: (value) => value.trim().length > 0 ? null : "Current working directory is required",
       nodes: (value) => value >= 1 ? null : "At least 1 node is required",
       tasks: (value) => value >= 1 ? null : "At least 1 task is required",
+      // TODO:add validation for node_list
     },
   });
 
@@ -128,7 +143,6 @@ const SubmitJobForm = () => {
         {/* <ValidationError validationError={validationError} 
             setValidationError={setValidationError} /> */}
 
-
         <div className={styles.stepperContainer}>
           <Stepper active={active} onStepClick={setActive} completedIcon={<IconCircleCheck />} iconSize={47}>
             <Stepper.Step icon={<IconUserCheck />} label="Info" description="Fill in job details" />
@@ -140,7 +154,7 @@ const SubmitJobForm = () => {
 
         <div className={styles.formContainer}>
           {active === 0 && <StepInfo form={form} />}
-          {active === 1 && <StepSpecs form={form} />}
+          {active === 1 && <StepSpecs form={form} selectedNodes={initialNodes} />}
           {active === 2 && <StepOptional form={form} />}
           {active === 3 && <StepConfirmation form={form} />}
 

@@ -9,6 +9,7 @@ import { SlurmNodeResponseSchema, NodeSchema } from '@/schemas/node_schema';
 import { LoadingPage, NodesTable } from '@/components';
 import { z } from 'zod';
 import { fromError } from 'zod-validation-error';
+import { useRouter } from 'next/navigation';
 
 type Node = z.infer<typeof NodeSchema>;
 
@@ -19,6 +20,7 @@ export default function NodesPage() {
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [nodeStateFilter, setNodeStateFilter] = useState<string>('ALL');
   const { data, error } = useFetchData('nodes', SlurmNodeResponseSchema);
+  const router = useRouter();
 
   useEffect(() => {
     setLoading(true);
@@ -53,6 +55,12 @@ export default function NodesPage() {
         : prevSelectedNodes.filter((node) => !partitionNodes.includes(node))
     );
   };
+
+  const handleSubmitJobForNodes = () => {
+    const query = selectedNodes.map((node) => `nodes=${encodeURIComponent(node)}`).join('&');
+    console.log(query);
+    router.push(`/dashboard/jobs/submit?${query}`);
+  }
 
   const nodesByPartition: Record<string, Node[]> = filteredNodes.reduce((record, node) => {
     if (node.partitions) {
@@ -110,8 +118,9 @@ export default function NodesPage() {
         {selectedNodes.length > 0 && (
           <Group justify='flex-end'>
             <Button onClick={() => setSelectedNodes([])} variant='outline'>Clear selection</Button>
-            {selectedNodes.length == 1 && (<Button>Reserve {selectedNodes.length}  node</Button>)}
-            {selectedNodes.length > 1 && (<Button>Reserve {selectedNodes.length}  nodes</Button>)}
+            <Button onClick={handleSubmitJobForNodes}>
+              {selectedNodes.length === 1 ? `Run jobs on ${selectedNodes.length} node` : `Run jobs on ${selectedNodes.length} nodes`}
+            </Button>
           </Group>
         )}
       </Group>

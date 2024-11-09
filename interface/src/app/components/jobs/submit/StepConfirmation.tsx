@@ -1,6 +1,6 @@
 import { UseFormReturnType } from '@mantine/form';
 import { Card, Table } from '@mantine/core';
-import styles from './SubmitJobSteps.module.css';  
+import styles from './SubmitJobSteps.module.css';
 
 type Props = {
   form: UseFormReturnType<any>;
@@ -19,26 +19,27 @@ export default function StepConfirmation({ form }: Props) {
     { key: 'Number of Nodes', value: values.nodes },
     // { key: 'Partition', value: values.partition || 'N/A' }, // Uncomment if needed
     { key: 'Number of Tasks', value: values.tasks },
+    { key: 'Node list', value: values.specify_nodes || 'N/A' },
     // { key: 'CPUs per Task', value: values.cpus_per_task }, // Uncomment if needed
     // { key: 'Memory per Task', value: values.memory_per_task }, // Uncomment if needed
   ];
 
   return (
-      <Table className={styles.summaryTable}>
-        <thead>
-          <tr>
-            <th>Field</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
+    <Table className={styles.summaryTable}>
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
         {fieldsToDisplay.map((field, index) => (
           <tr className={styles.summaryRow} key={index}>
             <td className={styles.summaryKey}>{field.key}</td>
             <td className={styles.summaryValue}>{field.value || 'N/A'}</td>
           </tr>
         ))}
-        </tbody>
-      </Table>
+      </tbody>
+    </Table>
   );
 }
