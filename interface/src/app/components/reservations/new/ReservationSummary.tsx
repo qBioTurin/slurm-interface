@@ -9,7 +9,7 @@ type ReservationSummaryProps = {
     start_time: Date;
     end_time: Date;
     users: string[];
-    nodes: string[];
+    nodes: string;
     // partition?: string;
     errors?: string[];
   };
@@ -25,8 +25,8 @@ export const ReservationSummary = ({ reservation }: ReservationSummaryProps) => 
         <Text><strong>Name:</strong> {name}</Text>
         <Text><strong>Start Time:</strong> {new Date(start_time).toLocaleString()}</Text>
         <Text><strong>End Time:</strong> {new Date(end_time).toLocaleString()}</Text>
-        <Text><strong>Users:</strong> {users.length > 0 ? users.join(', ') : 'None'}</Text>
-        <Text><strong>Nodes:</strong> {nodes.length > 0 ? nodes.join(', ') : 'None'}</Text>
+        <Text><strong>Users:</strong> {Array.isArray(users) && users.length > 0 ? users.join(', ') : 'None'}</Text>
+        <Text><strong>Nodes:</strong> {nodes? nodes : 'None'}</Text>
         {/* {partition && <Text><strong>Partition:</strong> {partition}</Text>} */}
       </Card>
 

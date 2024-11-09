@@ -9,33 +9,20 @@ import { z } from 'zod';
 import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
 import { ReservationSummary, ReservationStep, ValidationError } from '@/components';
 import { usePostData } from '@/hooks';
-import Credit from '../../../components/reservations/new/Credits';
+// import Credit from '../../../components/reservations/new/Credits'; // CREDITS VALIDATION
 
 import dayjs from 'dayjs';
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
-//fetch idle nodes with API
-const mockNodes = [
-    { id: '1', nodeName: 'slurm-slave1' },
-    { id: '2', nodeName: 'slurm-slave2' },
-    { id: '3', nodeName: 'slurm-slave3' },
-    { id: '4', nodeName: 'slurm-slave4' },
-    { id: '5', nodeName: 'slurm-slave5' },
-];
+// const partitions = [
+//     { name: 'broadwell-booked' },
+//     { name: 'cascadelake-booked' },
+//     { name: 'epito-booked' },
+//     { name: 'gracehopper-booked' },
+// ];
 
-const partitions = [
-    { name: 'broadwell-booked' },
-    { name: 'cascadelake-booked' },
-    { name: 'epito-booked' },
-    { name: 'gracehopper-booked' },
-];
-
-//  TODO: replace with actual users
 const currentUser = 'scontald';
-const users = [
-    { name: 'lbosio' }
-]
 
 const getCurrentDateAtMidnight = () => {
     const now = new Date();
@@ -50,8 +37,8 @@ export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const [validationError, setValidationError] = useState<string | null>(null);
     const { data, error, loading, callPost } = usePostData('reservations');
-    const [userCredits, setUserCredits] = useState(100.0); // example credits
-    const [hasInsufficientCredits, setHasInsufficientCredits] = useState(false);
+    // const [userCredits, setUserCredits] = useState(100.0); // CREDITS VALIDATION
+    // const [hasInsufficientCredits, setHasInsufficientCredits] = useState(false); // CREDITS VALIDATION
 
     const form = useForm({
         initialValues: {
@@ -59,11 +46,10 @@ export default function NewReservationForm() {
             start_time: getCurrentDateAtMidnight(),
             end_time: getCurrentDateAtMidnight(),
             users: [currentUser] as string[],
-            nodes: [] as string[],
+            nodes: '' as string,
         },
         validate: {
             name: (value) => value.trim().length > 0 ? null : "Name is required",
-            // start time should be at least 1 minute from the current time
             start_time: (value) => {
                 const nowPlusOneMinute = new Date(Date.now() + 1 * 60000);
 
@@ -75,7 +61,6 @@ export default function NewReservationForm() {
                 }
                 return "Start time is required";
             },
-            // end time should be after start time
             end_time: (value, values) => {
                 const startTime = values.start_time;
                 const endTime = value;
@@ -88,10 +73,11 @@ export default function NewReservationForm() {
     });
 
     const onSubmit = async (values: ReservationSubmissionSchema) => {
-        if (hasInsufficientCredits) {
-            setValidationError("Insufficient credits for this reservation.");
-            return;
-        }
+        // CREDITS VALIDATION
+        // if (hasInsufficientCredits) {
+        //     setValidationError("Insufficient credits for this reservation.");
+        //     return;
+        // }
 
         try {
             await ReservationSubmissionSchema.parseAsync(values);
@@ -99,12 +85,10 @@ export default function NewReservationForm() {
                 start_time: dayjs(values.start_time).format('YYYY-MM-DDTHH:mm:ss'),
                 end_time: dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
                 name: values.name,
-                users: values.users.join(','),
-                nodes: values.nodes ? values.nodes.join(',') : [],
+                users: values.users,
+                nodes: values.nodes ? values.nodes.split(',').map((node: string) => node.trim()).filter((node: string) => node.length > 0) : [],
             };
             const jsonData = JSON.stringify(formattedData, null, 2);
-            console.log("Submitted Data:", jsonData); //debug
-            console.log("Typeof submitted Data:", typeof jsonData); //debug
             setValidationError(null);
             try {
                 await callPost(jsonData);
@@ -122,15 +106,16 @@ export default function NewReservationForm() {
         <>
             <ValidationError validationError={validationError} setValidationError={setValidationError} />
 
-            <Credit
+            {/* CREDITS VALIDATION */}
+            {/* <Credit
                 userCredits={userCredits}
                 durationMinutes={calculateDurationMinutes(form.values.start_time, form.values.end_time)}
                 onInsufficientCredits={setHasInsufficientCredits}
-            />
+            /> */}
 
             <Stepper active={active} mt="xl">
                 <Stepper.Step label="New reservation" description="Select resources and users access" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
-                    <ReservationStep form={form} users={users} mockNodes={mockNodes} />
+                    <ReservationStep form={form} />
                 </Stepper.Step>
                 <Stepper.Completed>
                     Completed! Form values:
@@ -148,12 +133,11 @@ export default function NewReservationForm() {
                 {active !== 3 && (
                     <Button onClick={() => {
                         const errorMessages = form.validate();
-                        const endTimeError = errorMessages.errors.end_time;
 
                         const allErrors = [
                             errorMessages.errors.name,
                             errorMessages.errors.start_time,
-                            endTimeError,
+                            errorMessages.errors.end_time
                         ].filter(Boolean) as string[];
 
                         if (allErrors.length > 0) {

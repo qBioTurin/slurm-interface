@@ -6,8 +6,8 @@ export const ReservationSubmissionSchema = z.object({
     start_time: z.date(),
     end_time: z.date(),
     users: z.array(z.string()),
-    // NodeCnt: z.number().min(0, { message: "Node count must be at least 0" }),
-    nodes: z.array(z.string()).optional(),
+    // NodeCnt: z.number().min(0),
+    nodes: z.string(),
     // partition: z.string().optional(),
     });
   
