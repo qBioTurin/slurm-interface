@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
+//fetch idle nodes with API
 const mockNodes = [
     { id: '1', nodeName: 'slurm-slave1' },
     { id: '2', nodeName: 'slurm-slave2' },
@@ -31,9 +32,8 @@ const partitions = [
 ];
 
 //  TODO: replace with actual users
-const currentUser = 'testslurm';
+const currentUser = 'scontald';
 const users = [
-    { name: 'scontald' },
     { name: 'lbosio' }
 ]
 
@@ -121,11 +121,11 @@ export default function NewReservationForm() {
     return (
         <>
             <ValidationError validationError={validationError} setValidationError={setValidationError} />
-            
+
             <Credit
-                userCredits={userCredits} 
-                durationMinutes={calculateDurationMinutes(form.values.start_time, form.values.end_time)} 
-                onInsufficientCredits={setHasInsufficientCredits} 
+                userCredits={userCredits}
+                durationMinutes={calculateDurationMinutes(form.values.start_time, form.values.end_time)}
+                onInsufficientCredits={setHasInsufficientCredits}
             />
 
             <Stepper active={active} mt="xl">

@@ -13,7 +13,7 @@ import { fromError } from 'zod-validation-error';
 
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = "testslurm"; // TODO: get current user from auth context
+const currentUser = "scontald"; // TODO: get current user from auth context
 
 export default function JobsPage() {
     const { data, error } = useFetchData('jobs', SlurmJobResponseSchema);

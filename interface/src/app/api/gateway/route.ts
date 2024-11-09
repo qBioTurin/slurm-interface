@@ -8,8 +8,8 @@ const SLURM_JWT_TESTING = process.env.SLURM_JWT_TESTING;
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
-    var DEBUG_API_URL = SLURM_API_TESTING_URL + 'api/slurm/v0.0.41/';
-    var DEBUG_KEY = SLURM_JWT_TESTING;
+    var DEBUG_API_URL = SLURM_API_BASE_URL;
+    var DEBUG_KEY = SLURM_JWT;
 
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
@@ -54,10 +54,10 @@ export async function POST(req: NextRequest) {
         // console.log("Gateway Request body:", requestBody); //debug
         // console.log("Gateway Stringify Request body:", JSON.stringify(requestBody, null, 2));
 
-        const slurmResponse = await fetch(`${SLURM_API_TESTING_URL}${path}`, {
+        const slurmResponse = await fetch(`${SLURM_API_BASE_URL}${path}`, {
             method: 'POST',
             headers: {
-                'X-SLURM-USER-TOKEN': SLURM_JWT_TESTING || '',
+                'X-SLURM-USER-TOKEN': SLURM_JWT || '',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestBody),
@@ -94,13 +94,13 @@ export async function DELETE(req: NextRequest) {
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
-    const url = SLURM_API_TESTING_URL;
+    const url = SLURM_API_BASE_URL;
 
     try {
         const slurmResponse = await fetch(`${url}${path}`, {
             method: 'DELETE',
             headers: {
-                'X-SLURM-USER-TOKEN': SLURM_JWT_TESTING || '',
+                'X-SLURM-USER-TOKEN': SLURM_JWT || '',
                 'Content-Type': 'application/json',
             },
         });
