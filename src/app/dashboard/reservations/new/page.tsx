@@ -153,7 +153,7 @@ export default function NewReservationForm() {
 
                 {active !== 3 && (
                     <Button onClick={() => {
-                        const errorMessages = form.validate();
+                        const errorMessages = form.validate().errors;
 
                         if (Object.keys(errorMessages).length === 0) {
                             if (active === 1) {
@@ -161,6 +161,8 @@ export default function NewReservationForm() {
                             } else {
                                 setActive((current) => (current < 1 ? current + 1 : current));
                             }
+                        } else {
+                            console.log("Errors found, active:", active);
                         }
                     }}>
                         Done
