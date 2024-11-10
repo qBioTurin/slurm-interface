@@ -11,9 +11,8 @@ import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_sc
 import { ReservationSummary, ReservationStep} from '@/components';
 import { usePostData } from '@/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
-// import Credit from '../../../components/reservations/new/Credits'; // TODO: fix credits calculation logic
-
 import dayjs from 'dayjs';
+// import Credit from '../../../components/reservations/new/Credits'; // TODO: fix credits calculation logic
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
@@ -45,14 +44,12 @@ export default function NewReservationForm() {
     const router = useRouter();
     const [active, setActive] = useState(0);
     const { data, error, loading, callPost } = usePostData('reservations');
-    const [initialNodes, setInitialNodes] = useState<string[]>([]);
     const searchParams = useSearchParams();
     // const [userCredits, setUserCredits] = useState(100.0); // TODO: get user credits from the session
     // const [hasInsufficientCredits, setHasInsufficientCredits] = useState(false); // CREDITS VALIDATION
 
     useEffect(() => {
         const nodes = searchParams.getAll('nodes');
-        setInitialNodes(parseInitialNodes(nodes));
         form.setFieldValue('nodes', nodes.join(','));
     }, [searchParams]);
 
@@ -108,7 +105,6 @@ export default function NewReservationForm() {
 
             try {
                 //await callPost(jsonData);
-
                 notifications.show({
                     color: 'teal',
                     icon: <IconCheck style={{ width: rem(18), height: rem(18), }} />,
@@ -137,8 +133,6 @@ export default function NewReservationForm() {
             });
         }
     };
-
-
 
     return (
         <>
@@ -170,19 +164,7 @@ export default function NewReservationForm() {
                     <Button onClick={() => {
                         const errorMessages = form.validate();
 
-                        const allErrors = [
-                            errorMessages.errors.name,
-                            errorMessages.errors.start_time,
-                            errorMessages.errors.end_time
-                        ].filter(Boolean) as string[];
-
-                        if (allErrors.length > 0) {
-                            notifications.show({
-                                color: 'red',
-                                title: 'Form validation failed',
-                                message: allErrors.join(', '),
-                            });
-                        } else {
+                        if (Object.keys(errorMessages).length === 0) {
                             if (active === 1) {
                                 onSubmit(form.values);
                             } else {
