@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import styles from './Dashboard.module.css';
-import { Grid } from '@mantine/core';
+import { Grid, Switch, Group, Text, Flex, Stack, Title } from '@mantine/core';
 import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components';
 import { useFetchData } from '@/hooks';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
@@ -11,21 +11,22 @@ import { fromError } from 'zod-validation-error';
 
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = "scontald"; // TODO: get current user from auth context
+const currentUser = "bcasella"; // TODO: get current user from auth context
 
 export default function DashBoard() {
-    const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
+    const [allJobs, setAllJobs] = useState<Job[]>([]); // fetched jobs
     const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
+    const [showUserJobs, setShowUserJobs] = useState(true);
 
     useEffect(() => {
         if (data) {
-            setJobs(data);
+            setAllJobs(data);
         }
     }, [data]);
 
-    const userJobs = jobs;
-    const runningCompletedJobs = userJobs.filter(job => job.job_state[0] != 'PENDING');
-    const pendingJobs = userJobs.filter(job => job.job_state[0] === 'PENDING');
+    const jobs = showUserJobs ? allJobs.filter(job => job.user_name.includes(currentUser)) : allJobs;
+    const runningCompletedJobs = jobs.filter(job => job.job_state[0] != 'PENDING');
+    const pendingJobs = jobs.filter(job => job.job_state[0] === 'PENDING');
 
     if (loading) {
         return <LoadingPage />;
@@ -36,13 +37,17 @@ export default function DashBoard() {
     }
 
     return (
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <h1> Dashboard </h1>
-            </div>
-
-            <div className={styles.section}>
-                <h2>Upcoming Jobs for Today </h2>
+        <Stack>
+            <Group justify='space-between'>
+                <Title order={2} > Dashboard</Title>
+                <Switch
+                    label={showUserJobs ? "Your jobs" : "All Jobs"}
+                    checked={showUserJobs}
+                    onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
+                />
+            </Group>
+            <Title order={3} mt='sm'>Upcoming Jobs for Today </Title>
+            <Flex direction={{ base: 'row', sm: 'column' }}>
                 <Grid>
                     {/* Left Column: Running jobs */}
                     <Grid.Col span={{ base: 8, md: 8, lg: 8 }}>
@@ -54,16 +59,16 @@ export default function DashBoard() {
                         <PendingJobsColumn jobs={pendingJobs} />
                     </Grid.Col>
                 </Grid>
-            </div>
+            </Flex>
 
-            <div className={styles.section}>
-                <h2> Jobs statistics </h2>
+            <Stack mt='md'>
+                <Title order={3} ml='sm'> Jobs statistics </Title>
 
                 <div className={styles.stats}>
-                    <JobsBarchart jobs={userJobs} />
+                    <JobsBarchart jobs={jobs} />
                 </div>
 
-            </div>
-        </div>
+            </Stack>
+        </Stack >
     );
 }

@@ -3,8 +3,6 @@
 import { AppShell, Burger, Group, Image } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import React, { ReactNode } from 'react';
-import logo from '../../assets/logo_hpc4ai.png';
-import { MantineLogo } from '@mantinex/mantine-logo'
 import CustomNavBar from "../Navbar/navbar";
 
 interface ShellProps {
@@ -19,7 +17,7 @@ export const Shell = ({ children }: ShellProps) => {
         <AppShell
             header={{ height: 60 }}
             navbar={{
-                width: 300,
+                width: { base: 200, md: 270, xl: 300 },
                 breakpoint: 'sm',
                 collapsed: { mobile: !opened },
             }}
@@ -42,7 +40,7 @@ export const Shell = ({ children }: ShellProps) => {
                 <CustomNavBar />
             </AppShell.Navbar>
 
-            <AppShell.Main>{children}</AppShell.Main>
+            <AppShell.Main m='sm'>{children}</AppShell.Main>
 
         </AppShell >
     );

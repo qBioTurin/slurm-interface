@@ -1,7 +1,7 @@
 import { BarChart } from '@mantine/charts';
-import '@mantine/charts/styles.css' 
-import { JobStates }  from '../../../../utils/models/job_state';
-import {JobSchema} from '../../schemas/job_schema';
+import '@mantine/charts/styles.css'
+import { JobStates } from '../../../../utils/models/job_state';
+import { JobSchema } from '../../schemas/job_schema';
 import { z } from 'zod';
 
 type Job = z.infer<typeof JobSchema>;
@@ -37,11 +37,13 @@ const JobsBarchart: React.FC<JobsBarchartProps> = ({ jobs }) => {
     return (
         <BarChart
             h={200}
+            maxBarWidth={30}
             data={data}
             dataKey="state"
             orientation="vertical"
             yAxisProps={{ domain: [0, yAxisMax], width: 80 }}
-            barProps={{ radius: 20 }}
+            xAxisLabel='N. jobs'
+            barProps={{ radius: 10 }}
             series={[{ name: 'count', color: 'violet.6' }]}
         />
     );
