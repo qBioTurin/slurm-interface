@@ -26,11 +26,6 @@ type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
 const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from the session
 
-const parseInitialNodes = (nodes: string[]) => {
-    const parsed = nodes.map((node) => decodeURIComponent(node));
-    return parsed;
-}
-
 const getCurrentDateAtMidnight = () => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -154,13 +149,13 @@ export default function NewReservationForm() {
             </Stepper >
 
             <Group justify="flex-end" mt="xl">
-                {active !== 0 && (
+                {active > 0 && (
                     <Button variant="default" onClick={() => setActive((current) => (current > 0 ? current - 1 : current))}>
                         Back
                     </Button>
                 )}
 
-                {active !== 3 && (
+                {active < 3 && (
                     <Button onClick={() => {
                         const errorMessages = form.validate();
 

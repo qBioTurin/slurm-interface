@@ -18,7 +18,7 @@ export default function useValidation() {
 
         try {
             const validatedData = schema.parse(data);
-            console.log('Validated data:', validatedData);
+            //console.log('Validated data:', validatedData);
             // If type is a valid property of the schema
             if (validatedData.hasOwnProperty(type) === false) {
                 setErrorValidation('Invalid data type');

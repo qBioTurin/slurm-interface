@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import '@mantine/notifications/styles.css';
-import styles from './SubmitJobForm.module.css';
 import { Stepper, Button, Group, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -120,9 +119,9 @@ const SubmitJobForm = () => {
   };}
 
     return (
-      <div className={styles.pageContainer}>
+      <div>
 
-        <div className={styles.stepperContainer}>
+        <div>
           <Stepper active={active} onStepClick={setActive} completedIcon={<IconCircleCheck />} iconSize={47}>
             <Stepper.Step icon={<IconUserCheck />} label="Info" description="Fill in job details" />
             <Stepper.Step icon={<IconSettings />} label="Specs" description="Define job specifications" />
@@ -131,7 +130,7 @@ const SubmitJobForm = () => {
           </Stepper>
         </div>
 
-        <div className={styles.formContainer}>
+        <div>
           {active === 0 && <StepInfo form={form} />}
           {active === 1 && <StepSpecs form={form} />}
           {/* {active === 2 && <StepOptional form={form} />} */}

@@ -1,6 +1,5 @@
 import { UseFormReturnType } from '@mantine/form';
-import { Card, Table } from '@mantine/core';
-import styles from './SubmitJobSteps.module.css';
+import { Table } from '@mantine/core';
 
 type Props = {
   form: UseFormReturnType<any>;
@@ -25,21 +24,21 @@ export default function StepConfirmation({ form }: Props) {
   ];
 
   return (
-    <Table className={styles.summaryTable}>
-      <thead>
-        <tr>
-          <th>Field</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table mt='sm'>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th>Field</Table.Th>
+          <Table.Th>Value</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>
         {fieldsToDisplay.map((field, index) => (
-          <tr className={styles.summaryRow} key={index}>
-            <td className={styles.summaryKey}>{field.key}</td>
-            <td className={styles.summaryValue}>{field.value || 'N/A'}</td>
-          </tr>
+          <Table.Tr key={index}>
+            <Table.Td >{field.key}</Table.Td>
+            <Table.Td >{field.value || 'N/A'}</Table.Td>
+          </Table.Tr>
         ))}
-      </tbody>
+      </Table.Tbody>
     </Table>
   );
 }

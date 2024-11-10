@@ -5,13 +5,10 @@ import { ReservationsTable, LoadingPage } from '@/components';
 import { ReservationSchema, SlurmReservationResponseSchema } from '@/schemas/reservation_schema';
 import { useFetchData } from '@/hooks/useFetchData';
 import { z } from 'zod';
-import { fromError } from 'zod-validation-error';
 
 type Reservation = z.infer<typeof ReservationSchema>;
 
-
 export default function ReservationsPage() {
-
     const [reservations, setReservations] = useState<Reservation[]>([]); // fetched reservations
     const { data, loading, error } = useFetchData('reservations', SlurmReservationResponseSchema);
 
