@@ -14,15 +14,16 @@
   margin: -8px 0 0 -8px;
   width: 16px;
   aspect-ratio: 1;
-  background: #339af0;
+  /*  background: #339af0;*/
+  background: #ba2022;
   /* #15aabf*/
   animation: l2-1 2s infinite,
     l2-2 1s infinite;
 }
 
 .loader:after {
-  background: #a5d8ff;
-  /* #5c7cfa*/
+  /*    background: #a5d8ff;*/
+  background: #1b1b1a;
   animation-delay: -1s, 0s;
 }
 
