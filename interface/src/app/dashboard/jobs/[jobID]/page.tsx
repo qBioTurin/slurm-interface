@@ -1,6 +1,6 @@
 'use client';
 
-import { Text, Grid } from '@mantine/core';
+import { Text, Grid, Stack, Flex } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import styles from './JobDetails.module.css';
 import { InfoCard, InfoField, JobStateBadge, JobProgressTimeline, LoadingPage } from '@/components';
@@ -52,16 +52,19 @@ const JobPage = ({ params }: JobPageProps) => {
         <JobStateBadge state={job.job_state[0]} />
       </div>
 
-      <Grid>
+      {/* Job Description */}
+      <Flex
+        direction={{ base: 'column', lg: 'row' }}
+      >
         {/* Left Column: Job Timeline */}
-        <Grid.Col span={6}>
+        <Stack>
           <InfoCard title="Job Timeline">
             <JobProgressTimeline job={job} />
           </InfoCard>
-        </Grid.Col>
+        </Stack>
 
         {/* Right Column: Job Info */}
-        <Grid.Col span={6}>
+        <Stack justify='stretch'>
           <InfoCard title="Job Metadata">
             <InfoField label="User" value={job.user_name} />
             <InfoField label="Submission Time" value={formatDate(job.submit_time.number)} />
@@ -78,8 +81,8 @@ const JobPage = ({ params }: JobPageProps) => {
             {job.start_time && <InfoField label="Start Time" value={formatDate(job.start_time.number)} />}
             {job.end_time && <InfoField label="End Time" value={formatDate(job.end_time.number)} />}
           </InfoCard>
-        </Grid.Col>
-      </Grid>
+        </Stack>
+      </Flex>
     </div>
   );
 };

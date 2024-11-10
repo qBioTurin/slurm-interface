@@ -40,3 +40,6 @@ node_modules/
 
 # temp
 temp/
+
+# log file
+./app.log
