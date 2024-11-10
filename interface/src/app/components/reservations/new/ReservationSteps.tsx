@@ -15,6 +15,8 @@ export default function ReservationStep({ form }: ReservationStepProps) {
         placeholder="Name"
         mt="md"
         {...form.getInputProps('name')}
+        error={form.errors.name}
+        styles={{ input: { borderColor: form.errors.name ? 'red' : undefined } }}
       />
 
       <DateTimePicker
@@ -26,6 +28,8 @@ export default function ReservationStep({ form }: ReservationStepProps) {
           form.setFieldValue('start_time', value);
         }}
         mt="md"
+        error={form.errors.start_time}
+        styles={{ input: { borderColor: form.errors.start_time ? 'red' : undefined } }}
       />
 
       <DateTimePicker
@@ -37,6 +41,8 @@ export default function ReservationStep({ form }: ReservationStepProps) {
           form.setFieldValue('end_time', value);
         }}
         mt="md"
+        error={form.errors.end_time}
+        styles={{ input: { borderColor: form.errors.end_time ? 'red' : undefined } }}
       />
 
       <TextInput 
@@ -44,6 +50,8 @@ export default function ReservationStep({ form }: ReservationStepProps) {
         placeholder="e.g. node1,node2,node3 (separated by commas)" 
         mt="md"
         {...form.getInputProps('nodes')}
+        error={form.errors.nodes}
+        styles={{ input: { borderColor: form.errors.nodes ? 'red' : undefined } }}
       />
 
       {/* <NumberInput

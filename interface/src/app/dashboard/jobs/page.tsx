@@ -8,13 +8,11 @@ import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
 import { LoadingPage, JobsTable } from '@/components/';
 import { useFetchData, useDeleteData } from '@/hooks';
 import { useRouter } from 'next/navigation';
-import { IconTrash, IconPlayerPause, IconSearch } from '@tabler/icons-react';
+import { IconTrash, IconSearch } from '@tabler/icons-react';
 import { z } from 'zod';
-import { fromError } from 'zod-validation-error';
-
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = "testslurm"; // TODO: get current user from auth context
+const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from auth context
 
 export default function JobsPage() {
     const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
@@ -24,7 +22,6 @@ export default function JobsPage() {
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
     const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
     const router = useRouter();
-
 
     useEffect(() => {
         if (data) {
@@ -81,7 +78,6 @@ export default function JobsPage() {
     if (error) {
         return <div>Error: {error}</div>;
     }
-
 
     return (
         <div className={styles.container}>

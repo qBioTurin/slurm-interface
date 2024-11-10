@@ -4,20 +4,14 @@ import { useState, useEffect } from 'react';
 import styles from './SubmitJobForm.module.css';
 import { Stepper, Button, Group, Notification } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconUserCheck, IconSettings, IconAdjustmentsHorizontal, IconCircleCheck, IconX } from '@tabler/icons-react';
+import { IconUserCheck, IconSettings, IconCircleCheck, IconX } from '@tabler/icons-react';
 import { StepInfo, StepSpecs, StepOptional, StepConfirmation } from '@/components';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import { usePostData } from '@/hooks';
 import { z } from 'zod';
 import { useRouter, useSearchParams } from 'next/navigation';
-import ValidationError from '@/components/commons/ValidationError';
 
 type JobSubmissionSchema = z.infer<typeof JobSubmissionSchema>;
-
-const validateJobSubmission = (values: JobSubmissionSchema) => {
-  const parsed = JobSubmissionSchema.safeParse(values);
-  return parsed.success ? null : parsed.error.format();
-};
 
 const parseInitialNodes = (nodes: string[]) => {
   const parsed = nodes.map((node) => decodeURIComponent(node));
@@ -41,7 +35,6 @@ const SubmitJobForm = () => {
       form.setFieldValue('nodes', nodes.length);
     }
   }, [searchParams]);
-
 
   const form = useForm({
     initialValues: {
@@ -71,7 +64,6 @@ const SubmitJobForm = () => {
   });
 
   const onSubmit = async (values: JobSubmissionSchema) => {
-    const errors = form.validate().errors;
     try {
       await JobSubmissionSchema.parseAsync(values);
 
@@ -86,11 +78,7 @@ const SubmitJobForm = () => {
         },
       };
 
-      console.log("Formatted Job Type: ", typeof formattedData); //debug
-      console.log("Formatted Job Submission Data:", formattedData); //debug
       const jsonData = JSON.stringify(formattedData, null, 2);
-      console.log("Stringified Job Type: ", typeof jsonData); //debug
-      console.log("Stringified Job Submission Data:", jsonData); //debug
 
       setValidationError(null);
 
@@ -149,7 +137,7 @@ const SubmitJobForm = () => {
           <Stepper active={active} onStepClick={setActive} completedIcon={<IconCircleCheck />} iconSize={47}>
             <Stepper.Step icon={<IconUserCheck />} label="Info" description="Fill in job details" />
             <Stepper.Step icon={<IconSettings />} label="Specs" description="Define job specifications" />
-            <Stepper.Step icon={<IconAdjustmentsHorizontal />} label="Optional" description="Add advanced settings" />
+            {/* <Stepper.Step icon={<IconAdjustmentsHorizontal />} label="Optional" description="Add advanced settings" /> */}
             <Stepper.Step icon={<IconCircleCheck />} label="Confirmation" description="Review your choices" />
           </Stepper>
         </div>

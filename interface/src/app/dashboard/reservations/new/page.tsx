@@ -8,15 +8,16 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { z } from 'zod';
 import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
-import { ReservationSummary, ReservationStep, ValidationError } from '@/components';
+import { ReservationSummary, ReservationStep} from '@/components';
 import { usePostData } from '@/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
-// import Credit from '../../../components/reservations/new/Credits'; // CREDITS VALIDATION
+// import Credit from '../../../components/reservations/new/Credits'; // TODO: fix credits calculation logic
 
 import dayjs from 'dayjs';
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
+// remove comments once the socket allows for partition selection
 // const partitions = [
 //     { name: 'broadwell-booked' },
 //     { name: 'cascadelake-booked' },
@@ -24,7 +25,7 @@ type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 //     { name: 'gracehopper-booked' },
 // ];
 
-const currentUser = 'lbosio';
+const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from the session
 
 const parseInitialNodes = (nodes: string[]) => {
     const parsed = nodes.map((node) => decodeURIComponent(node));
@@ -41,16 +42,13 @@ const calculateDurationMinutes = (start: Date, end: Date) => {
 };
 
 export default function NewReservationForm() {
+    const router = useRouter();
     const [active, setActive] = useState(0);
-    const [validationError, setValidationError] = useState<string | null>(null);
-    const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
     const { data, error, loading, callPost } = usePostData('reservations');
     const [initialNodes, setInitialNodes] = useState<string[]>([]);
     const searchParams = useSearchParams();
-    const router = useRouter();
-    // const [userCredits, setUserCredits] = useState(100.0); // CREDITS VALIDATION
+    // const [userCredits, setUserCredits] = useState(100.0); // TODO: get user credits from the session
     // const [hasInsufficientCredits, setHasInsufficientCredits] = useState(false); // CREDITS VALIDATION
-
 
     useEffect(() => {
         const nodes = searchParams.getAll('nodes');
@@ -67,6 +65,7 @@ export default function NewReservationForm() {
             nodes: '' as string,
         },
         validate: {
+            nodes: (value) => value.trim().length > 0 ? null : "Nodes are required", // remove once possible to select nodes+partition
             name: (value) => value.trim().length > 0 ? null : "Name is required",
             start_time: (value) => {
                 const nowPlusOneMinute = new Date(Date.now() + 1 * 60000);
@@ -82,8 +81,8 @@ export default function NewReservationForm() {
             end_time: (value, values) => {
                 const startTime = values.start_time;
                 const endTime = value;
-                if (endTime < startTime) {
-                    return "End time must be after or equal to the start time.";
+                if (endTime <= startTime) {
+                    return "End time must be after the start time.";
                 }
                 return null;
             },
@@ -93,7 +92,6 @@ export default function NewReservationForm() {
     const onSubmit = async (values: ReservationSubmissionSchema) => {
         // CREDITS VALIDATION
         // if (hasInsufficientCredits) {
-        //     setValidationError("Insufficient credits for this reservation.");
         //     return;
         // }
 
@@ -107,7 +105,7 @@ export default function NewReservationForm() {
                 nodes: values.nodes
             };
             const jsonData = JSON.stringify(formattedData, null, 2);
-            setValidationError(null);
+
             try {
                 //await callPost(jsonData);
 
@@ -144,8 +142,6 @@ export default function NewReservationForm() {
 
     return (
         <>
-            <ValidationError validationError={validationError} setValidationError={setValidationError} />
-
             {/* CREDITS VALIDATION */}
             {/* <Credit
                 userCredits={userCredits}
@@ -154,11 +150,11 @@ export default function NewReservationForm() {
             /> */}
 
             <Stepper active={active} mt="xl">
-                <Stepper.Step label="New reservation" description="Select resources and users access" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
+                <Stepper.Step label="New reservation" description="Select resources" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
                     <ReservationStep form={form} />
                 </Stepper.Step>
                 <Stepper.Completed>
-                    Completed! Form values:
+                    Form completed! Values:
                     <ReservationSummary reservation={form.values} />
                 </Stepper.Completed>
             </Stepper >
@@ -181,9 +177,12 @@ export default function NewReservationForm() {
                         ].filter(Boolean) as string[];
 
                         if (allErrors.length > 0) {
-                            setValidationError(allErrors.join(', '));
+                            notifications.show({
+                                color: 'red',
+                                title: 'Form validation failed',
+                                message: allErrors.join(', '),
+                            });
                         } else {
-                            setValidationError(null);
                             if (active === 1) {
                                 onSubmit(form.values);
                             } else {
