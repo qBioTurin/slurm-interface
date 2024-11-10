@@ -5,10 +5,12 @@ import {
   IconPlayerPlayFilled,
   IconHourglass,
   IconHandStop,
+  IconPlayerPause,
+  IconAlertTriangle
 } from '@tabler/icons-react';
 import { z } from 'zod';
 import {JobSchema} from '../../../schemas/job_schema';
-import { formatDate, formatDuration } from '../../../../../utils/datetime';
+import { formatDate } from '../../../../../utils/datetime';
 
 type Job = z.infer<typeof JobSchema>;
 
@@ -17,9 +19,12 @@ interface JobProgressTimelineProps {
 }
 
 function JobProgressTimeline({ job }: JobProgressTimelineProps) {
+  const jobState = job.job_state[0];
+  let isErrorState = false;
+  let isPaused = false;
 
   let activeStep = 0;
-  switch (job.job_state[0]) {
+  switch (jobState) {
     case 'PENDING':
       activeStep = 0;
       break;
@@ -34,13 +39,22 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
     case 'TERMINATED':
       activeStep = 4;
       break;
+    case 'CANCELLED':
+    case 'FAILED':
+    case 'TIMEOUT':
+      activeStep = 5;
+      isErrorState = true;
+      break;
+    case 'PAUSED':
+      activeStep = 2;
+      isPaused = true;
+      break;
     default:
       break;
   }
 
     return (
-    <Timeline active={activeStep} bulletSize={24} lineWidth={2}>
-
+    <Timeline active={activeStep} bulletSize={24} lineWidth={2} color={isErrorState ? 'red' : 'blue'}>
       {/* Submitted Step */}
       <Timeline.Item
         bullet={<IconClipboardCheck size={12} />}
@@ -70,13 +84,16 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
 
       {/* Running Step */}
       <Timeline.Item
-        bullet={<IconPlayerPlayFilled size={12} />}
-        title="Running"
+        bullet={isPaused ? <IconPlayerPause size={12} color="orange" /> : <IconPlayerPlayFilled size={12} />}
+        title={isPaused ? 'Paused' : 'Running'}
       >
         <Text c="dimmed" size="sm">
-          The job is currently running on <strong>{job.job_resources && job.job_resources.nodes? job.job_resources.nodes.count : job.nodes}</strong> node(s).
+          {isPaused ? 'The job has been paused.' : 'The job is currently running.'}
         </Text>
         <Text size="xs" mt={4}>
+          {job.job_resources && job.job_resources.nodes
+            ? `Resources: ${job.job_resources.nodes.count} node(s)`
+            : `Nodes: ${job.nodes}`}
         </Text>
       </Timeline.Item>
 
@@ -99,11 +116,33 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
         lineVariant="dashed"
       >
         <Text c="dimmed" size="sm">
-          The job has been terminated successfully.
+          {isErrorState
+            ? `The job ended due to ${jobState.toLowerCase()}.`
+            : 'The job has successfully completed.'}
         </Text>
-        <Text size="xs" mt={4}>
-        </Text>
+        {isErrorState && (
+          <Text size="xs" mt={4} color="red">
+            Error code: {job.exit_code.return_code.number} {jobState === 'FAILED' ? '| See logs for details.' : ''}
+          </Text>
+        )}
       </Timeline.Item>
+
+      {/* Error Step */}
+      {isErrorState && (
+        <Timeline.Item
+          bullet={<IconAlertTriangle size={12} color="red" />}
+          title="Error"
+          color="red"
+        >
+          <Text c="dimmed" size="sm">
+            The job has terminated with an error state: <strong>{jobState}</strong>.
+          </Text>
+          <Text size="xs" mt={4} color="red">
+            {`Exited at: ${formatDate(job.end_time.number)}`}
+          </Text>
+        </Timeline.Item>
+      )}
+
     </Timeline>
   );
 }
