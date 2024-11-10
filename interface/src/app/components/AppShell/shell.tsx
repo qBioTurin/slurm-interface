@@ -32,7 +32,8 @@ export const Shell = ({ children }: ShellProps) => {
                         hiddenFrom="sm"
                         size="sm"
                     />
-                    <Image src="https://i0.wp.com/hpc4ai.unito.it/wp-content/uploads/2023/12/logo_hpc4ai.png?w=384&ssl=1" alt="HPC4AI" height={40} ml="md" />
+                    {/* <img src={'/logo_hpc4ai.png'} alt="HPC4AI" height={40} /> */}
+                    <Image src={'/logo_hpc4ai.png'} alt="HPC4AI" height={40} ml="md" />
                 </Group>
             </AppShell.Header >
 
