@@ -31,10 +31,6 @@ const getCurrentDateAtMidnight = () => {
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 };
 
-const calculateDurationMinutes = (start: Date, end: Date) => {
-    return Math.max(0, (end.getTime() - start.getTime()) / 60000);
-};
-
 export default function NewReservationForm() {
     const router = useRouter();
     const [active, setActive] = useState(0);
@@ -149,13 +145,13 @@ export default function NewReservationForm() {
             </Stepper >
 
             <Group justify="flex-end" mt="xl">
-                {active > 0 && (
+                {active !== 0 && (
                     <Button variant="default" onClick={() => setActive((current) => (current > 0 ? current - 1 : current))}>
                         Back
                     </Button>
                 )}
 
-                {active < 3 && (
+                {active !== 3 && (
                     <Button onClick={() => {
                         const errorMessages = form.validate();
 
