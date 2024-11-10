@@ -24,7 +24,7 @@ export default function StepConfirmation({ form }: Props) {
   ];
 
   return (
-    <Table mt='sm'>
+    <Table mt='sm' striped highlightOnHover withColumnBorders withRowBorders={false}>
       <Table.Thead>
         <Table.Tr>
           <Table.Th>Field</Table.Th>
