@@ -1,10 +1,11 @@
 'use client'
-
+import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
 import { useState, useEffect } from 'react';
-import { Stepper, Button, Group } from '@mantine/core';
-import { IconCalendar } from '@tabler/icons-react';
+import { Stepper, Button, Group, rem } from '@mantine/core';
+import { IconCalendar, IconX, IconCheck } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { z } from 'zod';
 import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
 import { ReservationSummary, ReservationStep, ValidationError } from '@/components';
@@ -23,7 +24,7 @@ type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 //     { name: 'gracehopper-booked' },
 // ];
 
-const currentUser = 'scontald';
+const currentUser = 'lbosio';
 
 const parseInitialNodes = (nodes: string[]) => {
     const parsed = nodes.map((node) => decodeURIComponent(node));
@@ -42,9 +43,11 @@ const calculateDurationMinutes = (start: Date, end: Date) => {
 export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const [validationError, setValidationError] = useState<string | null>(null);
+    const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
     const { data, error, loading, callPost } = usePostData('reservations');
     const [initialNodes, setInitialNodes] = useState<string[]>([]);
     const searchParams = useSearchParams();
+    const router = useRouter();
     // const [userCredits, setUserCredits] = useState(100.0); // CREDITS VALIDATION
     // const [hasInsufficientCredits, setHasInsufficientCredits] = useState(false); // CREDITS VALIDATION
 
@@ -52,7 +55,7 @@ export default function NewReservationForm() {
     useEffect(() => {
         const nodes = searchParams.getAll('nodes');
         setInitialNodes(parseInitialNodes(nodes));
-        form.setFieldValue('nodes', nodes.join(', '));
+        form.setFieldValue('nodes', nodes.join(','));
     }, [searchParams]);
 
     const form = useForm({
@@ -101,21 +104,43 @@ export default function NewReservationForm() {
                 end_time: dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
                 name: values.name,
                 users: values.users,
-                nodes: values.nodes ? values.nodes.split(',').map((node: string) => node.trim()).filter((node: string) => node.length > 0) : [],
+                nodes: values.nodes
             };
             const jsonData = JSON.stringify(formattedData, null, 2);
             setValidationError(null);
             try {
-                await callPost(jsonData);
+                //await callPost(jsonData);
+
+                notifications.show({
+                    color: 'teal',
+                    icon: <IconCheck style={{ width: rem(18), height: rem(18), }} />,
+                    title: 'Reservation submitted',
+                    message: 'Your reservation has been successfully submitted.',
+                    autoClose: 5000,
+                });
+                router.push('/dashboard/reservations');
+
             } catch (error) {
-                console.error("Error submitting reservation:", error);
-                setValidationError('There was an error while submitting the form.');
+                notifications.show({
+                    color: 'red',
+                    icon: <IconX style={{ width: rem(18), height: rem(18), }} />,
+                    title: 'Reservation submission failed',
+                    message: 'Please try again later.',
+                    autoClose: 5000,
+                });
             }
         } catch (error) {
-            console.error("Validation Error:", error);
-            setValidationError('There was an error while submitting the form.');
+            notifications.show({
+                color: 'red',
+                icon: <IconX style={{ width: rem(18), height: rem(18), }} />,
+                title: 'Reservation submission failed',
+                message: 'Please try again later.',
+                autoClose: 5000,
+            });
         }
     };
+
+
 
     return (
         <>
@@ -159,10 +184,10 @@ export default function NewReservationForm() {
                             setValidationError(allErrors.join(', '));
                         } else {
                             setValidationError(null);
-                            if (active === 2) {
+                            if (active === 1) {
                                 onSubmit(form.values);
                             } else {
-                                setActive((current) => (current < 2 ? current + 1 : current));
+                                setActive((current) => (current < 1 ? current + 1 : current));
                             }
                         }
                     }}>
@@ -172,4 +197,5 @@ export default function NewReservationForm() {
             </Group>
         </>
     );
+
 }

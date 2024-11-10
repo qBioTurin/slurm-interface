@@ -44,5 +44,6 @@ export const Shell = ({ children }: ShellProps) => {
 
         </AppShell >
     );
-
 }
+
+export default Shell;

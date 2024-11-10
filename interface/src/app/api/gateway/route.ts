@@ -40,12 +40,17 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
-
+    var url = SLURM_API_BASE_URL;
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
 
     // console.log("Gateway Request:", req); //debug
+
+    if (path.includes('reservations')) {
+        url = url?.split('/api')[0];
+        console.log("url:", url)
+    }
 
     try {
         const requestBody = await req.json();
@@ -54,7 +59,7 @@ export async function POST(req: NextRequest) {
         // console.log("Gateway Request body:", requestBody); //debug
         // console.log("Gateway Stringify Request body:", JSON.stringify(requestBody, null, 2));
 
-        const slurmResponse = await fetch(`${SLURM_API_BASE_URL}${path}`, {
+        const slurmResponse = await fetch(`${url}${path}`, {
             method: 'POST',
             headers: {
                 'X-SLURM-USER-TOKEN': SLURM_JWT || '',

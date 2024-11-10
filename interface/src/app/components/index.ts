@@ -27,6 +27,7 @@ import ReservationStep from "./reservations/new/ReservationSteps";
 // Common components
 import ValidationError from "./commons/ValidationError";
 import LoadingPage from "./commons/LoadingPage/loadingPage";
+import Shell from "./AppShell/shell";
 
 export {
     RunningJobsColumn,
@@ -46,5 +47,6 @@ export {
     ReservationSummary,
     ReservationStep,
     ValidationError,
-    LoadingPage
+    LoadingPage,
+    Shell
 };

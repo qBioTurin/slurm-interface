@@ -1,5 +1,6 @@
 'use client';
 
+import '@mantine/notifications/styles.css';
 import { useState, useEffect } from 'react';
 import styles from './JobsPage.module.css';
 import { TextInput, Group, rem, Switch, Button, ActionIcon } from '@mantine/core';
@@ -13,7 +14,7 @@ import { fromError } from 'zod-validation-error';
 
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = "bcasella"; // TODO: get current user from auth context
+const currentUser = "testslurm"; // TODO: get current user from auth context
 
 export default function JobsPage() {
     const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
