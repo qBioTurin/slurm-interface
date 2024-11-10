@@ -3,7 +3,6 @@ import { TextInput, NumberInput, Select } from '@mantine/core';
 
 type Props = {
   form: UseFormReturnType<any>;
-  selectedNodes: string[];
 };
 
 type NumberInputFieldProps = {
@@ -19,19 +18,21 @@ const NumberInputField = ({ label, form, fieldName, isDisabled }: NumberInputFie
     {...form.getInputProps(fieldName)}
     min={1}
     disabled={isDisabled}
+    mt="md"
   />
 );
 
-export default function StepSpecs({ form, selectedNodes }: Props) {
+export default function StepSpecs({ form }: Props) {
 
-  if (selectedNodes.length > 0) {
+  if (form.values.specify_nodes.length > 0) {
     return (
       <>
         <NumberInputField label="Number of Nodes" form={form} fieldName="nodes" isDisabled />
         <NumberInputField label="Number of Tasks" form={form} fieldName="tasks" />
         <TextInput
-          label="Specify Nodes (optional)"
+          label="Specify nodes"
           {...form.getInputProps('specify_nodes')}
+          mt="md"
         />
       </>
     );

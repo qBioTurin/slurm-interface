@@ -28,7 +28,7 @@ const SubmitJobForm = () => {
   const [active, setActive] = useState(0);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const { data, error, loading, callPost } = usePostData('api/slurm/v0.0.41/job/submit');
+  const { data, error, loading, callPost } = usePostData('/job/submit');
   const [initialNodes, setInitialNodes] = useState<string[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,8 +36,10 @@ const SubmitJobForm = () => {
   useEffect(() => {
     const nodes = searchParams.getAll('nodes');
     setInitialNodes(parseInitialNodes(nodes));
-    form.setFieldValue('specify_nodes', nodes.join(', '));
-    form.setFieldValue('nodes', nodes.length);
+    if (nodes.length) {
+      form.setFieldValue('specify_nodes', nodes.join(', '));
+      form.setFieldValue('nodes', nodes.length);
+    }
   }, [searchParams]);
 
 
@@ -154,7 +156,7 @@ const SubmitJobForm = () => {
 
         <div className={styles.formContainer}>
           {active === 0 && <StepInfo form={form} />}
-          {active === 1 && <StepSpecs form={form} selectedNodes={initialNodes} />}
+          {active === 1 && <StepSpecs form={form} />}
           {active === 2 && <StepOptional form={form} />}
           {active === 3 && <StepConfirmation form={form} />}
 

@@ -2,7 +2,7 @@ import { TextInput, Textarea, Group, Alert } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 
 type Props = {
-  form: UseFormReturnType <any>;
+  form: UseFormReturnType<any>;
 };
 
 export default function StepInfo({ form }: Props) {
@@ -13,10 +13,11 @@ export default function StepInfo({ form }: Props) {
         label="Job Name"
         placeholder="Enter job name"
         {...form.getInputProps("name")}
+        mt="md"
         required
       />
 
-    {/* 
+      {/* 
       <Textarea
         label="Description (optional)"
         placeholder="Enter job description"
@@ -29,6 +30,7 @@ export default function StepInfo({ form }: Props) {
         label="Script"
         placeholder="Enter script"
         {...form.getInputProps("script")}
+        mt="md"
         required
       />
 
@@ -36,7 +38,7 @@ export default function StepInfo({ form }: Props) {
         label="Current Working Directory"
         placeholder="Enter working directory"
         {...form.getInputProps("current_working_directory")}
-        defaultValue=""
+        mt="md"
       />
 
       <Textarea
@@ -45,9 +47,9 @@ export default function StepInfo({ form }: Props) {
         {...form.getInputProps("environment.PATH")}
         autosize
         minRows={2}
-        defaultValue=""
+        mt="md"
       />
 
-      </div>
+    </div>
   );
 }
