@@ -13,25 +13,22 @@ import { fromError } from 'zod-validation-error';
 
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = "scontald"; // TODO: get current user from auth context
+const currentUser = "bcasella"; // TODO: get current user from auth context
 
 export default function JobsPage() {
-    const { data, error } = useFetchData('jobs', SlurmJobResponseSchema);
+    const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
     const { deleteData } = useDeleteData();
     const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
     const [showUserJobs, setShowUserJobs] = useState(true); // state toggle
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
-    const [loading, setLoading] = useState(false); // page state
     const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
     const router = useRouter();
 
 
     useEffect(() => {
-        setLoading(true);
         if (data) {
             setJobs(data);
         }
-        setLoading(false);
     }, [data]);
 
     const filteredJobs = jobs.filter((job) => {

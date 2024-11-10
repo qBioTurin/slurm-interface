@@ -16,18 +16,15 @@ type Node = z.infer<typeof NodeSchema>;
 export default function NodesPage() {
   const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
   const [nodes, setNodes] = useState<Node[]>([]); // fetched nodes
-  const [loading, setLoading] = useState(false); // page state
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [nodeStateFilter, setNodeStateFilter] = useState<string>('ALL');
-  const { data, error } = useFetchData('nodes', SlurmNodeResponseSchema);
+  const { data, loading, error } = useFetchData('nodes', SlurmNodeResponseSchema);
   const router = useRouter();
 
   useEffect(() => {
-    setLoading(true);
     if (data) {
       setNodes(data);
     }
-    setLoading(false);
   }, [data]);
 
   const filteredNodes = nodes.filter((node) => {

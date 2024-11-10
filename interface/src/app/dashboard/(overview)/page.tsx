@@ -15,16 +15,12 @@ const currentUser = "scontald"; // TODO: get current user from auth context
 
 export default function DashBoard() {
     const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
-    const [loading, setLoading] = useState(false); // page state
-
-    const { data, error } = useFetchData('jobs', SlurmJobResponseSchema);
+    const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
 
     useEffect(() => {
-        setLoading(true);
         if (data) {
             setJobs(data);
         }
-        setLoading(false);
     }, [data]);
 
     const userJobs = jobs;

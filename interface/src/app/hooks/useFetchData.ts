@@ -5,12 +5,11 @@ import useValidation from './useValidation';
 export function useFetchData(path: string, responseSchema: any) {
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const { validate, errorValidation } = useValidation();
 
     const fetchData = useCallback(async () => {
         try {
-            setLoading(true);
             const response = await fetch(`/api/gateway?path=${path}`, {
                 method: 'GET',
                 headers: {
