@@ -26,6 +26,9 @@ export default function ReservationStep({ form }: ReservationStepProps) {
         {...form.getInputProps('start_time')}
         onChange={(value) => {
           form.setFieldValue('start_time', value);
+            if (value) {
+              form.setFieldValue('end_time', new Date(value.getTime() + 60 * 60 * 1000));
+            }
         }}
         mt="md"
         error={form.errors.start_time}
