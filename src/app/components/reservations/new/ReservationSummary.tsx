@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { Card, Text, List, ThemeIcon} from '@mantine/core';
+import { Card, Table, Text } from '@mantine/core';
 import { IconAlertCircle } from '@tabler/icons-react';
 
 type ReservationSummaryProps = {
@@ -18,35 +17,54 @@ type ReservationSummaryProps = {
 export const ReservationSummary = ({ reservation }: ReservationSummaryProps) => {
   const { name, start_time, end_time, users, nodes, errors } = reservation;
 
+  const fieldsToDisplay = [
+    { key: 'Name', value: name },
+    { key: 'Start Time', value: new Date(start_time).toLocaleString() },
+    { key: 'End Time', value: new Date(end_time).toLocaleString() },
+    { key: 'Users', value: Array.isArray(users) && users.length > 0 ? users.join(', ') : 'None' },
+    { key: 'Nodes', value: nodes || 'None' },
+    // Uncomment if partition field is included in the data
+    // { key: 'Partition', value: reservation.partition || 'N/A' },
+  ];
+
   return (
     <div>
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Text size="lg" mb="md">Reservation Summary</Text>
-        <Text><strong>Name:</strong> {name}</Text>
-        <Text><strong>Start Time:</strong> {new Date(start_time).toLocaleString()}</Text>
-        <Text><strong>End Time:</strong> {new Date(end_time).toLocaleString()}</Text>
-        <Text><strong>Users:</strong> {Array.isArray(users) && users.length > 0 ? users.join(', ') : 'None'}</Text>
-        <Text><strong>Nodes:</strong> {nodes? nodes : 'None'}</Text>
-        {/* {partition && <Text><strong>Partition:</strong> {partition}</Text>} */}
-      </Card>
+        <Table striped highlightOnHover withColumnBorders>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Field</Table.Th>
+              <Table.Th>Value</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {fieldsToDisplay.map((field, index) => (
+              <Table.Tr key={index}>
+                <Table.Td>{field.key}</Table.Td>
+                <Table.Td>{field.value}</Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
 
-      <Card>
-        {errors && errors.length > 0 && (
-          <>
-            <Text mt="md" color="red">Errors:</Text>
-            <List spacing="xs" size="sm" mb="md" center>
+      {errors && errors.length > 0 && (
+        <Card mt="md">
+          <Text color="red" mt="md">Errors:</Text>
+          <Table striped highlightOnHover>
+            <Table.Tbody>
               {errors.map((error, index) => (
-                <List.Item key={index}>
-                  <ThemeIcon color="red" size={20} radius="xl">
-                    ⚠️
-                  </ThemeIcon>
-                  <Text color="red">{error}</Text>
-                </List.Item>
+                <Table.Tr key={index}>
+                  <Table.Td>
+                    <IconAlertCircle size={20} color="red" />
+                  </Table.Td>
+                  <Table.Td>
+                    <Text color="red">{error}</Text>
+                  </Table.Td>
+                </Table.Tr>
               ))}
-            </List>
-          </>
-        )}
-      </Card>
+            </Table.Tbody>
+          </Table>
+        </Card>
+      )}
     </div>
   );
 };

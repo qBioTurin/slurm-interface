@@ -139,7 +139,7 @@ export default function NewReservationForm() {
                     <ReservationStep form={form} />
                 </Stepper.Step>
                 <Stepper.Completed>
-                    Form completed! Values:
+                    Review your submission details below:
                     <ReservationSummary reservation={form.values} />
                 </Stepper.Completed>
             </Stepper >
