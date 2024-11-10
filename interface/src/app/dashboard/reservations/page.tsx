@@ -13,16 +13,12 @@ type Reservation = z.infer<typeof ReservationSchema>;
 export default function ReservationsPage() {
 
     const [reservations, setReservations] = useState<Reservation[]>([]); // fetched reservations
-    const { data, error } = useFetchData('reservations', SlurmReservationResponseSchema);
-    const [loading, setLoading] = useState<boolean>(false); // page state
+    const { data, loading, error } = useFetchData('reservations', SlurmReservationResponseSchema);
 
     useEffect(() => {
-        setLoading(true);
-
         if (data) {
             setReservations(data);
         }
-        setLoading(false);
     }, [data]);
 
     if (loading) {
@@ -32,7 +28,6 @@ export default function ReservationsPage() {
     if (error) {
         return <div>Error: {error}</div>;
     }
-
 
     return (<ReservationsTable reservations={reservations} />);
 }
