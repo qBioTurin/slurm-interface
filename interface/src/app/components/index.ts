@@ -25,7 +25,6 @@ import ReservationSummary from "./reservations/new/ReservationSummary";
 import ReservationStep from "./reservations/new/ReservationSteps";
 
 // Common components
-import ValidationError from "./commons/ValidationError";
 import LoadingPage from "./commons/LoadingPage/loadingPage";
 import Shell from "./AppShell/shell";
 
@@ -46,7 +45,6 @@ export {
     StepConfirmation,
     ReservationSummary,
     ReservationStep,
-    ValidationError,
     LoadingPage,
     Shell
 };
