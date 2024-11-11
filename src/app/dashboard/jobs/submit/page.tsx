@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import '@mantine/notifications/styles.css';
 import { Stepper, Button, Group, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconUserCheck, IconSettings, IconCircleCheck, IconX, IconCheck } from '@tabler/icons-react';
-import { StepInfo, StepSpecs, StepConfirmation } from '@/components';
+import { StepInfo, StepSpecs, StepConfirmation, LoadingPage } from '@/components';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import { usePostData } from '@/hooks';
 import { z } from 'zod';
@@ -30,12 +30,12 @@ const SubmitJobForm = () => {
 
   const form = useForm({
     initialValues: {
-      name: 'test',
-      script: '#!/bin/bash\nsrun sleep 600',
-      current_working_directory: '/tmp',
+      name: '',
+      script: '',
+      current_working_directory: '',
       nodes: 1,
       tasks: 1,
-      environment: { PATH: '/bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin' },
+      environment: { PATH: '' },
       // description: '',
       // partition: '',
       specify_nodes: '',

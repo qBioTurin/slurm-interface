@@ -111,7 +111,7 @@ export default function JobsPage() {
                         </Group>
                     )}
 
-                <Button className={styles.submitButton} onClick={() => router.push('/dashboard/jobs/submit')}>
+                <Button onClick={() => router.push('/dashboard/jobs/submit')}>
                     Submit Jobs
                 </Button>
             </Group>

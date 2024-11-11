@@ -11,7 +11,7 @@ export default function StepInfo({ form }: Props) {
 
       <TextInput
         label="Job Name"
-        placeholder="Enter job name"
+        placeholder="e.g monday-kobayashi-job"
         {...form.getInputProps("name")}
         mt="md"
         required
@@ -28,7 +28,7 @@ export default function StepInfo({ form }: Props) {
 
       <TextInput
         label="Script"
-        placeholder="Enter script"
+        placeholder="e.g. #!/bin/bash\nsrun sleep 600"
         {...form.getInputProps("script")}
         mt="md"
         required
@@ -36,14 +36,14 @@ export default function StepInfo({ form }: Props) {
 
       <TextInput
         label="Current Working Directory"
-        placeholder="Enter working directory"
+        placeholder="e.g. /tmp"
         {...form.getInputProps("current_working_directory")}
         mt="md"
       />
 
       <Textarea
         label="Environment Variables"
-        placeholder="Enter environment variables (e.g. PATH=/usr/bin:/bin)"
+        placeholder="e.g. /bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin)"
         {...form.getInputProps("environment.PATH")}
         autosize
         minRows={2}
