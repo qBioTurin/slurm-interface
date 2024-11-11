@@ -6,7 +6,7 @@ import { Stepper, Button, Group, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconUserCheck, IconSettings, IconCircleCheck, IconX, IconCheck } from '@tabler/icons-react';
-import { StepInfo, StepSpecs, StepOptional, StepConfirmation } from '@/components';
+import { StepInfo, StepSpecs, StepConfirmation } from '@/components';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import { usePostData } from '@/hooks';
 import { z } from 'zod';
