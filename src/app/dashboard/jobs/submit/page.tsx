@@ -5,7 +5,7 @@ import '@mantine/notifications/styles.css';
 import { Stepper, Button, Group, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { IconUserCheck, IconSettings, IconCircleCheck, IconX, IconCheck} from '@tabler/icons-react';
+import { IconUserCheck, IconSettings, IconCircleCheck, IconX, IconCheck } from '@tabler/icons-react';
 import { StepInfo, StepSpecs, StepOptional, StepConfirmation } from '@/components';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import { usePostData } from '@/hooks';
@@ -80,8 +80,8 @@ const SubmitJobForm = () => {
           title: 'Job submitted',
           message: 'Your job has been successfully submitted.',
           autoClose: 5000,
-      });
-      router.push('/dashboard/jobs');
+        });
+        router.push('/dashboard/jobs');
 
       } catch (error) {
         console.error("Submission Error:", error);
@@ -91,7 +91,7 @@ const SubmitJobForm = () => {
           title: 'Job submission failed',
           message: 'Please try again later.',
           autoClose: 5000,
-      });
+        });
       }
 
     } catch (error) {
@@ -102,7 +102,7 @@ const SubmitJobForm = () => {
         title: 'Job submission failed',
         message: 'Please try again later.',
         autoClose: 5000,
-    });
+      });
     }
   };
 
@@ -110,46 +110,48 @@ const SubmitJobForm = () => {
     const errors = form.validate().errors;
 
     if (Object.keys(errors).length === 0) {
-      if (active ===2) { {/* Change to < 3 when optional step is added */}
+      if (active === 2) {
+        {/* Change to < 3 when optional step is added */ }
         onSubmit(form.values);
         return;
       } else {
         setActive((current) => current + 1);
       }
-  };}
-
-    return (
-      <div>
-
-        <div>
-          <Stepper active={active} onStepClick={setActive} completedIcon={<IconCircleCheck />} iconSize={47}>
-            <Stepper.Step icon={<IconUserCheck />} label="Info" description="Fill in job details" />
-            <Stepper.Step icon={<IconSettings />} label="Specs" description="Define job specifications" />
-            {/* <Stepper.Step icon={<IconAdjustmentsHorizontal />} label="Optional" description="Add advanced settings" /> */}
-            <Stepper.Step icon={<IconCircleCheck />} label="Confirmation" description="Review your choices" />
-          </Stepper>
-        </div>
-
-        <div>
-          {active === 0 && <StepInfo form={form} />}
-          {active === 1 && <StepSpecs form={form} />}
-          {/* {active === 2 && <StepOptional form={form} />} */}
-          {active === 2 && <StepConfirmation form={form} />} {/* Change to < 3 when optional step is added */}
-
-          <Group mt="xl">
-            {active > 0 && (
-              <Button variant="outline" onClick={() => setActive((current) => current - 1)}>
-                Back
-              </Button>
-            )}
-
-            <Button onClick={handleNavigation}>
-              {active < 2 ? 'Next step' : 'Submit'} {/* Change to < 3 when optional step is added */}
-            </Button>
-          </Group>
-        </div>
-      </div>
-    );
+    };
   }
+
+  return (
+    <div>
+
+      <div>
+        <Stepper active={active} onStepClick={setActive} completedIcon={<IconCircleCheck />} iconSize={47}>
+          <Stepper.Step icon={<IconUserCheck />} label="Info" description="Fill in job details" />
+          <Stepper.Step icon={<IconSettings />} label="Specs" description="Define job specifications" />
+          {/* <Stepper.Step icon={<IconAdjustmentsHorizontal />} label="Optional" description="Add advanced settings" /> */}
+          <Stepper.Step icon={<IconCircleCheck />} label="Confirmation" description="Review your choices" />
+        </Stepper>
+      </div>
+
+      <div>
+        {active === 0 && <StepInfo form={form} />}
+        {active === 1 && <StepSpecs form={form} />}
+        {/* {active === 2 && <StepOptional form={form} />} */}
+        {active === 2 && <StepConfirmation form={form} />} {/* Change to < 3 when optional step is added */}
+
+        <Group mt="xl">
+          {active > 0 && (
+            <Button variant="outline" onClick={() => setActive((current) => current - 1)}>
+              Back
+            </Button>
+          )}
+
+          <Button onClick={handleNavigation}>
+            {active < 2 ? 'Next step' : 'Submit'} {/* Change to < 3 when optional step is added */}
+          </Button>
+        </Group>
+      </div>
+    </div>
+  );
+}
 
 export default SubmitJobForm;

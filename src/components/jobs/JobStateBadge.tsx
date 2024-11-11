@@ -1,5 +1,5 @@
 import { Badge, Tooltip } from '@mantine/core';
-import { JobStates} from '../../../../utils/models/job_state';
+import { JobStates } from '@/utils/models/job_state';
 
 
 interface JobStateBadgeProps {
@@ -18,14 +18,14 @@ const JobStateBadge: React.FC<JobStateBadgeProps> = ({ state }) => {
             </Tooltip>
         );
     }
-    
+
     const getBadgeColor = () => {
         switch (jobStateInfo.state) {
-            case 'RUNNING':   return 'green';
-            case 'PENDING':  return 'yellow';
-            case 'COMPLETED':  return 'blue';
-            case 'FAILED':   return 'red';
-            default:    return 'gray';
+            case 'RUNNING': return 'green';
+            case 'PENDING': return 'yellow';
+            case 'COMPLETED': return 'blue';
+            case 'FAILED': return 'red';
+            default: return 'gray';
         }
     };
 

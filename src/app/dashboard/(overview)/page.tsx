@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import styles from './Dashboard.module.css';
-import { Grid, Switch, Group, Text, Flex, Stack, Title } from '@mantine/core';
-import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components';
-import { useFetchData } from '@/hooks';
+import { Grid, Switch, Group, Flex, Stack, Title } from '@mantine/core';
+import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components/';
+import { useFetchData } from '@/hooks/';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
 import { z } from 'zod';
-import { fromError } from 'zod-validation-error';
 
 
 type Job = z.infer<typeof JobSchema>;

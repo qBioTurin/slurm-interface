@@ -1,5 +1,5 @@
 import React from 'react';
-import { JobSchema } from '../../schemas/job_schema';
+import { JobSchema } from '@/schemas/job_schema';
 import { z } from 'zod';
 import { Table, ScrollArea } from '@mantine/core';
 import styles from './JobColumns.module.css';

@@ -1,5 +1,5 @@
 import { UseFormReturnType } from '@mantine/form';
-import { TextInput, NumberInput, Select } from '@mantine/core';
+import { TextInput, NumberInput } from '@mantine/core';
 
 type Props = {
   form: UseFormReturnType<any>;
@@ -33,6 +33,7 @@ export default function StepSpecs({ form }: Props) {
           label="Specify nodes"
           {...form.getInputProps('specify_nodes')}
           mt="md"
+          disabled
         />
       </>
     );

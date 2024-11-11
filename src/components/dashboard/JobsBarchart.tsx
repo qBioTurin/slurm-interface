@@ -1,7 +1,7 @@
 import { BarChart } from '@mantine/charts';
 import '@mantine/charts/styles.css'
-import { JobStates } from '../../../../utils/models/job_state';
-import { JobSchema } from '../../schemas/job_schema';
+import { JobStates } from '@/utils/models/job_state';
+import { JobSchema } from '@/schemas/job_schema';
 import { z } from 'zod';
 
 type Job = z.infer<typeof JobSchema>;

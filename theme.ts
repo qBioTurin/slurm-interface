@@ -1,7 +1,7 @@
 "use client";
 
 import { createTheme, Loader } from "@mantine/core";
-import { CssLoader } from "./src/app/components/commons/LoadingPage/CssLoader"
+import { CssLoader } from "./src/components/commons/LoadingPage/CssLoader"
 
 export const theme = createTheme({
     components: {

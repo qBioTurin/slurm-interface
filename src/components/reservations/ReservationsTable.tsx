@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
-import { Table, Pill, TextInput, Button, Switch, Group, Badge, Flex, rem, UnstyledButton, Text, Center, ScrollArea, keys } from '@mantine/core';
+import { Table, TextInput, Button, Group, Badge, Flex, rem, UnstyledButton, Text, Center, ScrollArea, keys } from '@mantine/core';
 import styles from './Reservations.module.css';
-import { ReservationSchema } from "../../schemas/reservation_schema";
-import { NumberSetInfiniteSchema } from "../../schemas/common_schema";
-import { formatDate, formatDuration } from '../../../../utils/datetime';
+import { ReservationSchema } from '@/schemas/reservation_schema';
+import { formatDate } from '@/utils/datetime';
 import { useRouter } from 'next/navigation';
 import LoadingPage from '../commons/LoadingPage/loadingPage';
 import { FC } from 'react';

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import logger from '@/../lib/logger';
+import logger from '@/lib/logger';
 
 const SLURM_API_BASE_URL = process.env.SLURM_API_URL;
 const SLURM_JWT = process.env.SLURM_JWT;
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     try {
         const requestBody = await req.json();
-        
+
         logger.debug(`POST request body: ${JSON.stringify(requestBody, null, 2)}`); // logger debug
 
         const slurmResponse = await fetch(`${SLURM_API_BASE_URL}${path}`, {
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
         logger.info(`POST request to ${path} succeeded.`); // logger info
         logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
         logger.debug(`Response Data: ${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}`); // logger debug
-        
+
         return NextResponse.json(data);
 
     } catch (error: any) {

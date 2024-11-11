@@ -9,8 +9,8 @@ import {
   IconAlertTriangle
 } from '@tabler/icons-react';
 import { z } from 'zod';
-import {JobSchema} from '../../../schemas/job_schema';
-import { formatDate } from '../../../../../utils/datetime';
+import { JobSchema } from '@/schemas/job_schema';
+import { formatDate } from '@/utils/datetime';
 
 type Job = z.infer<typeof JobSchema>;
 
@@ -53,7 +53,7 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
       break;
   }
 
-    return (
+  return (
     <Timeline active={activeStep} bulletSize={24} lineWidth={2} color={isErrorState ? 'red' : 'blue'}>
       {/* Submitted Step */}
       <Timeline.Item

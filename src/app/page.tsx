@@ -1,4 +1,4 @@
-import DashBoardPage from "@/dashboard/(overview)/page";
+import DashBoardPage from "@/app/dashboard/(overview)/page";
 
 export default function Home() {
   return (

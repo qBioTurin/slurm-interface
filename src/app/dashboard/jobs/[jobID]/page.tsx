@@ -7,7 +7,7 @@ import { InfoCard, InfoField, JobStateBadge, JobProgressTimeline, LoadingPage } 
 import { useFetchData } from '@/hooks';
 import { z } from 'zod';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
-import { formatDate } from '../../../../../utils/datetime';
+import { formatDate } from '@/utils/datetime';
 
 type Job = z.infer<typeof JobSchema>;
 

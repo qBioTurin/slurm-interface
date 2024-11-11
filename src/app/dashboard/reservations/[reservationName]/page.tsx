@@ -1,6 +1,6 @@
 'use client';
 
-import { Text, TextInput, Button, Code, Group, MultiSelect, Modal, Flex } from '@mantine/core';
+import { Text, TextInput, Button, Group, MultiSelect, Modal, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { DateTimePicker } from '@mantine/dates';
 import { ReservationSchema, SlurmReservationResponseSchema } from '@/schemas/reservation_schema';
