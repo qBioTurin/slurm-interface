@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = "testslurm"; // TODO: get current user from auth context
+const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from auth context
 
 export default function DashBoard() {
     const [allJobs, setAllJobs] = useState<Job[]>([]); // fetched jobs
