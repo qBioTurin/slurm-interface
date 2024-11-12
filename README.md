@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1 align="center">
+  
+  ![HPC4AI-logo](https://hpc4ai.it/storage/small_logo_hpc4ai_black.png)
+  
+</h1>
 
-## Getting Started
+# Overview
+This project is a modernized interface for interacting with SLURM.<br>
+It allows users to view SLURM data and submit job/reservation requests via an intuitive dashboard.<br>
+The interface integrates with our internal API to provide a user-friendly and easy-to-extend solution.
 
-First, run the development server:
+# Features
+## Dashboard
+On the `Dashboard` users can:
+- View an organized list of running/pending SLURM jobs.
+- View jobs statistics.
+## Nodes
+The `Nodes` section provides a view of all available nodes within each partition. Users can:
+- See a list of nodes segmented by partition, which can be filtered by state.
+- Select nodes of interest and open a form to execute jobs or make reservations.
+## Jobs
+The `Jobs` page offers a table view of all jobs (alternatively, when selected, only the user's jobs) currently managed by SLURM, as well as controls for job submission. Users can:
+- Open a form to initiate new jobs directly from this view.
+- Delete a single job or a batch of jobs.
+- Click on a job ID to access detailed job state information in a timeline format.
+## Reservations
+The `Reservations` view shows a list of reservations for all users. Here, users can:
+- View all reservations that are currently active or upcoming.
+- Open the booking form to make new reservations directly from the reservation list.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Technologies
+This project was built using the following technologies:
+- **Next.js**: Used as the main framework.
+- **TypeScript**: Employed for type safety.
+- **Mantine**: Utilized as a component library to build a modern and consistent UI.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Installation and Setup
+1. **Clone the repository** to your local machine.
+2. **Create a `.env` file** in the root directory to define environment variables (`CURRENT_USER`, `LOG_LEVEL`, `SLURM_JWT`).
+3. **Run the application locally**: `npm run build` + `npm start` (or `npm run dev`)
+4. **Use the application**: Open your browser and navigate to `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Gallery
+![immagine](https://github.com/user-attachments/assets/0c4d7665-841b-49a1-836c-51b71dced3f0)
+![immagine](https://github.com/user-attachments/assets/c6f5b272-27dd-490c-b60e-3951ecd08b5a)
+![immagine](https://github.com/user-attachments/assets/8de2a460-f2ba-4693-8f72-393a31ac2970)
+![immagine](https://github.com/user-attachments/assets/e41d159a-de18-4a06-96aa-b3e7a180089c)
