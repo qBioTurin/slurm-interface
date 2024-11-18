@@ -1,14 +1,14 @@
 'use client'
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { Stepper, Button, Group, rem } from '@mantine/core';
 import { IconCalendar, IconX, IconCheck } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { z } from 'zod';
 import { ReservationSubmissionSchema } from '@/schemas/reservation_submission_schema';
-import { ReservationSummary, ReservationStep, LoadingPage } from '@/components';
+import { ReservationSummary, ReservationStep } from '@/components';
 import { usePostData } from '@/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dayjs from 'dayjs';
@@ -23,8 +23,6 @@ type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 //     { name: 'epito-booked' },
 //     { name: 'gracehopper-booked' },
 // ];
-
-
 
 const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from the session
 
@@ -97,7 +95,7 @@ export default function NewReservationForm() {
             const jsonData = JSON.stringify(formattedData, null, 2);
 
             try {
-                //await callPost(jsonData);
+                await callPost(jsonData);
                 notifications.show({
                     color: 'teal',
                     icon: <IconCheck style={{ width: rem(18), height: rem(18), }} />,

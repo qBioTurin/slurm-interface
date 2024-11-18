@@ -11,6 +11,7 @@ import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import { usePostData } from '@/hooks';
 import { z } from 'zod';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { spec } from 'node:test/reporters';
 
 type JobSubmissionSchema = z.infer<typeof JobSubmissionSchema>;
 
@@ -30,14 +31,14 @@ const SubmitJobForm = () => {
 
   const form = useForm({
     initialValues: {
-      name: '',
+      name: 'test',
       script: '',
-      current_working_directory: '',
-      nodes: 1,
+      current_working_directory: '/beegfs/home/scontald',
+      nodes: 0,
       tasks: 1,
-      environment: { PATH: '' },
-      // description: '',
-      // partition: '',
+      environment: { PATH: '/bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin/' },
+      description: '',
+      partition: '',
       specify_nodes: '',
       // immediate: false,
       // tmp_disk_space: undefined,
@@ -50,29 +51,32 @@ const SubmitJobForm = () => {
       script: (value) => value.trim().length > 0 ? null : "Script is required",
       current_working_directory: (value) => value.trim().length > 0 ? null : "Current working directory is required",
       nodes: (value) => value >= 1 ? null : "At least 1 node is required",
-      tasks: (value) => value >= 1 ? null : "At least 1 task is required"
-    },
+        },
   });
 
   const onSubmit = async (values: JobSubmissionSchema) => {
     try {
       await JobSubmissionSchema.parseAsync(values);
 
+      const specify_nodes_number = values.specify_nodes? values.specify_nodes.split(',').length : values.nodes;
+
       const formattedData = {
         job: {
           name: values.name,
           script: values.script,
           current_working_directory: values.current_working_directory,
-          nodes: values.nodes,
+          nodes: specify_nodes_number,
           tasks: values.tasks,
           environment: values.environment,
+          partition: values.partition,
+          specify_nodes: values.specify_nodes,
         },
       };
 
       const jsonData = JSON.stringify(formattedData, null, 2);
 
       try {
-        // await callPost(jsonData);
+        await callPost(jsonData);
         console.log("Submission successful!");
         notifications.show({
           color: 'teal',

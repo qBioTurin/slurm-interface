@@ -12,9 +12,9 @@ export async function GET(req: NextRequest) {
     var DEBUG_API_URL = SLURM_API_BASE_URL;
     var DEBUG_KEY = SLURM_JWT;
 
-    logger.info(`GET /api/gethome called with path: ${path}`); // logger info
-    logger.debug(`Request Headers: ${JSON.stringify(req.headers, null, 2)}`); // logger debug
-    logger.debug(`Request Query Parameters: ${JSON.stringify(Object.fromEntries(searchParams), null, 2)}`); // logger
+    // logger.info(`GET /api/gethome called with path: ${path}`); // logger info
+    // logger.debug(`Request Headers: ${JSON.stringify(req.headers, null, 2)}`); // logger debug
+    // logger.debug(`Request Query Parameters: ${JSON.stringify(Object.fromEntries(searchParams), null, 2)}`); // logger
 
     if (!path) {
         const errorMsg = 'API path is required';
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: errorMsg }, { status: 400 });
     }
 
-    logger.debug(`Constructed URL for GET request: ${SLURM_API_BASE_URL}${path}`); // logger debug
+    // logger.debug(`Constructed URL for GET request: ${SLURM_API_BASE_URL}${path}`); // logger debug
 
     try {
         const slurmResponse = await fetch(`${DEBUG_API_URL}${path}`, {
@@ -40,9 +40,9 @@ export async function GET(req: NextRequest) {
         }
 
         const data = await slurmResponse.json();
-        logger.info(`GET request to ${path} succeeded.`); // logger info
-        logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
-        logger.debug(`Response Data: ${JSON.stringify(data, null, 2)}`); // logger debug
+        // logger.info(`GET request to ${path} succeeded.`); // logger info
+        // logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
+        // logger.debug(`Response Data: ${JSON.stringify(data, null, 2)}`); // logger debug
         return NextResponse.json(data);
 
     } catch (error: any) {

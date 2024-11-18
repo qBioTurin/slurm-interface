@@ -11,7 +11,7 @@ export default function StepInfo({ form }: Props) {
 
       <TextInput
         label="Job Name"
-        placeholder="e.g monday-kobayashi-job"
+        placeholder="e.g slurm-job"
         {...form.getInputProps("name")}
         mt="md"
         required
@@ -26,8 +26,17 @@ export default function StepInfo({ form }: Props) {
         minRows={2}
       /> */}
 
-      <TextInput
+      {/* <TextInput
         label="Script"
+        placeholder="e.g. #!/bin/bash\nsrun sleep 600"
+        {...form.getInputProps("script")}
+        mt="md"
+        required
+      /> */}
+        
+      <Textarea
+        label="Script"
+        resize="vertical"
         placeholder="e.g. #!/bin/bash\nsrun sleep 600"
         {...form.getInputProps("script")}
         mt="md"

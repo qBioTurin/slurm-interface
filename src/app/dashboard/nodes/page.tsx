@@ -8,7 +8,6 @@ import { useFetchData } from '@/hooks';
 import { SlurmNodeResponseSchema, NodeSchema } from '@/schemas/node_schema';
 import { LoadingPage, NodesTable } from '@/components';
 import { z } from 'zod';
-import { fromError } from 'zod-validation-error';
 import { useRouter } from 'next/navigation';
 
 type Node = z.infer<typeof NodeSchema>;

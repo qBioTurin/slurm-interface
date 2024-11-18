@@ -1,5 +1,5 @@
 import { UseFormReturnType } from '@mantine/form';
-import { TextInput, NumberInput } from '@mantine/core';
+import { TextInput, NumberInput, Select } from '@mantine/core';
 
 type Props = {
   form: UseFormReturnType<any>;
@@ -35,6 +35,11 @@ export default function StepSpecs({ form }: Props) {
           mt="md"
           disabled
         />
+        <Select 
+          label="Partition" 
+          data={['broadwell', 'cascadelake', 'epito', 'gracehopper']} 
+          {...form.getInputProps('partition')} 
+        />
       </>
     );
   } else {
@@ -42,12 +47,11 @@ export default function StepSpecs({ form }: Props) {
       <>
         <NumberInputField label="Number of Nodes" form={form} fieldName="nodes" />
         <NumberInputField label="Number of Tasks" form={form} fieldName="tasks" />
-        {/* <Select
-        label="Partition (optional)"
-        data={['general', 'gpu', 'debug']}
-        {...form.getInputProps('partition')}
-      /> */}
-
+        <Select 
+          label="Partition (optional)" 
+          data={['broadwell', 'cascadelake', 'epito', 'gracehopper']} 
+          {...form.getInputProps('partition')} 
+        />
       </>
     );
   }
