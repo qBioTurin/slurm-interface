@@ -51,14 +51,14 @@ const SubmitJobForm = () => {
       script: (value) => value.trim().length > 0 ? null : "Script is required",
       current_working_directory: (value) => value.trim().length > 0 ? null : "Current working directory is required",
       nodes: (value) => value >= 1 ? null : "At least 1 node is required",
-        },
+    },
   });
 
   const onSubmit = async (values: JobSubmissionSchema) => {
     try {
       await JobSubmissionSchema.parseAsync(values);
 
-      const specify_nodes_number = values.specify_nodes? values.specify_nodes.split(',').length : values.nodes;
+      const specify_nodes_number = values.specify_nodes ? values.specify_nodes.split(',').length : values.nodes;
 
       const formattedData = {
         job: {

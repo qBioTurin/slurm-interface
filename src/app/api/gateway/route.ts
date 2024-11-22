@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
     logger.info(`POST /api/posthome called with path: ${path}`); // logger info
     logger.debug(`Request Headers: ${JSON.stringify(req.headers, null, 2)}`); // logger debug
     logger.debug(`Request Query Parameters: ${JSON.stringify(Object.fromEntries(searchParams), null, 2)}`); // logger debug
+    var url = process.env.SLURM_API_URL;
 
     if (!path) {
         const errorMsg = 'API path is required';
@@ -65,12 +66,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: errorMsg }, { status: 400 });
     }
 
+    if (path.includes('reservations')) {
+        url = process.env.SLURM_API_BASE_URL
+    }
+
     try {
         const requestBody = await req.json();
 
         logger.debug(`POST request body: ${JSON.stringify(requestBody, null, 2)}`); // logger debug
 
-        const slurmResponse = await fetch(`${SLURM_API_BASE_URL}${path}`, {
+        const slurmResponse = await fetch(`${url}${path}`, {
             method: 'POST',
             headers: {
                 'X-SLURM-USER-TOKEN': SLURM_JWT || '',

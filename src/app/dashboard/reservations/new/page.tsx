@@ -25,7 +25,6 @@ type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 // ];
 
 const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from the session
-
 const getCurrentDateAtMidnight = () => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
