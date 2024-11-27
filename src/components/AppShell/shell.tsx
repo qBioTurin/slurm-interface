@@ -1,9 +1,11 @@
 'use client';
 
-import { AppShell, Burger, Group, Image } from '@mantine/core';
+import { AppShell, Burger, Group } from '@mantine/core';
+import Image from "next/image";
 import { useDisclosure } from '@mantine/hooks';
 import React, { ReactNode } from 'react';
 import CustomNavBar from "../Navbar/navbar";
+import logo from "@/assets/logo_hpc4ai.png"
 
 interface ShellProps {
     children: JSX.Element | ReactNode;
@@ -33,7 +35,7 @@ export const Shell = ({ children }: ShellProps) => {
                         size="sm"
                     />
                     {/* <img src={'/logo_hpc4ai.png'} alt="HPC4AI" height={40} /> */}
-                    <Image src={'/logo_hpc4ai.png'} alt="HPC4AI" height={40} ml="md" />
+                    <Image src={logo} alt="HPC4AI" height={40} />
                 </Group>
             </AppShell.Header >
 
