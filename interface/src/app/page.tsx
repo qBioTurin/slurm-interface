@@ -1,9 +1,7 @@
-import DashBoardPage from "@/app/dashboard/(overview)/page";
+import { LoginPage } from '@/components'
 
 export default function Home() {
   return (
-    <div>
-      <DashBoardPage />
-    </div>
+    <LoginPage />
   );
 }

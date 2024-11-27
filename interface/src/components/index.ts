@@ -28,6 +28,10 @@ import ReservationStep from "./reservations/new/ReservationSteps";
 import LoadingPage from "./commons/LoadingPage/loadingPage";
 import Shell from "./AppShell/shell";
 
+// Login components
+import LoginPage from "./login/LoginPage";
+import LoginForm from "./login/LoginForm";
+
 export {
     RunningJobsColumn,
     PendingJobsColumn,
@@ -46,5 +50,7 @@ export {
     ReservationSummary,
     ReservationStep,
     LoadingPage,
+    LoginPage,
+    LoginForm,
     Shell
 };
