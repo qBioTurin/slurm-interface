@@ -1,0 +1,19 @@
+services:
+  interface:
+    build:
+      context: interface
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SLURM_JWT: ${SLURM_JWT}
+      SLURM_API_URL: ${SLURM_API_URL}
+      CURRENT_USER: ${CURRENT_USER}
+      LOG_LEVEL: ${LOG_LEVEL}
+    networks:
+      - slurm-network
+    ports:
+      - "127.0.0.1:3001:3000"
+
+networks:
+  slurm-network:
+    driver: bridge
