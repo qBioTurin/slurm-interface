@@ -7,7 +7,7 @@ export function useDeleteData() {
     const deleteData = async (path: string) => {
         try {
             setLoading(true);
-            const response = await fetch(`/api/gateway?path=${path}`, {
+            const response = await fetch(`/gateway?path=${path}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

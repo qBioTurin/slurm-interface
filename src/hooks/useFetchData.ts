@@ -10,7 +10,7 @@ export function useFetchData(path: string, responseSchema: any) {
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await fetch(`/api/gateway?path=${path}`, {
+            const response = await fetch(`/gateway?path=${path}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

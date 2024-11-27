@@ -11,7 +11,7 @@ export function usePostData(path: string) {
         try {
             setLoading(true);
 
-            const request = new Request(`/api/gateway?path=${path}`, {
+            const request = new Request(`/gateway?path=${path}`, {
                 method: 'POST',
                 headers: {
                     'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
