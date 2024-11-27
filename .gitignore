@@ -43,3 +43,5 @@ temp/
 
 # log file
 ./app.log
+.next
+.env
