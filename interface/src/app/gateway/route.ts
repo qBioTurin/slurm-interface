@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/lib/logger';
 
-const SLURM_API_BASE_URL = process.env.SLURM_API_URL;
+// change .env.local to switch between test and prod
+const SLURM_API_URL = process.env.SLURM_API_URL; 
 const SLURM_JWT = process.env.SLURM_JWT;
-// const SLURM_API_TESTING_URL = process.env.SLURM_API_TESTING_URL;
-// const SLURM_JWT_TESTING = process.env.SLURM_JWT_TESTING;
+const SLURM_API_URL_RESERVATIONS = process.env.SLURM_API_URL_RESERVATIONS;
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
-    var DEBUG_API_URL = SLURM_API_BASE_URL;
-    var DEBUG_KEY = SLURM_JWT;
 
-    // logger.info(`GET /api/gethome called with path: ${path}`); // logger info
+    // logger.info(`GET /api/get called with path: ${path}`); // logger info
+    // logger.info(`GET /api/get called with path: ${path}`); // logger info
     // logger.debug(`Request Headers: ${JSON.stringify(req.headers, null, 2)}`); // logger debug
     // logger.debug(`Request Query Parameters: ${JSON.stringify(Object.fromEntries(searchParams), null, 2)}`); // logger
 
@@ -22,13 +21,13 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: errorMsg }, { status: 400 });
     }
 
-    // logger.debug(`Constructed URL for GET request: ${SLURM_API_BASE_URL}${path}`); // logger debug
+    logger.debug(`Constructed URL for GET request: ${SLURM_API_URL}${path}`); // logger debug
 
     try {
-        const slurmResponse = await fetch(`${DEBUG_API_URL}${path}`, {
+        const slurmResponse = await fetch(`${SLURM_API_URL}${path}`, {
             method: 'GET',
             headers: {
-                'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
+                'X-SLURM-USER-TOKEN': SLURM_JWT || '',
                 'Content-Type': 'application/json',
             },
         });
@@ -55,10 +54,10 @@ export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
 
-    logger.info(`POST /api/posthome called with path: ${path}`); // logger info
+    logger.info(`POST /api/post called with path: ${path}`); // logger info
     logger.debug(`Request Headers: ${JSON.stringify(req.headers, null, 2)}`); // logger debug
     logger.debug(`Request Query Parameters: ${JSON.stringify(Object.fromEntries(searchParams), null, 2)}`); // logger debug
-    var url = process.env.SLURM_API_URL;
+    var url = SLURM_API_URL;
 
     if (!path) {
         const errorMsg = 'API path is required';
@@ -66,8 +65,9 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: errorMsg }, { status: 400 });
     }
 
-    if (path.includes('reservations')) {
-        url = process.env.SLURM_API_BASE_URL
+    if (path.includes('reservations')) { 
+        url = SLURM_API_URL_RESERVATIONS;
+        logger.info('Reservations base URL: ' + url); // logger info
     }
 
     try {
@@ -93,7 +93,6 @@ export async function POST(req: NextRequest) {
             data = await slurmResponse.text();
         }
 
-        logger.info(`POST request to ${path} succeeded.`); // logger info
         logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
         logger.debug(`Response Data: ${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}`); // logger debug
 
@@ -109,14 +108,14 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
 
-    logger.info(`DELETE /api/deletehome called with path: ${path}`); // logger info
+    logger.info(`DELETE /api/delete called with path: ${path}`); // logger info
     logger.debug(`Request Headers: ${JSON.stringify(req.headers, null, 2)}`); // logger debug
     logger.debug(`Request Query Parameters: ${JSON.stringify(Object.fromEntries(searchParams), null, 2)}`); // logger debug
 
     if (!path) {
         return NextResponse.json({ error: 'API path is required' }, { status: 400 });
     }
-    const url = SLURM_API_BASE_URL;
+    const url = SLURM_API_URL;
 
     try {
         const slurmResponse = await fetch(`${url}${path}`, {
