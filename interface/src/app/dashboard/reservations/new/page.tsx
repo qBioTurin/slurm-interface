@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
-// remove comments once the socket allows for partition selection
+// PROD PARTITIONS
 // const partitions = [
 //     { name: 'broadwell-booked' },
 //     { name: 'cascadelake-booked' },
@@ -24,7 +24,12 @@ type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 //     { name: 'gracehopper-booked' },
 // ];
 
-const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from the session
+// TEST PARTITIONS
+const partitions = [
+    { name: 'broadwell' },
+];
+
+const currentUser = process.env.CURRENT_USER || "lbosio"; // TODO: get current user from the session
 const getCurrentDateAtMidnight = () => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -48,11 +53,12 @@ export default function NewReservationForm() {
             name: '',
             start_time: getCurrentDateAtMidnight(),
             end_time: getCurrentDateAtMidnight(),
-            users: [currentUser] as string[],
+            users: currentUser,
             nodes: '' as string,
+            node_cnt: undefined,
+            partition: undefined,
         },
         validate: {
-            nodes: (value) => value.trim().length > 0 ? null : "Nodes are required", // remove once possible to select nodes+partition
             name: (value) => value.trim().length > 0 ? null : "Name is required",
             start_time: (value) => {
                 const nowPlusOneMinute = new Date(Date.now() + 1 * 60000);
@@ -73,6 +79,30 @@ export default function NewReservationForm() {
                 }
                 return null;
             },
+            node_cnt: (value, values) => {
+                if (value !== undefined && values.partition === undefined) {
+                    return "If 'node_cnt' is initialized, 'partition' must also be initialized.";
+                }
+                if (values.nodes === '' && (!values.node_cnt || !values.partition)) {
+                    return "You must set either 'nodes' or both 'node_cnt' and 'partition'.";
+                }
+                return null;
+            },
+            partition: (value, values) => {
+                if (value === undefined && values.node_cnt !== undefined) {
+                    return "If 'node_cnt' is initialized, 'partition' must also be initialized.";
+                }
+                if (values.nodes === '' && (!values.node_cnt || !values.partition)) {
+                    return "You must set either 'nodes' or both 'node_cnt' and 'partition'.";
+                }
+                return null;
+            },
+            nodes: (value, values) => {
+                if (value === '' && (!values.node_cnt || !values.partition)) {
+                    return "You must set either 'nodes' or both 'node_cnt' and 'partition'.";
+                }
+                return null;
+            }
         },
     });
 
@@ -84,14 +114,39 @@ export default function NewReservationForm() {
 
         try {
             await ReservationSubmissionSchema.parseAsync(values);
-            const formattedData = {
-                start_time: dayjs(values.start_time).format('YYYY-MM-DDTHH:mm:ss'),
-                end_time: dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
-                name: values.name,
-                users: values.users,
-                nodes: values.nodes
-            };
+            let formattedData = {};
+
+            if (values.nodes === '') {
+                formattedData = {
+                    start_time: dayjs(values.start_time).format('YYYY-MM-DDTHH:mm:ss'),
+                    end_time: dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
+                    name: values.name,
+                    users: values.users,
+                    node_cnt: values.node_cnt,
+                    partition: values.partition
+                };
+            } else if (values.node_cnt === undefined || values.partition === undefined) {
+                formattedData = {
+                    start_time: dayjs(values.start_time).format('YYYY-MM-DDTHH:mm:ss'),
+                    end_time: dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
+                    name: values.name,
+                    users: values.users,
+                    nodes: values.nodes,
+                };
+            } else {
+                formattedData = {
+                    start_time: dayjs(values.start_time).format('YYYY-MM-DDTHH:mm:ss'),
+                    end_time: dayjs(values.end_time).format('YYYY-MM-DDTHH:mm:ss'),
+                    name: values.name,
+                    users: values.users,
+                    nodes: values.nodes,
+                    node_cnt: values.node_cnt,
+                    partition: values.partition
+                };
+            }
+            
             const jsonData = JSON.stringify(formattedData, null, 2);
+            console.log(jsonData); //debug
 
             try {
                 await callPost(jsonData);
@@ -135,7 +190,7 @@ export default function NewReservationForm() {
 
             <Stepper active={active} mt="xl">
                 <Stepper.Step label="New reservation" description="Select resources" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
-                    <ReservationStep form={form} />
+                    <ReservationStep form={form} partitions={partitions} />
                 </Stepper.Step>
                 <Stepper.Completed>
                     Review your submission details below:

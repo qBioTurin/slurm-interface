@@ -5,9 +5,9 @@ export const ReservationSubmissionSchema = z.object({
     name: z.string().min(1, { message: "Name is required" }),
     start_time: z.date(),
     end_time: z.date(),
-    users: z.array(z.string()),
-    // node_cnt: z.number().min(0),
-    nodes: z.string(),
+    users: z.string(),
+    node_cnt: z.number().min(0).optional(),
+    nodes: z.string().optional().nullable(),
     partition: z.string().optional(),
     });
   

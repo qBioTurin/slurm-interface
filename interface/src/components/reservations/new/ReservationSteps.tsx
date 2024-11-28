@@ -1,12 +1,17 @@
-import { TextInput } from '@mantine/core';
+'use client'
+
+import { TextInput, NumberInput, Select, Switch, Card} from '@mantine/core';
+import { useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
 
 interface ReservationStepProps {
   form: UseFormReturnType<any>;
+  partitions: { name: string }[];
 }
 
-export default function ReservationStep({ form }: ReservationStepProps) {
+export default function ReservationStep({ form, partitions}: ReservationStepProps) {
+  const [isNodes, setIsNodes] = useState(true);
 
   return (
     <>
@@ -48,33 +53,56 @@ export default function ReservationStep({ form }: ReservationStepProps) {
         styles={{ input: { borderColor: form.errors.end_time ? 'red' : undefined } }}
       />
 
-      <TextInput 
-        label="Node list"
-        placeholder="e.g. node1,node2,node3 (separated by commas)" 
+      <Card mt="md" withBorder radius="md">
+      
+      <Switch
+        label="Specify Nodes"
         mt="md"
-        {...form.getInputProps('nodes')}
-        error={form.errors.nodes}
-        styles={{ input: { borderColor: form.errors.nodes ? 'red' : undefined } }}
+        checked={isNodes}
+        onChange={(event) => {
+          const value = event.currentTarget.checked;
+          setIsNodes(value);
+          if (!value) {
+            form.setFieldValue('nodes', '');
+            form.setFieldValue('node_cnt', undefined);
+            form.setFieldValue('partition', '');
+          }
+        }}
       />
 
-      {/* <NumberInput
-        label="Node Count"
-        {...form.getInputProps('NodeCnt')}
-        min={0}
-        max={200} // arbitrary value
-        mt="md"
-      />
+      { isNodes ? (
+        <TextInput
+          label="Node list"
+          placeholder="e.g. node1,node2,node3 (separated by commas)"
+          mt="md"
+          {...form.getInputProps('nodes')}
+          error={form.errors.nodes}
+          styles={{ input: { borderColor: form.errors.nodes ? 'red' : undefined } }}
+        />
+      ) : (
+        <>
+          <NumberInput
+            label="Node Count"
+            {...form.getInputProps('node_cnt')}
+            min={0}
+            max={100} // arbitrary value
+            mt="md"
+            hideControls
+          />
 
-      <MultiSelect
-        data={partitions.map((partition) => partition.name)}
-        label="Partitions"
-        placeholder="Select partition"
-        mt="md"
-        searchable
-        value={form.values.nodes}
-        onChange={(value) => form.setFieldValue('partition', value[0])}
-        maxValues={1}
-    /> */}
-    </>
-  );
-}
+          <Select
+            data={partitions.map((partition) => partition.name)}
+            label="Partitions"
+            placeholder="Select partition"
+            mt="md"
+            searchable
+            value={form.values.partition}
+            disabled={form.values.useNodeList}
+            onChange={(value) => form.setFieldValue('partition', value)}
+            />
+            </>
+          )}
+        </Card>
+      </>
+    );
+  }

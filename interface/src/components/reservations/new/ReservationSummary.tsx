@@ -7,9 +7,10 @@ type ReservationSummaryProps = {
     name: string;
     start_time: Date;
     end_time: Date;
-    users: string[];
-    nodes: string;
-    // partition?: string;
+    users: string;
+    nodes?: string;
+    partition?: string;
+    node_cnt?: number;
     errors?: string[];
   };
 };
@@ -21,10 +22,10 @@ export const ReservationSummary = ({ reservation }: ReservationSummaryProps) => 
     { key: 'Name', value: name },
     { key: 'Start Time', value: new Date(start_time).toLocaleString() },
     { key: 'End Time', value: new Date(end_time).toLocaleString() },
-    { key: 'Users', value: Array.isArray(users) && users.length > 0 ? users.join(', ') : 'None' },
-    { key: 'Nodes', value: nodes || 'None' },
-    // Uncomment if partition field is included in the data
-    // { key: 'Partition', value: reservation.partition || 'N/A' },
+    { key: 'Users', value: reservation.users },
+    { key: 'Nodes', value: nodes || 'N/A' },
+    { key: 'Node Count', value: reservation.node_cnt || 'N/A' },
+    { key: 'Partition', value: reservation.partition || 'N/A' },
   ];
 
   return (
@@ -46,7 +47,7 @@ export const ReservationSummary = ({ reservation }: ReservationSummaryProps) => 
           </Table.Tbody>
         </Table>
 
-      {errors && errors.length > 0 && (
+      {/* {errors && errors.length > 0 && (
         <Card mt="md">
           <Text color="red" mt="md">Errors:</Text>
           <Table striped highlightOnHover>
@@ -64,7 +65,7 @@ export const ReservationSummary = ({ reservation }: ReservationSummaryProps) => 
             </Table.Tbody>
           </Table>
         </Card>
-      )}
+      )} */}
     </div>
   );
 };
