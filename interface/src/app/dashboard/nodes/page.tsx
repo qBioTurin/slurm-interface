@@ -36,7 +36,6 @@ export default function NodesPage() {
     return matchSearch && matchState;
   });
 
-
   const handleNodeSelect = (nodeName: string, isSelected: boolean) => {
     setSelectedNodes((prevSelectedNodes) =>
       isSelected ? [...prevSelectedNodes, nodeName] : prevSelectedNodes.filter((name) => name !== nodeName)
@@ -63,12 +62,10 @@ export default function NodesPage() {
     router.push(`/dashboard/reservations/new?${query}`);
   }
 
-
-
   const nodesByPartition: Record<string, Node[]> = filteredNodes.reduce((record, node) => {
     if (node.partitions) {
       node.partitions.forEach((partition) => {
-        if (!partition.includes('-booked')) { // Exclude partitions containing a tick
+        if (!partition.includes('-booked')) { // Exclude partitions containing -booked
           if (!record[partition]) {
             record[partition] = [];
           }
@@ -106,7 +103,7 @@ export default function NodesPage() {
                 { value: 'IDLE', label: 'Idle' },
                 { value: 'ALLOCATED', label: 'Allocated' },
                 { value: 'DOWN', label: 'Down' },
-                { value: 'MIXED', label: 'Mixed' },
+                { value: 'RESERVED', label: 'Reserved' },
               ]}
               value={nodeStateFilter}
               onChange={setNodeStateFilter}
