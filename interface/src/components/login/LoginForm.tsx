@@ -5,6 +5,7 @@ import { useForm } from '@mantine/form';
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import logo from "@/assets/logo_hpc4ai.png"
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -62,12 +63,14 @@ export default function LoginForm() {
                         size='md'
 
                     />
-                    <Button variant="filled" color='black' onClick={() => {
-                        router.push('/dashboard');
-                    }} justify='center'> Login</Button>
+                    <Button variant="filled" color='black' onClick={() => signIn("keycloak")}
+                        justify='center'> Login</Button>
                 </Stack>
             </Card>
         </>
     );
 
 }
+
+
+// http://localhost:8080/realms/test/broker/google/login?client_id=nextjs&tab_id=g_lN7Bk9u4I&client_data=eyJydSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMC9hcGkvYXV0aC9jYWxsYmFjay9rZXljbG9hayIsInJ0IjoiY29kZSIsInN0IjoicTZoc0ZMa2FYb2J5Mkx3ZEJjZnFkWTlRTTBFelQxdzgwb09JRXZDV0Z6dyJ9&session_code=zVA3bsEtTIy6sms4MdYNO8YO_LjzV39DYchqzln58qc
