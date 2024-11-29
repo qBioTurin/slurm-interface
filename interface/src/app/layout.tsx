@@ -4,6 +4,11 @@ import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import { theme } from "../../theme";
 import { Notifications } from '@mantine/notifications';
 
+export const metadata = {
+  title: 'HPC4AI',
+  description: ' An interface to manage the booking of resources on the HPC4AI system.',
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 
   return (

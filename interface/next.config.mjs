@@ -2,6 +2,7 @@
 const nextConfig = {
     experimental: {
         missingSuspenseWithCSRBailout: false,
+        optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
     }
 };
 
