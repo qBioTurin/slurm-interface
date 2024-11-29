@@ -70,7 +70,8 @@ const JobPage = ({ params }: JobPageProps) => {
             <InfoField label="Submission Time" value={formatDate(job.submit_time.number)} />
             <InfoField label="Quality of Service" value={job.qos} />
             <InfoField label="Priority" value={job.priority.number.toFixed(2)} />
-          </InfoCard>
+            <InfoField label="Reservation" value={job.resv_name} />
+            </InfoCard>
 
           <InfoCard title="Job Resources">
             <InfoField label="Partition" value={job.partition} />

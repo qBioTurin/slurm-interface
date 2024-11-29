@@ -14,6 +14,7 @@ export const JobSubmissionSchema = z.object({
     description: z.string().optional(),
     partition: z.string().optional(),
     specify_nodes: z.string().optional(),
+    reservation: z.string().optional(),
     // immediate: z.boolean().optional(),
     // tmp_disk_space: z.number().optional(),
     // min_memory_per_cpu: z.number().optional(),

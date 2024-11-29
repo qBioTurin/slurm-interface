@@ -6,12 +6,11 @@ import { Stepper, Button, Group, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconUserCheck, IconSettings, IconCircleCheck, IconX, IconCheck } from '@tabler/icons-react';
-import { StepInfo, StepSpecs, StepConfirmation, LoadingPage } from '@/components';
+import { StepInfo, StepSpecs, StepConfirmation } from '@/components';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import { usePostData } from '@/hooks';
 import { z } from 'zod';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { spec } from 'node:test/reporters';
 
 type JobSubmissionSchema = z.infer<typeof JobSubmissionSchema>;
 
@@ -31,26 +30,23 @@ const SubmitJobForm = () => {
 
   const form = useForm({
     initialValues: {
-      name: 'test',
+      name: '',
       script: '',
-      current_working_directory: '/beegfs/home/scontald',
-      nodes: 0,
+      current_working_directory: process.env.CURRENT_WORKING_DIR || '/home/lbosio',
+      nodes: 1,
       tasks: 1,
-      environment: { PATH: '/bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin/' },
+      environment: { PATH: process.env.PATH || '/bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin/' },
       description: '',
       partition: '',
       specify_nodes: '',
-      // immediate: false,
-      // tmp_disk_space: undefined,
-      // min_memory_per_cpu: undefined,
-      // cpus_per_task: undefined,
-      // tasks_per_node: undefined,
+      reservation: '',
     },
     validate: {
       name: (value) => value.trim().length > 0 ? null : "Name is required",
       script: (value) => value.trim().length > 0 ? null : "Script is required",
       current_working_directory: (value) => value.trim().length > 0 ? null : "Current working directory is required",
       nodes: (value) => value >= 1 ? null : "At least 1 node is required",
+      partition: (value) => value.trim().length > 0 ? null : "Partition is required",
     },
   });
 
@@ -70,6 +66,7 @@ const SubmitJobForm = () => {
           environment: values.environment,
           partition: values.partition,
           specify_nodes: values.specify_nodes,
+          reservation: values.reservation,
         },
       };
 
@@ -77,7 +74,6 @@ const SubmitJobForm = () => {
 
       try {
         await callPost(jsonData);
-        console.log("Submission successful!");
         notifications.show({
           color: 'teal',
           icon: <IconCheck style={{ width: rem(18), height: rem(18), }} />,
