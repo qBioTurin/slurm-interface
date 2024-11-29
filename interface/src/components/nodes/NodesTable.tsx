@@ -1,7 +1,8 @@
-import { Table, Badge, Checkbox } from '@mantine/core';
+import { Table, Checkbox } from '@mantine/core';
 import styles from './NodesTable.module.css';
 import { z } from 'zod';
 import { NodeSchema } from '../../schemas/node_schema';
+import NodeStateBadge from './NodeStateBadge';
 
 type Node = z.infer<typeof NodeSchema>;
 
@@ -48,21 +49,10 @@ export default function NodesTable({ nodes, selectedNodes, onNodeSelect, onSelec
               </td>
               <td>{node.name}</td>
               <td>{node.architecture}</td>
-              <td>
-                <Badge
-                  color={
-                    node.state[0] === 'IDLE'
-                      ? 'green'
-                      : node.state[0] === 'ALLOCATED'
-                        ? 'blue'
-                        : node.state[0] === 'DOWN'
-                          ? 'red'
-                          : 'yellow'
-                  }
-                >
-                  {node.state[0]}
-                </Badge>
-              </td>
+                <td>
+                <NodeStateBadge state={node.state[0]} />
+                {node.state[1] && <span style={{ paddingLeft: '2px' }}><NodeStateBadge state={node.state[1]} /></span>}
+                </td>
 
               <td>
                 <div>

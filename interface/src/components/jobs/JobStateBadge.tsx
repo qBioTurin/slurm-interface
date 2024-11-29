@@ -1,7 +1,6 @@
 import { Badge, Tooltip } from '@mantine/core';
 import { JobStates } from '@/utils/models/job_state';
 
-
 interface JobStateBadgeProps {
     state: string;
 }
