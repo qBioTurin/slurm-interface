@@ -109,7 +109,9 @@ const SubmitJobForm = () => {
   const handleNavigation = async () => {
     const errors = form.validate().errors;
 
-    if (Object.keys(errors).length === 0) {
+    if (active === 0 && Object.keys(errors).length === 1 && form.values.partition === '') {
+      setActive((current) => current + 1);
+    } else if (Object.keys(errors).length === 0) {
       if (active === 2) {
         {/* Change to < 3 when optional step is added */ }
         onSubmit(form.values);
