@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useDisclosure } from '@mantine/hooks';
 import React, { ReactNode } from 'react';
 import CustomNavBar from "../Navbar/navbar";
-import logo from "@/assets/logo_hpc4ai.png"
+import logo from "@/assets/logo_hpc4ai.png";
 
 interface ShellProps {
     children: JSX.Element | ReactNode;
@@ -35,7 +35,7 @@ export const Shell = ({ children }: ShellProps) => {
                         size="sm"
                     />
                     {/* <img src={'/logo_hpc4ai.png'} alt="HPC4AI" height={40} /> */}
-                    <Image src={logo} alt="HPC4AI" height={40} />
+                    <Image src={logo} alt="HPC4AI" height={40} priority style={{margin: '0 0 0 15px'}}/>
                 </Group>
             </AppShell.Header >
 
@@ -45,7 +45,7 @@ export const Shell = ({ children }: ShellProps) => {
 
             <AppShell.Main m='sm'>{children}</AppShell.Main>
 
-        </AppShell >
+        </AppShell>
     );
 }
 

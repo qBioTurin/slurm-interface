@@ -12,4 +12,5 @@ export const theme = createTheme({
             },
         }),
     },
+    primaryColor: 'dark',
 });
