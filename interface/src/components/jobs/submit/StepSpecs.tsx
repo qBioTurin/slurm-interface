@@ -54,7 +54,7 @@ export default function StepSpecs({ form }: Props) {
     );
 
   } else {
-    const [useReservation, setUseReservation] = useState(true);
+    const [useReservation, setUseReservation] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const { data, loading, error } = useFetchData('reservations', SlurmReservationResponseSchema);
