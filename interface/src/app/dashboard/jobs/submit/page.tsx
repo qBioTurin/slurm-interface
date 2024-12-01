@@ -1,16 +1,21 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import { useState, useEffect } from 'react';
 import '@mantine/notifications/styles.css';
 import { Stepper, Button, Group, rem } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconUserCheck, IconSettings, IconCircleCheck, IconX, IconCheck } from '@tabler/icons-react';
-import { StepInfo, StepSpecs, StepConfirmation } from '@/components';
 import { JobSubmissionSchema } from '@/schemas/job_submission_schema';
 import { usePostData } from '@/hooks';
 import { z } from 'zod';
 import { useRouter, useSearchParams } from 'next/navigation';
+
+// Lazy load components
+const StepInfo = dynamic(() => import('@/components/jobs/submit/StepInfo'));
+const StepSpecs = dynamic(() => import('@/components/jobs/submit/StepSpecs'));
+const StepConfirmation = dynamic(() => import('@/components/jobs/submit/StepConfirmation'));
 
 type JobSubmissionSchema = z.infer<typeof JobSubmissionSchema>;
 
