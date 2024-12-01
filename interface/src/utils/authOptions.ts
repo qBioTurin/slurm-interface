@@ -10,8 +10,9 @@ export const authOptions: AuthOptions = {
 
             // realm: process.env.KEYCLOAK_REALM,
             // serverUrl: process.env.KEYCLOAK_SERVER_URL,
-        })
+        }),
     ],
+    secret: process.env.NEXTAUTH_SECRET,
     session: {
         maxAge: 6 * 60 * 60, // 6 hours
     },
