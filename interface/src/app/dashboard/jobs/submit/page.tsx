@@ -83,13 +83,13 @@ const SubmitJobForm = () => {
         });
         router.push('/dashboard/jobs');
 
-      } catch (error) {
-        console.error("Submission Error:", error);
+      } catch (error: any) {
+        const errorMessage = error.response?.data?.error || 'Please try again.';
         notifications.show({
           color: 'red',
           icon: <IconX style={{ width: rem(18), height: rem(18), }} />,
           title: 'Job submission failed',
-          message: 'Please try again later.',
+          message: errorMessage,
           autoClose: 5000,
         });
       }

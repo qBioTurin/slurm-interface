@@ -148,7 +148,6 @@ export default function NewReservationForm() {
             const jsonData = JSON.stringify(formattedData, null, 2);
             console.log(jsonData); //debug
 
-            try {
                 await callPost(jsonData);
                 notifications.show({
                     color: 'teal',
@@ -157,25 +156,17 @@ export default function NewReservationForm() {
                     message: 'Your reservation has been successfully submitted.',
                     autoClose: 5000,
                 });
-                router.push('/dashboard/reservations');
 
-            } catch (error) {
-                notifications.show({
-                    color: 'red',
-                    icon: <IconX style={{ width: rem(18), height: rem(18), }} />,
-                    title: 'Reservation submission failed',
-                    message: 'Please try again later.',
-                    autoClose: 5000,
-                });
-            }
-        } catch (error) {
+        } catch (error: any) {
             notifications.show({
                 color: 'red',
                 icon: <IconX style={{ width: rem(18), height: rem(18), }} />,
                 title: 'Reservation submission failed',
-                message: 'Please try again later.',
-                autoClose: 5000,
+                message: error.message || 'An unexpected error occurred. Please try again later.',
+                autoClose: 10000,
             });
+        } finally {
+            router.push('/dashboard/reservations');
         }
     };
 

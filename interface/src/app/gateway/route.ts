@@ -84,17 +84,19 @@ export async function POST(req: NextRequest) {
             body: JSON.stringify(requestBody),
         });
 
-        let data;
         const contentType = slurmResponse.headers.get('content-type');
-
-        if (contentType && contentType.includes('application/json')) {
-            data = await slurmResponse.json();
-        } else {
-            data = await slurmResponse.text();
-        }
+        const data = contentType?.includes('application/json')
+        ? await slurmResponse.json()
+        : await slurmResponse.text();
 
         logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
         logger.debug(`Response Data: ${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}`); // logger debug
+
+        if (typeof data === 'string' && data.includes("error") || !slurmResponse.ok) {
+            const errorMessage = typeof data === 'string' ? data : JSON.stringify(data);
+            console.log("Error thrown after string check: " + errorMessage);
+            throw new Error(`API Error: ${errorMessage}`);
+        }
 
         return NextResponse.json(data);
 

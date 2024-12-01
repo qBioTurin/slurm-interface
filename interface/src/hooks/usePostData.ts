@@ -7,6 +7,8 @@ export function usePostData(path: string) {
 
     const callPost = useCallback(async (requestBody: any) => {
         const DEBUG_KEY = ""; //debug, insert testing key
+        setError(null);
+        setData(null);
 
         try {
             setLoading(true);
@@ -26,15 +28,41 @@ export function usePostData(path: string) {
             console.log("Request body:", requestBody); //debug
 
             const response = await fetch(request);
-            console.log("Response:", response);
+            console.log("Response:", response); //debug
             setData(requestBody);
 
+            if(response.status != 200 || !response.ok) {
+                console.log("throwing error because status is not 200"); //debug
+                const errorText = await response.text();
+                let formattedError = `HTTP ${response.status}`;
+                try {
+                    const errorData = JSON.parse(errorText);
+                    if (errorData.error) {
+                        formattedError += `: ${errorData.error}`;
+                    } else {
+                        formattedError += `: ${errorText}`;
+                    }
+                } catch {
+                    formattedError += `: ${errorText}`;
+                }
+                throw new Error(formattedError);
+            }
+
+            const contentType = response.headers.get('content-type');
+            const responseData = contentType?.includes('application/json')
+                ? await response.json()
+                : await response.text();
+
+            setData(responseData);
+            return responseData;
+
         } catch (err: any) {
-            setError(err.message || 'Unknown error');
+            console.log("error caught at line 37:", err.message); //debug
+            setError(err.message || 'An unknown error occurred');
+            throw new Error(err.message);
         } finally {
             setLoading(false);
         }
-
     }, [path]);
 
 
