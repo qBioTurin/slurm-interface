@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import logo from "@/assets/logo_hpc4ai.png"
 import { signIn } from "next-auth/react";
-import GoogleButton from 'react-google-button'
 import { IconArrowRight } from '@tabler/icons-react';
 import { GoogleIcon } from './googleIcon';
 
