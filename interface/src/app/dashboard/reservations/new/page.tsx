@@ -151,7 +151,7 @@ export default function NewReservationForm() {
                 await callPost(jsonData);
                 notifications.show({
                     color: 'teal',
-                    icon: <IconCheck style={{ width: rem(18), height: rem(18), }} />,
+                    icon: <><IconCheck style={{ width: rem(18), height: rem(18), }} /></>,
                     title: 'Reservation submitted',
                     message: 'Your reservation has been successfully submitted.',
                     autoClose: 5000,
