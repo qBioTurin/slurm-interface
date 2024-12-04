@@ -11,7 +11,6 @@ services:
       LOG_LEVEL: ${LOG_LEVEL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
       KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
-      KEYCLOAK_ISSUER: ${KEYCLOAK_ISSUER}
       NEXT_LOCAL_KEYCLOAK_URL: ${NEXT_LOCAL_KEYCLOAK_URL}
       NEXT_PUBLIC_KEYCLOAK_REALM: ${NEXT_PUBLIC_KEYCLOAK_REALM}
       NEXT_CONTAINER_KEYCLOAK_ENDPOINT: ${NEXT_CONTAINER_KEYCLOAK_ENDPOINT}
@@ -23,6 +22,7 @@ services:
       - "3000:3000"
 
   keycloak:
+    container_name: keycloak
     image: quay.io/keycloak/keycloak:26.0.6
     restart: unless-stopped
     environment:
@@ -38,4 +38,3 @@ services:
 
 networks:
   slurm-network:
-    driver: bridge
