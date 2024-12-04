@@ -9,11 +9,11 @@ services:
       SLURM_API_URL: ${SLURM_API_URL}
       CURRENT_USER: ${CURRENT_USER}
       LOG_LEVEL: ${LOG_LEVEL}
-      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
-      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
-      NEXT_LOCAL_KEYCLOAK_URL: ${NEXT_LOCAL_KEYCLOAK_URL}
-      NEXT_PUBLIC_KEYCLOAK_REALM: ${NEXT_PUBLIC_KEYCLOAK_REALM}
-      NEXT_CONTAINER_KEYCLOAK_ENDPOINT: ${NEXT_CONTAINER_KEYCLOAK_ENDPOINT}
+      KC_CLIENT_ID: ${KC_CLIENT_ID}
+      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
+      KC_LOCAL_URL: ${KC_LOCAL_URL}
+      KC_REALM: ${KC_REALM}
+      KC_CONTAINER_HOSTNAME_URL: ${KC_CONTAINER_HOSTNAME_URL}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
     networks:
@@ -28,13 +28,14 @@ services:
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-    command: -v start-dev --import-realm
+    command: start-dev --import-realm
     volumes:
       - ./imports:/opt/keycloak/data/import
     networks:
       - slurm-network
     ports:
-      - "${KC_PORT}:8080"
+      - "8080:8080"
 
 networks:
   slurm-network:
+    driver: bridge

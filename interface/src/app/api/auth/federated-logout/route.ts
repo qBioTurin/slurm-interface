@@ -15,7 +15,7 @@ function handleEmptyToken() {
 }
 
 function sendEndSessionEndpointToURL(token: JWT) {
-    const endSessionEndPoint = new URL(`${process.env.NEXT_LOCAL_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/logout`);
+    const endSessionEndPoint = new URL(`${process.env.KC_LOCAL_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/logout`);
     const params: Record<string, string> = logoutParams(token);
     const endSessionParams = new URLSearchParams(params);
     const response = { url: `${endSessionEndPoint.href}/?${endSessionParams}` };
