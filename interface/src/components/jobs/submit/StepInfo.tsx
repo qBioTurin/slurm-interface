@@ -33,7 +33,7 @@ export default function StepInfo({ form }: Props) {
         mt="md"
         required
       /> */}
-        
+
       <Textarea
         label="Script"
         resize="vertical"
@@ -52,7 +52,7 @@ export default function StepInfo({ form }: Props) {
 
       <Textarea
         label="Environment Variables"
-        placeholder="e.g. /bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin)"
+        placeholder="e.g. /bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin"
         {...form.getInputProps("environment.PATH")}
         autosize
         minRows={2}

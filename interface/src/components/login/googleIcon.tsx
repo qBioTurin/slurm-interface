@@ -1,5 +1,3 @@
-import { rem } from '@mantine/core';
-
 interface GoogleIconProps extends React.ComponentPropsWithoutRef<'svg'> {
     size?: number | string;
 }

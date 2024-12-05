@@ -1,7 +1,7 @@
 import { Badge, Tooltip } from '@mantine/core';
 import { NodeStates } from '@/utils/models/node_state';
 
-interface NodeStateBadgeProps{
+interface NodeStateBadgeProps {
     state: string;
 }
 
@@ -21,7 +21,7 @@ const NodeStateBadge: React.FC<NodeStateBadgeProps> = ({ state }) => {
     const getBadgeColor = () => {
         switch (nodeStateInfo.state) {
             case 'IDLE': return '#51cf66';
-            case 'ALLOCATED': return '#5c7cf';
+            case 'ALLOCATED': return '#1c7ed6';
             case 'DOWN': return 'red';
             case 'RESERVED': return '#0c8599';
             default: return 'gray';

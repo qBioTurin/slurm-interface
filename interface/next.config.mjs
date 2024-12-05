@@ -7,7 +7,10 @@ const nextConfig = {
     },
     env: {
         NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    }
+        CURRENT_PATH: process.env.CURRENT_PATH,
+        CURRENT_USER: process.env.CURRENT_USER,
+        CURRENT_WORKING_DIR: process.env.CURRENT_WORKING_DIR,
+    },
 };
 
 

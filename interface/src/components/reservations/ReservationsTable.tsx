@@ -114,10 +114,6 @@ export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) =>
 
     const router = useRouter();
 
-    const handleRowClick = (reservationName: string) => {
-        router.push(`/dashboard/reservations/${reservationName}`);
-    };
-
     const setSorting = (field: keyof Reservation) => {
         const reversed = field === sortBy ? !reverseSortDirection : false;
         setReverseSortDirection(reversed);
@@ -151,7 +147,7 @@ export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) =>
     );
 
     const rows = sortedData.map((row) => (
-        <Table.Tr key={row.name} onClick={() => handleRowClick(row.name)}>
+        <Table.Tr key={row.name}>
             <Table.Td>{row.name}</Table.Td>
             <Table.Td>{row.users}</Table.Td>
             <Table.Td>{row.node_count}</Table.Td>
@@ -188,7 +184,6 @@ export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) =>
                     <Button
                         mb="md"
                         onClick={() => router.push('/dashboard/reservations/new')}
-                        color="blue"
                         className={styles.addButton}
                     >
                         New reservation

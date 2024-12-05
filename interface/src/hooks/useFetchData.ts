@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import useValidation from './useValidation';
 
-// Fetch data from the API and validate it using zod schemas
 export function useFetchData(path: string, responseSchema: any) {
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);

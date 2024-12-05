@@ -31,11 +31,14 @@ import Shell from "./AppShell/shell";
 import NavBar from "./Navbar/navbar";
 import Providers from "./commons/providers";
 
+<<<<<<< HEAD
 // Login components
 import LoginPage from "./login/LoginPage";
 import LoginCard from "./login/LoginCard";
 import LogoutButton from "./login/Logout";
 
+=======
+>>>>>>> 1cfca2b (refactor: remove unused components and types, update environment variables)
 export {
     Dashboard,
     RunningJobsColumn,
@@ -55,10 +58,14 @@ export {
     ReservationSummary,
     ReservationStep,
     LoadingPage,
+<<<<<<< HEAD
     LoginPage,
     LoginCard,
     LogoutButton,
     Shell,
     NavBar,
     Providers
+=======
+    Shell
+>>>>>>> 1cfca2b (refactor: remove unused components and types, update environment variables)
 };
