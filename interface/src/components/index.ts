@@ -27,6 +27,7 @@ import ReservationStep from "./reservations/new/ReservationSteps";
 // Common components
 import LoadingPage from "./commons/LoadingPage/loadingPage";
 import Shell from "./AppShell/shell";
+import Providers from "./commons/providers";
 
 // Login components
 import LoginPage from "./login/LoginPage";
@@ -52,5 +53,6 @@ export {
     LoadingPage,
     LoginPage,
     LoginForm,
-    Shell
+    Shell,
+    Providers
 };
