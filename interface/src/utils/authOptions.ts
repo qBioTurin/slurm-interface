@@ -1,7 +1,5 @@
 import { AuthOptions, TokenSet } from 'next-auth';
 import KeycloakProvider from 'next-auth/providers/keycloak';
-import { jwtDecode } from "jwt-decode";
-// import { encrypt } from "@/utils/encryption"; #TODO: introduce encryption in session
 import { JWT } from "next-auth/jwt";
 
 function requestRefreshOfAccessToken(token: JWT) {

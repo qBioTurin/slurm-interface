@@ -27,11 +27,13 @@ import ReservationStep from "./reservations/new/ReservationSteps";
 // Common components
 import LoadingPage from "./commons/LoadingPage/loadingPage";
 import Shell from "./AppShell/shell";
+import NavBar from "./Navbar/navbar";
 import Providers from "./commons/providers";
 
 // Login components
 import LoginPage from "./login/LoginPage";
-import LoginForm from "./login/LoginForm";
+import LoginCard from "./login/LoginCard";
+import LogoutButton from "./login/Logout";
 
 export {
     RunningJobsColumn,
@@ -52,7 +54,9 @@ export {
     ReservationStep,
     LoadingPage,
     LoginPage,
-    LoginForm,
+    LoginCard,
+    LogoutButton,
     Shell,
+    NavBar,
     Providers
 };
