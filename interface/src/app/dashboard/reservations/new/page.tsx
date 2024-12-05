@@ -45,6 +45,8 @@ export default function NewReservationForm() {
         form.setFieldValue('nodes', nodes.join(','));
     }, [searchParams]);
 
+    const nodesSelected = searchParams.getAll('nodes').length > 0;
+
     const form = useForm({
         initialValues: {
             name: '',
@@ -168,7 +170,7 @@ export default function NewReservationForm() {
 
             <Stepper active={active} mt="xl">
                 <Stepper.Step label="New reservation" description="Select resources" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
-                    <ReservationStep form={form} partitions={partitions} />
+                    <ReservationStep form={form} partitions={partitions} nodesSelected={nodesSelected}/>
                 </Stepper.Step>
                 <Stepper.Completed>
                     Review your submission details below:
