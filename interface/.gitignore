@@ -10,7 +10,7 @@
 /coverage
 
 # next.js
-interface/.next/
+/.next/
 /out/
 
 # production
@@ -43,5 +43,4 @@ temp/
 
 # log file
 ./app.log
-.next
 .env
