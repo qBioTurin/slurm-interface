@@ -15,7 +15,6 @@ export default function useValidation() {
             type = 'reservations';
         }
 
-
         try {
             const validatedData = schema.parse(data);
             //console.log('Validated data:', validatedData);

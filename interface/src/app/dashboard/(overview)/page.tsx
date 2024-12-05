@@ -10,10 +10,10 @@ import { z } from 'zod';
 
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from auth context
+const currentUser = process.env.CURRENT_USER || "" // TODO: get current user from auth context
 
 export default function DashBoard() {
-    const [allJobs, setAllJobs] = useState<Job[]>([]); // fetched jobs
+    const [allJobs, setAllJobs] = useState<Job[]>([]);
     const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
     const [showUserJobs, setShowUserJobs] = useState(true);
 
@@ -62,7 +62,6 @@ export default function DashBoard() {
 
             <Stack mt='md'>
                 <Title order={3} ml='sm'> Jobs statistics </Title>
-
                 <div className={styles.stats}>
                     <JobsBarchart jobs={jobs} />
                 </div>

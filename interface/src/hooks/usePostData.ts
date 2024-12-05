@@ -6,7 +6,6 @@ export function usePostData(path: string) {
     const [loading, setLoading] = useState<boolean>(false);
 
     const callPost = useCallback(async (requestBody: any) => {
-        const DEBUG_KEY = ""; //debug, insert testing key
         setError(null);
         setData(null);
 
@@ -16,7 +15,6 @@ export function usePostData(path: string) {
             const request = new Request(`/gateway?path=${path}`, {
                 method: 'POST',
                 headers: {
-                    'X-SLURM-USER-TOKEN': DEBUG_KEY || '',
                     'Content-Type': 'application/json',
                 },
                 body: requestBody,
@@ -24,15 +22,15 @@ export function usePostData(path: string) {
                 duplex: 'half',
             });
 
-            console.log("Request body typeof:", typeof requestBody); //debug
-            console.log("Request body:", requestBody); //debug
+            // console.log("Request body typeof:", typeof requestBody); //debug
+            // console.log("Request body:", requestBody); //debug
 
             const response = await fetch(request);
-            console.log("Response:", response); //debug
+            // console.log("Response:", response); //debug
             setData(requestBody);
 
-            if(response.status != 200 || !response.ok) {
-                console.log("throwing error because status is not 200"); //debug
+            if (response.status != 200 || !response.ok) {
+                // console.log("throwing error because status is not 200"); //debug
                 const errorText = await response.text();
                 let formattedError = `HTTP ${response.status}`;
                 try {
@@ -57,7 +55,6 @@ export function usePostData(path: string) {
             return responseData;
 
         } catch (err: any) {
-            console.log("error caught at line 37:", err.message); //debug
             setError(err.message || 'An unknown error occurred');
             throw new Error(err.message);
         } finally {

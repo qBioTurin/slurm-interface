@@ -3,6 +3,7 @@ import React from "react";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import { theme } from "../../theme";
 import { Notifications } from '@mantine/notifications';
+import { Shell } from "@/components/";
 
 export const metadata = {
   title: 'HPC4AI',
@@ -25,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <MantineProvider theme={theme}>
           <Notifications />
-          <main>{children}</main>
+          <Shell>
+            <main>{children}</main>
+          </Shell>
         </MantineProvider>
       </body>
     </html>

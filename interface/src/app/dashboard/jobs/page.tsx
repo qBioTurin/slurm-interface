@@ -12,14 +12,14 @@ import { IconTrash, IconSearch } from '@tabler/icons-react';
 import { z } from 'zod';
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from auth context
+const currentUser = process.env.CURRENT_USER || ""; // TODO: get current user from auth context
 
 export default function JobsPage() {
     const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
     const { deleteData } = useDeleteData();
-    const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
-    const [showUserJobs, setShowUserJobs] = useState(true); // state toggle
-    const [jobs, setJobs] = useState<Job[]>([]); // fetched jobs
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [showUserJobs, setShowUserJobs] = useState(true);
+    const [jobs, setJobs] = useState<Job[]>([]);
     const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
     const router = useRouter();
 
@@ -65,7 +65,6 @@ export default function JobsPage() {
 
         router.refresh();
     };
-
 
     const handleSelectAll = (isSelected: boolean) => {
         setSelectedJobs(isSelected ? filteredJobs.map(job => job.job_id) : []);

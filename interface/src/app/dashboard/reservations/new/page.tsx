@@ -12,24 +12,23 @@ import { ReservationSummary, ReservationStep } from '@/components';
 import { usePostData } from '@/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dayjs from 'dayjs';
-// import Credit from '../../../components/reservations/new/Credits'; // TODO: fix credits calculation logic
 
 type ReservationSubmissionSchema = z.infer<typeof ReservationSubmissionSchema>;
 
 // PROD PARTITIONS
-// const partitions = [
-//     { name: 'broadwell-booked' },
-//     { name: 'cascadelake-booked' },
-//     { name: 'epito-booked' },
-//     { name: 'gracehopper-booked' },
-// ];
-
-// TEST PARTITIONS
 const partitions = [
-    { name: 'broadwell' },
+    { name: 'broadwell-booked' },
+    { name: 'cascadelake-booked' },
+    { name: 'epito-booked' },
+    { name: 'gracehopper-booked' },
 ];
 
-const currentUser = process.env.CURRENT_USER || "lbosio"; // TODO: get current user from the session
+// TEST PARTITIONS
+// const partitions = [
+//     { name: 'broadwell' },
+// ];
+
+const currentUser = process.env.CURRENT_USER || ""; // TODO: get current user from the session
 const getCurrentDateAtMidnight = () => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -40,8 +39,6 @@ export default function NewReservationForm() {
     const [active, setActive] = useState(0);
     const { data, error, loading, callPost } = usePostData('reservations');
     const searchParams = useSearchParams();
-    // const [userCredits, setUserCredits] = useState(100.0); // TODO: get user credits from the session
-    // const [hasInsufficientCredits, setHasInsufficientCredits] = useState(false); // CREDITS VALIDATION
 
     useEffect(() => {
         const nodes = searchParams.getAll('nodes');
@@ -107,10 +104,6 @@ export default function NewReservationForm() {
     });
 
     const onSubmit = async (values: ReservationSubmissionSchema) => {
-        // CREDITS VALIDATION
-        // if (hasInsufficientCredits) {
-        //     return;
-        // }
 
         try {
             await ReservationSubmissionSchema.parseAsync(values);
@@ -144,18 +137,18 @@ export default function NewReservationForm() {
                     partition: values.partition
                 };
             }
-            
+
             const jsonData = JSON.stringify(formattedData, null, 2);
             console.log(jsonData); //debug
 
-                await callPost(jsonData);
-                notifications.show({
-                    color: 'teal',
-                    icon: <><IconCheck style={{ width: rem(18), height: rem(18), }} /></>,
-                    title: 'Reservation submitted',
-                    message: 'Your reservation has been successfully submitted.',
-                    autoClose: 5000,
-                });
+            await callPost(jsonData);
+            notifications.show({
+                color: 'teal',
+                icon: <><IconCheck style={{ width: rem(18), height: rem(18), }} /></>,
+                title: 'Reservation submitted',
+                message: 'Your reservation has been successfully submitted.',
+                autoClose: 5000,
+            });
 
         } catch (error: any) {
             notifications.show({
@@ -172,12 +165,6 @@ export default function NewReservationForm() {
 
     return (
         <>
-            {/* CREDITS VALIDATION */}
-            {/* <Credit
-                userCredits={userCredits}
-                durationMinutes={calculateDurationMinutes(form.values.start_time, form.values.end_time)}
-                onInsufficientCredits={setHasInsufficientCredits}
-            /> */}
 
             <Stepper active={active} mt="xl">
                 <Stepper.Step label="New reservation" description="Select resources" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>

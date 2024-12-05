@@ -1,24 +1,9 @@
-import { LoginPage } from '@/components'
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/utils/authOptions';
-import Logout from '@/components/login/Logout';
+import DashBoardPage from "@/app/dashboard/(overview)/page";
 
-
-export default async function Home() {
-  const session = await getServerSession(authOptions);
-
-  if (session) {
-    return (
-      <div>
-        <h1>Welcome {session.user?.name}</h1>
-        <p>This is a protected page</p>
-        <div><Logout /></div>
-      </div>
-    );
-  }
-
+export default function Home() {
   return (
-    <LoginPage />
+    <div>
+      <DashBoardPage />
+    </div>
   );
 }
-

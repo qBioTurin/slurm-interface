@@ -13,8 +13,8 @@ import { useRouter } from 'next/navigation';
 type Node = z.infer<typeof NodeSchema>;
 
 export default function NodesPage() {
-  const [searchQuery, setSearchQuery] = useState<string>(''); // search bar
-  const [nodes, setNodes] = useState<Node[]>([]); // fetched nodes
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [nodes, setNodes] = useState<Node[]>([]);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [nodeStateFilter, setNodeStateFilter] = useState<string>('ALL');
   const { data, loading, error } = useFetchData('nodes', SlurmNodeResponseSchema);

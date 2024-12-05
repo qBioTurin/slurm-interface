@@ -9,7 +9,7 @@ import { z } from 'zod';
 type Reservation = z.infer<typeof ReservationSchema>;
 
 export default function ReservationsPage() {
-    const [reservations, setReservations] = useState<Reservation[]>([]); // fetched reservations
+    const [reservations, setReservations] = useState<Reservation[]>([]);
     const { data, loading, error } = useFetchData('reservations', SlurmReservationResponseSchema);
 
     useEffect(() => {

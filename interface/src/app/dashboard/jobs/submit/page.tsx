@@ -37,10 +37,10 @@ const SubmitJobForm = () => {
     initialValues: {
       name: '',
       script: '',
-      current_working_directory: process.env.CURRENT_WORKING_DIR || '/home/lbosio',
+      current_working_directory: process.env.CURRENT_WORKING_DIR || '',
       nodes: 1,
       tasks: 1,
-      environment: { PATH: process.env.PATH || '/bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin/' },
+      environment: { PATH: process.env.CURRENT_PATH || '' },
       description: '',
       partition: '',
       specify_nodes: '',
@@ -131,7 +131,7 @@ const SubmitJobForm = () => {
     <div>
 
       <div>
-        <Stepper active={active} onStepClick={setActive} completedIcon={<IconCircleCheck />} iconSize={47}>
+        <Stepper active={active} completedIcon={<IconCircleCheck />} iconSize={47}>
           <Stepper.Step icon={<IconUserCheck />} label="Info" description="Fill in job details" />
           <Stepper.Step icon={<IconSettings />} label="Specs" description="Define job specifications" />
           {/* <Stepper.Step icon={<IconAdjustmentsHorizontal />} label="Optional" description="Add advanced settings" /> */}
