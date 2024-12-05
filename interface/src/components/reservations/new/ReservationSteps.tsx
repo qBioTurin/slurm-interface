@@ -8,10 +8,11 @@ import { UseFormReturnType } from '@mantine/form';
 interface ReservationStepProps {
   form: UseFormReturnType<any>;
   partitions: { name: string }[];
+  nodesSelected: boolean;
 }
 
-export default function ReservationStep({ form, partitions }: ReservationStepProps) {
-  const [isNodes, setIsNodes] = useState(form.values.nodes.trim !== '');
+export default function ReservationStep({ form, partitions, nodesSelected }: ReservationStepProps) {
+  const [isNodes, setIsNodes] = useState(nodesSelected);
 
   return (
     <>
@@ -68,7 +69,7 @@ export default function ReservationStep({ form, partitions }: ReservationStepPro
               form.setFieldValue('partition', '');
             }
           }}
-          disabled={form.values.nodes.trim !== ''}
+          disabled={nodesSelected}
         />
 
         {isNodes ? (
