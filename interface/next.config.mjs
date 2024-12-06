@@ -4,6 +4,9 @@ const nextConfig = {
     experimental: {
         missingSuspenseWithCSRBailout: false,
         optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
+    },
+    env: {
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     }
 };
 
