@@ -18,6 +18,7 @@ function sendEndSessionEndpointToURL(token: JWT) {
     const endSessionEndPoint = new URL(`${process.env.KC_LOCAL_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/logout`);
     const params: Record<string, string> = logoutParams(token);
     const endSessionParams = new URLSearchParams(params);
+    console.log(`${endSessionEndPoint.href}/?${endSessionParams}`);
     const response = { url: `${endSessionEndPoint.href}/?${endSessionParams}` };
     return NextResponse.json(response);
 }

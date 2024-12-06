@@ -1,4 +1,5 @@
 // Dashboard components
+import Dashboard from "./dashboard/Dashboard";
 import RunningJobsColumn from "./dashboard/RunningJobsColumn";
 import PendingJobsColumn from "./dashboard/PendingJobsColumn";
 import JobsBarchart from "./dashboard/JobsBarchart";
@@ -36,6 +37,7 @@ import LoginCard from "./login/LoginCard";
 import LogoutButton from "./login/Logout";
 
 export {
+    Dashboard,
     RunningJobsColumn,
     PendingJobsColumn,
     JobsBarchart,

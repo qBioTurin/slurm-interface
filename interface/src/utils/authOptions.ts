@@ -19,6 +19,9 @@ function requestRefreshOfAccessToken(token: JWT) {
 export const authOptions: AuthOptions = {
     session: { strategy: 'jwt' },
     jwt: { maxAge: 6 * 60 * 60 }, // 6 hours
+    pages: {
+        signIn: '/',
+    },
     providers: [
         KeycloakProvider({
             clientId: process.env.KC_CLIENT_ID,
@@ -42,7 +45,6 @@ export const authOptions: AuthOptions = {
 
     callbacks: {
         async jwt({ token, account }) {
-
             if (account) { // primo accesso alla sessione
                 token.idToken = account.id_token
                 token.accessToken = account.access_token
