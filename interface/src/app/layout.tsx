@@ -4,6 +4,10 @@ import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import { theme } from "../../theme";
 import { Notifications } from '@mantine/notifications';
 import { Providers } from "@/components";
+import { Shell } from "@/components/";
+import { Montserrat } from "next/font/google";
+
+const font = Montserrat({ weight: "400", subsets: ["latin"] });
 
 export const metadata = {
   title: 'HPC4AI',
@@ -23,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
 
-      <body>
+      <body className={font.className}>
         <MantineProvider theme={theme}>
           <Providers>
             <Notifications />
