@@ -137,7 +137,6 @@ export default function StepSpecs({ form }: Props) {
               form={form}
               fieldName="nodes"
             />
-            <NumberInputField label="Number of Tasks" form={form} fieldName="tasks" />
             <Select
               label="Partition"
               // data={['broadwell']} // test partitions
@@ -150,7 +149,6 @@ export default function StepSpecs({ form }: Props) {
 
           <>
             <NumberInputField label="Number of Nodes" form={form} fieldName="nodes" />
-            <NumberInputField label="Number of Tasks" form={form} fieldName="tasks" />
             <Select
               label="Partition"
               data={['broadwell', 'cascadelake', 'epito', 'gracehopper']}
