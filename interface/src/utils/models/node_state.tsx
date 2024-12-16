@@ -16,6 +16,7 @@ export const NodeStates: NodeStateInfo[] = [
     { state: 'FUTURE', description: 'The node is currently not fully configured, but expected to be available at some point in the indefinite future for use.' },
     { state: 'IDLE', description: 'The node is not allocated to any jobs and is available for use.' },
     { state: 'INVAL', description: "The node did not register correctly with the controller. This happens when a node registers with less resources than configured in the slurm.conf file. The node will clear from this state with a valid registration (i.e. a slurmd restart is required)." },
+    { state: 'INVALID_REG', description: "The node did not register correctly with the controller. This happens when a node registers with less resources than configured in the slurm.conf file." },
     { state: 'MAINT', description: 'The node is currently in a reservation with a flag value of "maintenance".' },
     { state: 'REBOOT_ISSUED', description: 'A reboot request has been sent to the agent configured to handle this request.' },
     { state: 'REBOOT_REQUESTED', description: "A request to reboot this node has been made, but hasn't been handled yet." },
@@ -28,7 +29,6 @@ export const NodeStates: NodeStateInfo[] = [
     { state: 'POWERING_UP', description: 'The node is in the process of being powered up.' },
     { state: 'RESERVED', description: 'The node is in an advanced reservation and not generally available.' },
     { state: 'UNKNOWN', description: "The Slurm controller has just started and the node's state has not yet been determined." },
-
     { state: 'CLOUD', description: 'Indicates that the node is configured as a cloud node, to be brought up on demand, but not currently running.' },
     { state: 'DRAIN', description: 'The node is not accepting any new jobs and any currently running jobs will complete.' },
     { state: 'DYNAMIC', description: 'Slurm allows defining multiple types of nodes in a FUTURE state. The DYNAMIC state indicates that the node was started as a Dynamic Future node.' },
