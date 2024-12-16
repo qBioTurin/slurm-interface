@@ -48,7 +48,8 @@ export default function StepSpecs({ form }: Props) {
         <Select
           label="Partition"
           data={['broadwell', 'cascadelake', 'epito', 'gracehopper']}
-          {...form.getInputProps('partition')}
+          {...form.getInputProps('partition', { withError: false })}
+          required
         />
       </>
     );
@@ -141,7 +142,8 @@ export default function StepSpecs({ form }: Props) {
               label="Partition"
               // data={['broadwell']} // test partitions
               data={['broadwell-booked', 'cascadelake-booked', 'epito-booked', 'gracehopper-booked']} // prod partitions
-              {...form.getInputProps('partition')}
+              {...form.getInputProps('partition', { withError: false })}
+              required
             />
           </>
 
@@ -152,7 +154,8 @@ export default function StepSpecs({ form }: Props) {
             <Select
               label="Partition"
               data={['broadwell', 'cascadelake', 'epito', 'gracehopper']}
-              {...form.getInputProps('partition')}
+              {...form.getInputProps('partition', { withError: false })}
+              required
               mt='sm'
             />
           </>
