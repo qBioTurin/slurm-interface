@@ -58,7 +58,6 @@
 .table td button:hover {
     background-color: #b0b0b0;
     color: black;
-    text-decoration: underline;
 }
 
 .priority {
