@@ -27,6 +27,7 @@ import ReservationStep from "./reservations/new/ReservationSteps";
 
 // Common components
 import LoadingPage from "./commons/LoadingPage/loadingPage";
+import Footer from "./footer/footer";
 import Shell from "./AppShell/shell";
 import NavBar from "./Navbar/navbar";
 import Providers from "./commons/providers";
@@ -58,7 +59,8 @@ export {
     LoginPage,
     LoginCard,
     LogoutButton,
+    Providers,
     Shell,
     NavBar,
-    Providers
+    Footer
 };

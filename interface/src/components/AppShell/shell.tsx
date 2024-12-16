@@ -5,12 +5,11 @@ import Image from "next/image";
 import { useDisclosure } from '@mantine/hooks';
 import React, { ReactNode } from 'react';
 import logo from "@/assets/logo_hpc4ai.png";
-import { LogoutButton, NavBar } from "@/components";
+import { LogoutButton, NavBar, Footer } from "@/components";
 
 interface ShellProps {
     children: JSX.Element | ReactNode;
 }
-
 
 export const Shell = ({ children }: ShellProps) => {
     const [opened, { toggle }] = useDisclosure();
@@ -21,9 +20,18 @@ export const Shell = ({ children }: ShellProps) => {
             navbar={{
                 width: { base: 200, md: 200, xl: 200 },
                 breakpoint: 'sm',
-                collapsed: { mobile: !opened },
+                collapsed: { desktop: !opened, mobile: !opened },
             }}
             padding="md"
+            styles={(theme) => ({
+                main: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: 'calc(100vh-170px)',
+                    paddingBottom: '50px',
+                    // Ensure no padding at the bottom
+                },
+            })}
         >
 
             <AppShell.Header>
@@ -42,14 +50,14 @@ export const Shell = ({ children }: ShellProps) => {
                         <LogoutButton />
                     </Group>
                 </Group>
-            </AppShell.Header >
+            </AppShell.Header>
 
             <AppShell.Navbar p="md">
                 <NavBar />
             </AppShell.Navbar>
 
             <AppShell.Main m='sm'>{children}</AppShell.Main>
-
+            <AppShell.Footer withBorder={false} pos='unset'><Footer /></AppShell.Footer>
         </AppShell>
     );
 }
