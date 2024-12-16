@@ -26,6 +26,8 @@ import ReservationStep from "./reservations/new/ReservationSteps";
 
 // Common components
 import LoadingPage from "./commons/LoadingPage/loadingPage";
+import NavBar from "./Navbar/navbar";
+import Footer from "./footer/footer";
 import Shell from "./AppShell/shell";
 
 export {
@@ -46,5 +48,7 @@ export {
     ReservationSummary,
     ReservationStep,
     LoadingPage,
-    Shell
+    Shell,
+    NavBar,
+    Footer
 };

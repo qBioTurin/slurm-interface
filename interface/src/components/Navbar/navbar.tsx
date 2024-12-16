@@ -1,5 +1,6 @@
 'use client';
 import { IconHome, IconCpu2, IconBriefcase2, IconCalendarClock } from '@tabler/icons-react';
+import { AppShell, ScrollArea } from '@mantine/core';
 import classes from './navbar.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

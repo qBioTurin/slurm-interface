@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import styles from './Dashboard.module.css';
-import { Grid, Switch, Group, Flex, Stack, Title } from '@mantine/core';
+import { Grid, Switch, Group, Flex, Stack, Title, Text } from '@mantine/core';
 import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components/';
 import { useFetchData } from '@/hooks/';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
@@ -38,18 +38,14 @@ export default function DashBoard() {
     return (
         <Stack>
             <Group justify='space-between'>
-                <Title order={2} style={{
-                    fontFamily: 'Montserrat', fontSize: '1.85rem', fontWeight: 600, color: 'var(--mantine-colors-text-primary)', margin: '0px'
-                }}> Dashboard</Title>
+                <Text size='30px' fw='bold' mt='md'> Dashboard</Text>
                 <Switch
                     label={showUserJobs ? "Your jobs" : "All Jobs"}
                     checked={showUserJobs}
                     onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
                 />
             </Group>
-            <Title order={3} mt='md' style={{
-                fontFamily: 'Montserrat', fontSize: '1.5rem', fontWeight: 600, color: 'var(--mantine-colors-text-primary)'
-            }}>Upcoming Jobs for Today </Title>
+            <Text size='20px' fw='bold' mt='lg'>Upcoming Jobs for Today </Text>
             <Flex direction={{ base: 'row', sm: 'column' }}>
                 <Grid>
                     {/* Left Column: Running jobs */}
@@ -65,9 +61,7 @@ export default function DashBoard() {
             </Flex>
 
             <Stack mt='md'>
-                <Title order={3} mt='sm' style={{
-                    fontFamily: 'Montserrat', fontSize: '1.5rem', fontWeight: 600, color: 'var(--mantine-colors-text-primary)'
-                }}>Jobs Stats</Title>
+                <Text size='20px' fw='bold' mt='lg'>Jobs Stats</Text>
                 <div className={styles.stats}>
                     <JobsBarchart jobs={jobs} />
                 </div>
