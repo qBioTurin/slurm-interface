@@ -70,26 +70,22 @@ export const JobsTable: FC<JobsTableProps> = ({
             </thead>
             <tbody>
                 {sortedJobs.map((job: any) => {
-
                     return (
-                        <tr key={job.job_id}>
-
-                            {selectable && ( // only show this column if selectable is true
+                        <tr key={job.job_id} onClick={() => (window.location.href = `/dashboard/jobs/${job.job_id}`)} style={{ cursor: 'pointer' }}>
+                            {selectable && (
                                 <td>
                                     <Checkbox
                                         size='md'
                                         checked={selectedJobs.includes(job.job_id)}
                                         onChange={(event) => onSelect?.(job.job_id, event.currentTarget.checked)}
+                                        onClick={(e) => e.stopPropagation()}
                                     />
                                 </td>
                             )}
-
                             <td>
-                                <Link href={`/dashboard/jobs/${job.job_id}`} passHref>
-                                    <Button>
-                                        {job.job_id}
-                                    </Button>
-                                </Link>
+                                <Button>
+                                    {job.job_id}
+                                </Button>
                             </td>
                             <td>{job.name}</td>
                             <td>{job.user_name}</td>
