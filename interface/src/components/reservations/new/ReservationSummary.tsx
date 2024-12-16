@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, Table, Text } from '@mantine/core';
-import { IconAlertCircle } from '@tabler/icons-react';
+import { Table } from '@mantine/core';
 
 type ReservationSummaryProps = {
   reservation: {
@@ -30,42 +29,23 @@ export const ReservationSummary = ({ reservation }: ReservationSummaryProps) => 
 
   return (
     <div>
-        <Table striped highlightOnHover withColumnBorders>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Field</Table.Th>
-              <Table.Th>Value</Table.Th>
+      <Table striped highlightOnHover withColumnBorders>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Field</Table.Th>
+            <Table.Th>Value</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {fieldsToDisplay.map((field, index) => (
+            <Table.Tr key={index}>
+              <Table.Td>{field.key}</Table.Td>
+              <Table.Td>{field.value}</Table.Td>
             </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {fieldsToDisplay.map((field, index) => (
-              <Table.Tr key={index}>
-                <Table.Td>{field.key}</Table.Td>
-                <Table.Td>{field.value}</Table.Td>
-              </Table.Tr>
-            ))}
-          </Table.Tbody>
-        </Table>
+          ))}
+        </Table.Tbody>
+      </Table>
 
-      {/* {errors && errors.length > 0 && (
-        <Card mt="md">
-          <Text color="red" mt="md">Errors:</Text>
-          <Table striped highlightOnHover>
-            <Table.Tbody>
-              {errors.map((error, index) => (
-                <Table.Tr key={index}>
-                  <Table.Td>
-                    <IconAlertCircle size={20} color="red" />
-                  </Table.Td>
-                  <Table.Td>
-                    <Text color="red">{error}</Text>
-                  </Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        </Card>
-      )} */}
     </div>
   );
 };
