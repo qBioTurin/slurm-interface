@@ -17,7 +17,6 @@ import JobProgressTimeline from "./jobs/job-details/JobProgressTimeline";
 // Job submission components
 import StepInfo from "./jobs/submit/StepInfo";
 import StepSpecs from "./jobs/submit/StepSpecs";
-import StepOptional from "./jobs/submit/StepOptional";
 import StepConfirmation from "./jobs/submit/StepConfirmation";
 
 // Reservation submission components
@@ -43,7 +42,6 @@ export {
     JobProgressTimeline,
     StepInfo,
     StepSpecs,
-    StepOptional,
     StepConfirmation,
     ReservationSummary,
     ReservationStep,

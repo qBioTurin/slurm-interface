@@ -118,7 +118,6 @@ const SubmitJobForm = () => {
       setActive((current) => current + 1);
     } else if (Object.keys(errors).length === 0) {
       if (active === 2) {
-        {/* Change to < 3 when optional step is added */ }
         onSubmit(form.values);
         return;
       } else {
@@ -134,7 +133,6 @@ const SubmitJobForm = () => {
         <Stepper active={active} completedIcon={<IconCircleCheck />} iconSize={47}>
           <Stepper.Step icon={<IconUserCheck />} label="Info" description="Fill in job details" />
           <Stepper.Step icon={<IconSettings />} label="Specs" description="Define job specifications" />
-          {/* <Stepper.Step icon={<IconAdjustmentsHorizontal />} label="Optional" description="Add advanced settings" /> */}
           <Stepper.Step icon={<IconCircleCheck />} label="Confirmation" description="Review your choices" />
         </Stepper>
       </div>
@@ -142,8 +140,7 @@ const SubmitJobForm = () => {
       <div>
         {active === 0 && <StepInfo form={form} />}
         {active === 1 && <StepSpecs form={form} />}
-        {/* {active === 2 && <StepOptional form={form} />} */}
-        {active === 2 && <StepConfirmation form={form} />} {/* Change to < 3 when optional step is added */}
+        {active === 2 && <StepConfirmation form={form} />}
 
         <Group mt="xl">
           {active > 0 && (
@@ -153,7 +150,7 @@ const SubmitJobForm = () => {
           )}
 
           <Button onClick={handleNavigation}>
-            {active < 2 ? 'Next step' : 'Submit'} {/* Change to < 3 when optional step is added */}
+            {active < 2 ? 'Next step' : 'Submit'}
           </Button>
         </Group>
       </div>
