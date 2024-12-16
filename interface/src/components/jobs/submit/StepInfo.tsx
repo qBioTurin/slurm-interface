@@ -17,27 +17,10 @@ export default function StepInfo({ form }: Props) {
         required
       />
 
-      {/* 
-      <Textarea
-        label="Description (optional)"
-        placeholder="Enter job description"
-        {...form.register("description")}
-        autosize
-        minRows={2}
-      /> */}
-
-      {/* <TextInput
-        label="Script"
-        placeholder="e.g. #!/bin/bash\nsrun sleep 600"
-        {...form.getInputProps("script")}
-        mt="md"
-        required
-      /> */}
-
       <Textarea
         label="Script"
         resize="vertical"
-        placeholder="e.g. #!/bin/bash\nsrun sleep 600"
+        placeholder={`e.g. #!/bin/bash\nsrun sleep 600`}
         {...form.getInputProps("script")}
         mt="md"
         required
