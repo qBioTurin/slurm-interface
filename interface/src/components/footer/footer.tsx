@@ -22,16 +22,15 @@ const data = [
 
 export default function Footer() {
 
-    const groups = data.map((group) => {
+    const groups = data.map((group, groupIndex) => {
         const links = group.links.map((link, index) => (
-            <Group>
+            <Group key={index}>
                 <ActionIcon size="lg" color="gray" variant="subtle" onClick={
                     () => window.open(link.link, '_blank')
                 }>
                     {link.icon}
                 </ActionIcon>
                 <Text<'a'>
-                    key={index}
                     className={classes.link}
                     component="a"
                     href={link.link}
@@ -44,7 +43,7 @@ export default function Footer() {
         ));
 
         return (
-            <div className={classes.wrapper} key={group.title}>
+            <div className={classes.wrapper} key={groupIndex}>
                 <Text className={classes.title}>{group.title}</Text>
                 {links}
             </div>
