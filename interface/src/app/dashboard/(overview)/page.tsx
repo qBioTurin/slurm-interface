@@ -38,14 +38,18 @@ export default function DashBoard() {
     return (
         <Stack>
             <Group justify='space-between'>
-                <Title order={2} > Dashboard</Title>
+                <Title order={2} style={{
+                    fontFamily: 'Montserrat', fontSize: '1.85rem', fontWeight: 600, color: 'var(--mantine-colors-text-primary)', margin: '0px'
+                }}> Dashboard</Title>
                 <Switch
                     label={showUserJobs ? "Your jobs" : "All Jobs"}
                     checked={showUserJobs}
                     onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
                 />
             </Group>
-            <Title order={3} mt='sm'>Upcoming Jobs for Today </Title>
+            <Title order={3} mt='md' style={{
+                fontFamily: 'Montserrat', fontSize: '1.5rem', fontWeight: 600, color: 'var(--mantine-colors-text-primary)'
+            }}>Upcoming Jobs for Today </Title>
             <Flex direction={{ base: 'row', sm: 'column' }}>
                 <Grid>
                     {/* Left Column: Running jobs */}
@@ -61,7 +65,9 @@ export default function DashBoard() {
             </Flex>
 
             <Stack mt='md'>
-                <Title order={3} ml='sm'> Jobs statistics </Title>
+                <Title order={3} mt='sm' style={{
+                    fontFamily: 'Montserrat', fontSize: '1.5rem', fontWeight: 600, color: 'var(--mantine-colors-text-primary)'
+                }}>Jobs Stats</Title>
                 <div className={styles.stats}>
                     <JobsBarchart jobs={jobs} />
                 </div>
