@@ -31,6 +31,7 @@ export default function StepInfo({ form }: Props) {
         placeholder="e.g. /tmp"
         {...form.getInputProps("current_working_directory")}
         mt="md"
+        required
       />
 
       <Textarea
@@ -40,6 +41,7 @@ export default function StepInfo({ form }: Props) {
         autosize
         minRows={2}
         mt="md"
+        required
       />
 
     </div>
