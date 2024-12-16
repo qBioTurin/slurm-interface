@@ -43,6 +43,7 @@ const JobsBarchart: React.FC<JobsBarchartProps> = ({ jobs }) => {
             orientation="vertical"
             yAxisProps={{ domain: [0, yAxisMax], width: 80 }}
             xAxisLabel='N. jobs'
+            valueFormatter={(value: number) => Number.isInteger(value) ? value.toString() : ''}
             barProps={{ radius: 10 }}
             series={[{ name: 'count', color: 'violet.6' }]}
         />
