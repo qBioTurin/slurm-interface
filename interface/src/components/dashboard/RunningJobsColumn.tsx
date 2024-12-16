@@ -1,9 +1,8 @@
 import React from 'react';
 import { JobSchema } from '@/schemas/job_schema';
 import { z } from 'zod';
-import { Table, ScrollArea, } from '@mantine/core';
+import { Table, ScrollArea, Button } from '@mantine/core';
 import styles from './JobColumns.module.css';
-import Link from 'next/link';
 
 type Job = z.infer<typeof JobSchema>;
 
@@ -42,11 +41,15 @@ const RunningJobsColumn: React.FC<RunningJobsColumnProps> = ({ jobs }) => {
                         </thead>
                         <tbody>
                             {jobs.map((job) => (
-                                <tr key={job.job_id} className={getRowClass(job.job_state)}>
+                                <tr
+                                    key={job.job_id}
+                                    className={`${getRowClass(job.job_state)} ${styles.hoverRow}`}
+                                    onClick={() => (window.location.href = `/dashboard/jobs/${job.job_id}`)}
+                                >
                                     <td>
-                                        <Link href={`/dashboard/jobs/${job.job_id}`} passHref>
-                                            <span className={styles.link}>{job.job_id}</span>
-                                        </Link>
+                                        <Button>
+                                            {job.job_id}
+                                        </Button>
                                     </td>
                                     <td>{job.name}</td>
                                     <td>{new Date(job.start_time.number! * 1000).toLocaleTimeString()}</td>
