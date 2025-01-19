@@ -2,18 +2,40 @@ import { AuthOptions, TokenSet } from 'next-auth';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import { JWT } from "next-auth/jwt";
 
-function requestRefreshOfAccessToken(token: JWT) {
-    return fetch(`${process.env.KC_LOCAL_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/token`, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
+async function refreshAccessToken(token: JWT) {
+    try {
+        const url = `${process.env.KC_LOCAL_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/token?` + new URLSearchParams({
             client_id: process.env.KC_CLIENT_ID,
             client_secret: process.env.KC_CLIENT_SECRET,
             grant_type: "refresh_token",
             refresh_token: token.refreshToken! as string,
-        }),
-        method: "POST",
-        cache: "no-store"
-    });
+        })
+
+        const response = await fetch(url, {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            method: "POST",
+            // cache: "no-store"
+        });
+
+        const refreshedTokens = await response.json();
+
+        if (!response.ok) throw refreshedTokens
+
+        return {
+            ...token, //keep the previous token properties
+            idToken: refreshedTokens.id_token,
+            accessToken: refreshedTokens.access_token,
+            expiresAt: Math.floor(Date.now() / 1000 + (refreshedTokens.expires_in as number)),
+            refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+        }
+    } catch (error) {
+        console.log(error)
+
+        return {
+            ...token,
+            error: "RefreshAccessTokenError",
+        }
+    }
 }
 
 export const authOptions: AuthOptions = {
@@ -33,9 +55,13 @@ export const authOptions: AuthOptions = {
             jwks_endpoint: `${process.env.KC_CONTAINER_HOSTNAME_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/certs`,
             authorization: {
                 params: {
+                    prompt: "login",
+                    grant_type: "authorization_code",
                     scope: "openid email profile",
+                    response_type: 'code'
                 },
                 url: `${process.env.KC_LOCAL_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/auth`,
+
             },
             token: `${process.env.KC_CONTAINER_HOSTNAME_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/token`,
             userinfo: `${process.env.KC_CONTAINER_HOSTNAME_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/userinfo`,
@@ -44,44 +70,37 @@ export const authOptions: AuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
 
     callbacks: {
+
         async jwt({ token, account }) {
             if (account) { // primo accesso alla sessione
-                token.idToken = account.id_token
-                token.accessToken = account.access_token
-                token.refreshToken = account.refresh_token
-                token.expiresAt = account.expires_at
-                return token;
-            }
-
-            if (Date.now() < ((token.expiresAt! as number) * 1000 - 60 * 1000)) { //token valido
-                return token;
-
-            } else { // token scaduto
-                try {
-                    const response = await requestRefreshOfAccessToken(token)
-
-                    const tokens: TokenSet = await response.json()
-
-                    if (!response.ok) throw tokens
-
-                    const updatedToken: JWT = {
-                        ...token, // Keep the previous token properties
-                        idToken: tokens.id_token,
-                        accessToken: tokens.access_token,
-                        expiresAt: Math.floor(Date.now() / 1000 + (tokens.expires_in as number)),
-                        refreshToken: tokens.refresh_token ?? token.refreshToken,
-                    }
-                    return updatedToken
-                } catch (error) {
-                    console.error("Error refreshing access token", error)
-                    return { ...token, error: "RefreshAccessTokenError" }
+                console.log("account:", account);
+                return {
+                    idToken: account.id_token,
+                    accessToken: account.access_token,
+                    refreshToken: account.refresh_token,
+                    expiresAt: account.expires_at
                 }
             }
+
+            //Returns previous token if the access token has not expired yet
+            if (Date.now() < ((token.expiresAt! as number) * 1000 - 60 * 1000)) { //token valido
+                return token;
+            }
+
+            //Refresh the access token
+            return await refreshAccessToken(token)
         },
 
-        async session({ session, token }) {
-            session.accessToken = token.accessToken as string
-            return session
+        async session({ session, token, user }) {
+            if (token) {
+                session.user = { name: token.name, email: "help" };
+                session.accessToken = token.accessToken as string;
+            }
+            return session;
         }
+
     }
+
+
+
 }
