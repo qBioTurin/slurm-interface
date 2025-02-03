@@ -113,7 +113,6 @@ export const authOptions: AuthOptions = {
                 console.log("----- session token exists: ", token.expiresAt); //debug
                 session.user = { name: token.name, email: "help" };
                 session.accessToken = token.accessToken as string;
-                session.slurmToken = token.slurmToken as string;
             } else {
                 console.log("----- session token does not exist"); //debug
             }
