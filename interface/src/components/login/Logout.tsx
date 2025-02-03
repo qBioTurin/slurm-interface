@@ -4,7 +4,7 @@ import { IconLogout } from "@tabler/icons-react";
 import { ActionIcon } from "@mantine/core";
 import { signOut } from "next-auth/react"
 
-async function federatedLogout() {
+export async function federatedLogout() {
     try {
         const response = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/federated-logout`);
         const data = await response.json();
@@ -16,7 +16,7 @@ async function federatedLogout() {
         throw new Error(data.error);
     } catch (error) {
         console.log(error);
-        alert(error);
+        // alert(error);
         await signOut({ redirect: false });
         window.location.href = "/";
     }

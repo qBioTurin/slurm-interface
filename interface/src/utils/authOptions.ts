@@ -4,20 +4,27 @@ import { JWT } from "next-auth/jwt";
 
 async function refreshAccessToken(token: JWT) {
     try {
-        const url = `${process.env.KC_LOCAL_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/token?` + new URLSearchParams({
+        const url = `${process.env.KC_LOCAL_URL}/realms/${process.env.KC_REALM}/protocol/openid-connect/token`;
+        const body = new URLSearchParams({
             client_id: process.env.KC_CLIENT_ID,
             client_secret: process.env.KC_CLIENT_SECRET,
             grant_type: "refresh_token",
             refresh_token: token.refreshToken! as string,
-        })
+        });
+
+        console.log("*** url:", url) //debug
 
         const response = await fetch(url, {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             method: "POST",
-            // cache: "no-store"
+            body: body.toString(),
         });
 
         const refreshedTokens = await response.json();
+
+        // console.log("***** refreshedTokens:", refreshedTokens) //debug
+        console.log("***** refreshedTokens.expiresAt:", refreshedTokens) //debug
+
 
         if (!response.ok) throw refreshedTokens
 
@@ -40,7 +47,7 @@ async function refreshAccessToken(token: JWT) {
 
 export const authOptions: AuthOptions = {
     session: { strategy: 'jwt' },
-    jwt: { maxAge: 6 * 60 * 60 }, // 6 hours
+    jwt: { maxAge: 60 * 60 }, // 1 hour
     pages: {
         signIn: '/',
     },
@@ -72,8 +79,9 @@ export const authOptions: AuthOptions = {
     callbacks: {
 
         async jwt({ token, account }) {
+            console.log("--- jwt token"); //debug
             if (account) { // primo accesso alla sessione
-                console.log("account:", account);
+                console.log("----- primo accesso: ", account.expires_at); //debug
                 return {
                     idToken: account.id_token,
                     accessToken: account.access_token,
@@ -84,23 +92,25 @@ export const authOptions: AuthOptions = {
 
             //Returns previous token if the access token has not expired yet
             if (Date.now() < ((token.expiresAt! as number) * 1000 - 60 * 1000)) { //token valido
+                console.log("----- token valido") //debug
                 return token;
             }
 
             //Refresh the access token
+            console.log("----- token invalido: ", token.expiresAt) //debug
             return await refreshAccessToken(token)
         },
 
         async session({ session, token, user }) {
+            console.log("--- checking session"); //debug
             if (token) {
+                console.log("----- session token exists: ", token.expiresAt); //debug
                 session.user = { name: token.name, email: "help" };
                 session.accessToken = token.accessToken as string;
+            } else {
+                console.log("----- session token does not exist"); //debug
             }
             return session;
         }
-
     }
-
-
-
 }
