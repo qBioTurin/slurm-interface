@@ -1,7 +1,14 @@
-interface slurmTokenProps {
+import { jwtDecode } from 'jwt-decode';
+
+interface slurmTokenEncodeProps {
     exp: number,
     // sub: string,
 }
+
+interface slurmTokenDecodeProps {
+    token: string,
+}
+
 
 function readSlurmSecretKey() {
     const fs = require('fs').promises;
@@ -16,7 +23,7 @@ function readSlurmSecretKey() {
     }
 }
 
-export function encodeSlurmToken({ exp }: slurmTokenProps) {
+export function encodeSlurmToken({ exp }: slurmTokenEncodeProps) {
     const sign = require('jwt-encode');
     const secretKey = readSlurmSecretKey();
 
@@ -31,6 +38,12 @@ export function encodeSlurmToken({ exp }: slurmTokenProps) {
     console.log("slurmToken: ", jwt);
 
     return jwt;
+}
+
+export function decodeSlurmToken({ token }: slurmTokenDecodeProps) {
+    const decoded = jwtDecode(token);
+    console.log("SlurmToken decoded: ", decoded);
+    return decoded;
 }
 
 
