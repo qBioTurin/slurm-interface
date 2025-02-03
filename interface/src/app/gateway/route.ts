@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/lib/logger';
+import { getToken } from "next-auth/jwt"
 
 // change .env.local to switch between test and prod
-const SLURM_API_URL = process.env.SLURM_API_URL; 
-const SLURM_JWT = process.env.SLURM_JWT;
+const SLURM_API_URL = process.env.SLURM_API_URL;
+// const SLURM_JWT = process.env.SLURM_JWT;
 const SLURM_API_URL_RESERVATIONS = process.env.SLURM_API_URL_RESERVATIONS;
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
+
+    const token = await getToken({ req });
+
+    if (!token || !token.slurmToken) {
+        return NextResponse.json({ error: "No token found" }, { status: 401 });
+    }
+
+    const slurmJWT = token.slurmToken as string;
+    console.log("GET Request, JWT: ", slurmJWT);
 
     // logger.info(`GET /api/get called with path: ${path}`); // logger info
     // logger.info(`GET /api/get called with path: ${path}`); // logger info
@@ -27,7 +37,7 @@ export async function GET(req: NextRequest) {
         const slurmResponse = await fetch(`${SLURM_API_URL}${path}`, {
             method: 'GET',
             headers: {
-                'X-SLURM-USER-TOKEN': SLURM_JWT || '',
+                'X-SLURM-USER-TOKEN': slurmJWT || '',
                 'Content-Type': 'application/json',
             },
         });
@@ -54,6 +64,15 @@ export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
 
+    const token = await getToken({ req });
+
+    if (!token) {
+        return NextResponse.json({ error: "No token found" }, { status: 401 });
+    }
+
+    const slurmJWT = token.slurmToken as string;
+
+
     logger.info(`POST /api/post called with path: ${path}`); // logger info
     logger.debug(`Request Headers: ${JSON.stringify(req.headers, null, 2)}`); // logger debug
     logger.debug(`Request Query Parameters: ${JSON.stringify(Object.fromEntries(searchParams), null, 2)}`); // logger debug
@@ -65,7 +84,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: errorMsg }, { status: 400 });
     }
 
-    if (path.includes('reservations')) { 
+    if (path.includes('reservations')) {
         url = SLURM_API_URL_RESERVATIONS;
         logger.info('Reservations base URL: ' + url); // logger info
     }
@@ -78,7 +97,7 @@ export async function POST(req: NextRequest) {
         const slurmResponse = await fetch(`${url}${path}`, {
             method: 'POST',
             headers: {
-                'X-SLURM-USER-TOKEN': SLURM_JWT || '',
+                'X-SLURM-USER-TOKEN': slurmJWT || '',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestBody),
@@ -86,8 +105,8 @@ export async function POST(req: NextRequest) {
 
         const contentType = slurmResponse.headers.get('content-type');
         const data = contentType?.includes('application/json')
-        ? await slurmResponse.json()
-        : await slurmResponse.text();
+            ? await slurmResponse.json()
+            : await slurmResponse.text();
 
         logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
         logger.debug(`Response Data: ${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}`); // logger debug
@@ -110,6 +129,14 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get('path');
 
+    const token = await getToken({ req });
+
+    if (!token) {
+        return NextResponse.json({ error: "No token found" }, { status: 401 });
+    }
+
+    const slurmJWT = token.slurmToken as string;
+
     logger.info(`DELETE /api/delete called with path: ${path}`); // logger info
     logger.debug(`Request Headers: ${JSON.stringify(req.headers, null, 2)}`); // logger debug
     logger.debug(`Request Query Parameters: ${JSON.stringify(Object.fromEntries(searchParams), null, 2)}`); // logger debug
@@ -123,7 +150,7 @@ export async function DELETE(req: NextRequest) {
         const slurmResponse = await fetch(`${url}${path}`, {
             method: 'DELETE',
             headers: {
-                'X-SLURM-USER-TOKEN': SLURM_JWT || '',
+                'X-SLURM-USER-TOKEN': slurmJWT || '',
                 'Content-Type': 'application/json',
             },
         });
