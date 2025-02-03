@@ -23,17 +23,20 @@ async function refreshAccessToken(token: JWT) {
 
         const refreshedTokens = await response.json();
 
-        console.log("***** refreshedTokens.expiresAt:", refreshedTokens) //debug
+        console.log("***** refreshedTokens:", refreshedTokens.refresh_expires_in) //debug
 
 
         if (!response.ok) throw refreshedTokens
+
+        const newExpirationDate = Math.floor(Date.now() / 1000 + (refreshedTokens.expires_in as number))
 
         return {
             ...token, //keep the previous token properties
             idToken: refreshedTokens.id_token,
             accessToken: refreshedTokens.access_token,
-            expiresAt: Math.floor(Date.now() / 1000 + (refreshedTokens.expires_in as number)),
+            expiresAt: newExpirationDate,
             refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+            slurmToken: encodeSlurmToken({ exp: newExpirationDate as number }),
         }
     } catch (error) {
         console.log(error)
@@ -88,7 +91,7 @@ export const authOptions: AuthOptions = {
                     idToken: account.id_token,
                     accessToken: account.access_token,
                     refreshToken: account.refresh_token,
-                    // slurmToken: newSlurmToken,
+                    slurmToken: newSlurmToken,
                     expiresAt: account.expires_at
                 }
             }
@@ -110,6 +113,7 @@ export const authOptions: AuthOptions = {
                 console.log("----- session token exists: ", token.expiresAt); //debug
                 session.user = { name: token.name, email: "help" };
                 session.accessToken = token.accessToken as string;
+                session.slurmToken = token.slurmToken as string;
             } else {
                 console.log("----- session token does not exist"); //debug
             }

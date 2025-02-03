@@ -27,6 +27,7 @@ export function encodeSlurmToken({ exp }: slurmTokenProps) {
     };
 
     const jwt = sign(data, secretKey);
+    console.log("slurmTokenExp: ", data.exp);
     console.log("slurmToken: ", jwt);
 
     return jwt;
