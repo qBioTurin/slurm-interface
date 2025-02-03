@@ -1,6 +1,7 @@
 import { AuthOptions, TokenSet } from 'next-auth';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import { JWT } from "next-auth/jwt";
+import { encodeSlurmToken } from "./slurmToken";
 
 async function refreshAccessToken(token: JWT) {
     try {
@@ -22,7 +23,6 @@ async function refreshAccessToken(token: JWT) {
 
         const refreshedTokens = await response.json();
 
-        // console.log("***** refreshedTokens:", refreshedTokens) //debug
         console.log("***** refreshedTokens.expiresAt:", refreshedTokens) //debug
 
 
@@ -82,10 +82,13 @@ export const authOptions: AuthOptions = {
             console.log("--- jwt token"); //debug
             if (account) { // primo accesso alla sessione
                 console.log("----- primo accesso: ", account.expires_at); //debug
+                const exp = account.expires_at as number;
+                const newSlurmToken = encodeSlurmToken({ exp });
                 return {
                     idToken: account.id_token,
                     accessToken: account.access_token,
                     refreshToken: account.refresh_token,
+                    // slurmToken: newSlurmToken,
                     expiresAt: account.expires_at
                 }
             }
