@@ -30,7 +30,7 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     command: start-dev --import-realm
     volumes:
-      - ./imports:/opt/keycloak/data/import
+      - ./imports:/opt/keycloak/data/config
     networks:
       - slurm-network
     ports:
