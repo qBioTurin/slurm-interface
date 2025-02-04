@@ -28,4 +28,12 @@ export const NodeStates: NodeStateInfo[] = [
     { state: 'POWERING_UP', description: 'The node is in the process of being powered up.' },
     { state: 'RESERVED', description: 'The node is in an advanced reservation and not generally available.' },
     { state: 'UNKNOWN', description: "The Slurm controller has just started and the node's state has not yet been determined." },
-  ] as const;
+
+    { state: 'CLOUD', description: 'Indicates that the node is configured as a cloud node, to be brought up on demand, but not currently running.' },
+    { state: 'DRAIN', description: 'The node is not accepting any new jobs and any currently running jobs will complete.' },
+    { state: 'DYNAMIC', description: 'Slurm allows defining multiple types of nodes in a FUTURE state. The DYNAMIC state indicates that the node was started as a Dynamic Future node.' },
+    { state: 'INVALID_REG', description: 'The node did not register correctly with the controller. This happens when a node registers with fewer resources than configured in the slurm.conf file. A slurmd restart is required.' },
+    { state: 'MAINTENANCE', description: 'The node is currently in a reservation that includes the maintenance flag.' },
+    { state: 'NOT_RESPONDING', description: 'Node is not responding.' },
+    { state: 'PERFCTRS', description: 'Indicates that Network Performance Counters associated with this node are in use, rendering this node as not usable for any other jobs.' },
+] as const;
