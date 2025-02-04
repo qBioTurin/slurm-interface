@@ -19,7 +19,7 @@ export const Shell = ({ children }: ShellProps) => {
         <AppShell
             header={{ height: 60 }}
             navbar={{
-                width: { base: 200, md: 270, xl: 300 },
+                width: { base: 200, md: 200, xl: 200 },
                 breakpoint: 'sm',
                 collapsed: { mobile: !opened },
             }}
