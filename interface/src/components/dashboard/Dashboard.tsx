@@ -1,38 +1,51 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import styles from './Dashboard.module.css';
 import { Grid, Switch, Group, Flex, Stack, Title } from '@mantine/core';
 import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components/';
+import NodesPiechart from '@/components/dashboard/NodesPiechart';
 import { useFetchData } from '@/hooks/';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
+import { SlurmNodeResponseSchema, NodeSchema } from '@/schemas/node_schema';
 import { z } from 'zod';
 
-
 type Job = z.infer<typeof JobSchema>;
+type Node = z.infer<typeof NodeSchema>;
 const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from auth context
 
 export default function DashBoard() {
     const [allJobs, setAllJobs] = useState<Job[]>([]); // fetched jobs
-    const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
+    const [nodes, setNodes] = useState<Node[]>([]); // fetched nodes
+    const { data: jobData, loading: jobLoading, error: jobError } = useFetchData('jobs', SlurmJobResponseSchema);
+    const { data: nodeData, loading: nodeLoading, error: nodeError } = useFetchData('nodes', SlurmNodeResponseSchema);
     const [showUserJobs, setShowUserJobs] = useState(true);
 
     useEffect(() => {
-        if (data) {
-            setAllJobs(data);
+        if (jobData) {
+            setAllJobs(jobData);
         }
-    }, [data]);
+    }, [jobData]);
+
+    useEffect(() => {
+        if (nodeData) {
+            setNodes(nodeData);
+        }
+    }, [nodeData]);
 
     const jobs = showUserJobs ? allJobs.filter(job => job.user_name.includes(currentUser)) : allJobs;
     const runningCompletedJobs = jobs.filter(job => job.job_state[0] != 'PENDING');
     const pendingJobs = jobs.filter(job => job.job_state[0] === 'PENDING');
 
-    if (loading) {
+    if (jobLoading || nodeLoading) {
         return <LoadingPage />;
     }
 
-    if (error) {
-        return <div>Error: {error}</div>;
+    if (jobError) {
+        return <div>Error: {jobError}</div>;
+    }
+
+    if (nodeError) {
+        return <div>Error: {nodeError}</div>;
     }
 
     return (
@@ -61,11 +74,17 @@ export default function DashBoard() {
             </Flex>
 
             <Stack mt='md'>
-                <Title order={3} ml='sm'> Jobs statistics </Title>
+                <Flex direction={{ base: 'column', md: 'row' }} gap="md">
+                    <div style={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Title order={3} ml='sm' mb='sm'> Jobs stats </Title>
+                        <JobsBarchart jobs={jobs} />
+                    </div>
 
-                <div className={styles.stats}>
-                    <JobsBarchart jobs={jobs} />
-                </div>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Title order={3} ml='sm' mb='sm'> Nodes stats </Title>
+                        <NodesPiechart nodes={nodes} />
+                    </div>
+                </Flex>
 
             </Stack>
         </Stack >
