@@ -36,7 +36,7 @@ async function refreshAccessToken(token: JWT) {
             accessToken: refreshedTokens.access_token,
             expiresAt: newExpirationDate,
             refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
-            slurmToken: encodeSlurmToken({ exp: newExpirationDate as number }),
+            slurmToken: await encodeSlurmToken({ exp: newExpirationDate as number }),
         }
     } catch (error) {
         console.log(error)
@@ -86,7 +86,7 @@ export const authOptions: AuthOptions = {
             if (account) { // primo accesso alla sessione
                 console.log("----- primo accesso: ", account.expires_at); //debug
                 const exp = account.expires_at as number;
-                const newSlurmToken = encodeSlurmToken({ exp });
+                const newSlurmToken = await encodeSlurmToken({ exp });
                 return {
                     idToken: account.id_token,
                     accessToken: account.access_token,

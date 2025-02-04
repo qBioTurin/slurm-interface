@@ -1,5 +1,3 @@
-import { jwtDecode } from 'jwt-decode';
-
 interface slurmTokenEncodeProps {
     exp: number,
     // sub: string,
@@ -10,37 +8,40 @@ interface slurmTokenDecodeProps {
 }
 
 
-function readSlurmSecretKey() {
+async function readSlurmSecretKey() {
     const fs = require('fs').promises;
 
     try {
         const secretKeyPath = '../config/jwt_hs256.key';
-        const data = fs.readFile(secretKeyPath, 'utf8');
-        return data.toString();
+        const secret = await fs.readFile(secretKeyPath);
+        // console.log("Slurm SecretKey: ", secret); //debug
+        // console.log("Slurm SecretKey base64: ", secret.toString("base64")); //debug
+        return secret;
 
     } catch (err) {
         console.error(err);
     }
 }
 
-export function encodeSlurmToken({ exp }: slurmTokenEncodeProps) {
-    const sign = require('jwt-encode');
-    const secretKey = readSlurmSecretKey();
+export async function encodeSlurmToken({ exp }: slurmTokenEncodeProps) {
+    var jwt = require('jsonwebtoken');
+    const secretKey = await readSlurmSecretKey();
 
     const data = {
-        iat: Math.floor(Date.now() / 1000),
         exp: exp,
-        sub: process.env.CURRENT_USER,
+        iat: Math.floor(Date.now() / 1000),
+        sun: process.env.CURRENT_USER,
     };
 
-    const jwt = sign(data, secretKey);
-    console.log("slurmTokenExp: ", data.exp);
-    console.log("slurmToken: ", jwt);
+    const token = jwt.sign(data, secretKey, { algorithm: 'HS256' });
+    console.log("slurmToken encoded: ", token);
 
-    return jwt;
+    return token;
 }
 
 export function decodeSlurmToken({ token }: slurmTokenDecodeProps) {
+    const jwtDecode = require('jwt-decode');
+
     const decoded = jwtDecode(token);
     console.log("SlurmToken decoded: ", decoded);
     return decoded;
