@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import logger from '@/lib/logger';
 import { getToken } from "next-auth/jwt"
+import { init } from 'next/dist/compiled/webpack/webpack';
 
 // change .env.local to switch between test and prod
 const SLURM_API_URL = process.env.SLURM_API_URL;
@@ -162,14 +163,19 @@ export async function DELETE(req: NextRequest) {
         const data = await slurmResponse.json();
 
         logger.info(`DELETE request to ${path} succeeded.`); // logger info
-        logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
-        logger.debug(`Response Data: ${JSON.stringify(data, null, 2)}`); // logger debug
+        logger.info(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
+        logger.info(`Response Data: ${JSON.stringify(data, null, 2)}`); // logger debug
+
+        if (data.warnings.length > 0) {
+            throw new Error(`${data.warnings[0].description}`);
+        }
 
         return NextResponse.json(data);
 
     } catch (error: any) {
         logger.error(`DELETE request to ${path} failed: ${error.message}`); // logger error
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: error.message }, { status: 500, statusText: error.message }
+        );
     }
 }
 
