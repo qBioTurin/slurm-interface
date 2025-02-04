@@ -56,7 +56,7 @@ export default function JobsPage() {
             deleteData(`job/${id}`)
                 .then(() => {
                     notifications.show({
-                        color: 'green',
+                        color: 'teal',
                         icon: <IconCheck style={{ width: rem(18), height: rem(18), }} />,
                         title: `Job n.${id} deleted`,
                         message: 'Your job has been successfully deleted.',
