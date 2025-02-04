@@ -4,7 +4,6 @@ import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import { theme } from "../../theme";
 import { Notifications } from '@mantine/notifications';
 import { Providers } from "@/components";
-import { Shell } from "@/components/";
 import { Montserrat } from "next/font/google";
 
 const font = Montserrat({ weight: "400", subsets: ["latin"] });

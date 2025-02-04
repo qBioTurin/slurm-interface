@@ -20,7 +20,7 @@ export const Shell = ({ children }: ShellProps) => {
             navbar={{
                 width: { base: 200, md: 200, xl: 200 },
                 breakpoint: 'sm',
-                collapsed: { desktop: !opened, mobile: !opened },
+                collapsed: { mobile: !opened },
             }}
             padding="md"
             styles={(theme) => ({
