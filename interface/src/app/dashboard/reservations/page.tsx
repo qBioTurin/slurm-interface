@@ -15,6 +15,7 @@ export default function ReservationsPage() {
     useEffect(() => {
         if (data) {
             setReservations(data);
+            console.log("loading value:", loading);
         }
     }, [data]);
 

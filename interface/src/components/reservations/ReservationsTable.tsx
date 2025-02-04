@@ -162,9 +162,6 @@ export const ReservationTable: FC<ReservationTableProps> = ({ reservations }) =>
     }, [reservations]);
 
 
-    if (reservations.length == 0) {
-        return <LoadingPage />;
-    }
 
 
     return (
