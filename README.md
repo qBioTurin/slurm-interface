@@ -1,6 +1,6 @@
 <h1 align="center">
   
-  ![HPC4AI-logo](https://hpc4ai.it/storage/small_logo_hpc4ai_black.png)
+  [![HPC4AI-logo](./interface/public/logo_hpc4ai.png)](https://hpc4ai.unito.it/)
   
 </h1>
 
