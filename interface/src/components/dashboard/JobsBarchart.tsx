@@ -44,7 +44,7 @@ const JobsBarchart: React.FC<JobsBarchartProps> = ({ jobs }) => {
             yAxisProps={{ domain: [0, yAxisMax], width: 80 }}
             xAxisLabel='N. jobs'
             barProps={{ radius: 10 }}
-            series={[{ name: 'count', color: 'violet.6' }]}
+            series={[{ name: 'count', color: '#c92a2a' }]}
         />
     );
 };
