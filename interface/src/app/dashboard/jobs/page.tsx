@@ -6,13 +6,14 @@ import styles from './JobsPage.module.css';
 import { TextInput, Group, rem, Switch, Button, ActionIcon } from '@mantine/core';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
 import { LoadingPage, JobsTable } from '@/components/';
+import { notifications } from '@mantine/notifications';
 import { useFetchData, useDeleteData } from '@/hooks';
 import { useRouter } from 'next/navigation';
-import { IconTrash, IconSearch } from '@tabler/icons-react';
+import { IconTrash, IconSearch, IconX, IconCheck } from '@tabler/icons-react';
 import { z } from 'zod';
 
 type Job = z.infer<typeof JobSchema>;
-const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from auth context
+const currentUser = process.env.CURRENT_USER || 'lbosio'; // TODO: get current user from auth context
 
 export default function JobsPage() {
     const { data, loading, error } = useFetchData('jobs', SlurmJobResponseSchema);
@@ -54,16 +55,28 @@ export default function JobsPage() {
         for (const id of selectedJobs) {
             deleteData(`job/${id}`)
                 .then(() => {
-                    console.log('Job deleted');
+                    notifications.show({
+                        color: 'green',
+                        icon: <IconCheck style={{ width: rem(18), height: rem(18), }} />,
+                        title: `Job n.${id} deleted`,
+                        message: 'Your job has been successfully deleted.',
+                        autoClose: 5000,
+                    });
                 })
                 .catch((error) => {
-                    console.error('Error deleting job:', error);
+                    notifications.show({
+                        color: 'red',
+                        icon: <IconX style={{ width: rem(18), height: rem(18), }} />,
+                        title: `Failed to delete job n.${id}`,
+                        message: error.message,
+                        autoClose: 5000,
+                    });
                 });
         }
 
         setSelectedJobs([]);
+        router.push('/dashboard/jobs');
 
-        router.refresh();
     };
 
 

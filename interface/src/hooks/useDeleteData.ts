@@ -14,12 +14,15 @@ export function useDeleteData() {
                 },
             });
 
+            //console.log("Response for useDeleteData:", response); //debug
+
             if (!response.ok) {
-                throw new Error(`Error deleting data: ${response.statusText}`);
+                throw new Error(`${response.statusText}`);
             }
 
         } catch (err: any) {
             setError(err.message || 'Unknown error');
+            throw new Error(err.message);
         } finally {
             setLoading(false);
         }
