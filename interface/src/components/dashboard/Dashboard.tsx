@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Grid, Switch, Group, Flex, Stack, Title } from '@mantine/core';
+import { Grid, Switch, Group, Flex, Accordion, Title } from '@mantine/core';
 import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components/';
+import { IconBriefcase2, IconPresentationAnalyticsFilled, IconCalendarFilled } from '@tabler/icons-react';
 import NodesPiechart from '@/components/dashboard/NodesPiechart';
 import { useFetchData } from '@/hooks/';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
@@ -49,44 +50,55 @@ export default function DashBoard() {
     }
 
     return (
-        <Stack>
-            <Group justify='space-between'>
-                <Title order={2} > Dashboard</Title>
+        <div>
+            <Group justify='space-between' style={{ marginBottom: '20px' }}>
+                <Title order={2}> Welcome, <span style={{ color: 'red' }}>{currentUser}</span></Title>
                 <Switch
                     label={showUserJobs ? "Your jobs" : "All Jobs"}
                     checked={showUserJobs}
                     onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
                 />
             </Group>
-            <Title order={3} mt='sm'>Upcoming Jobs for Today </Title>
-            <Flex direction={{ base: 'row', sm: 'column' }}>
-                <Grid>
-                    {/* Left Column: Running jobs */}
-                    <Grid.Col span={{ base: 8, md: 8, lg: 8 }}>
-                        <RunningJobsColumn jobs={runningCompletedJobs} />
-                    </Grid.Col>
 
-                    {/* Right Column: Pending jobs */}
-                    <Grid.Col span={{ base: 4, md: 4, lg: 4 }}>
-                        <PendingJobsColumn jobs={pendingJobs} />
-                    </Grid.Col>
-                </Grid>
-            </Flex>
+            <Accordion multiple defaultValue={['UpcomingJobs', 'Stats']}>
+                <Accordion.Item value="UpcomingJobs">
+                    <Accordion.Control icon={<IconBriefcase2 size={20} color="red" />}>
+                        <div style={{ fontWeight: 'bold', fontSize: '20px' }}>Upcoming Jobs</div>
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <Flex direction={{ base: 'column', md: 'row' }} gap="md">
+                            {/* Left Column: Running jobs */}
+                            <div style={{ flex: 2, minWidth: '0' }}>
+                                <RunningJobsColumn jobs={runningCompletedJobs} />
+                            </div>
 
-            <Stack mt='md'>
-                <Flex direction={{ base: 'column', md: 'row' }} gap="md">
-                    <div style={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Title order={3} ml='sm' mb='sm'> Jobs stats </Title>
-                        <JobsBarchart jobs={jobs} />
-                    </div>
+                            {/* Right Column: Pending jobs */}
+                            <div style={{ flex: 1, minWidth: '0' }}>
+                                <PendingJobsColumn jobs={pendingJobs} />
+                            </div>
+                        </Flex>
+                    </Accordion.Panel>
+                </Accordion.Item>
 
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Title order={3} ml='sm' mb='sm'> Nodes stats </Title>
-                        <NodesPiechart nodes={nodes} />
-                    </div>
-                </Flex>
+                <Accordion.Item value="Stats">
+                    <Accordion.Control icon={<IconPresentationAnalyticsFilled size={20} color="red" />}>
+                        <div style={{ fontWeight: 'bold', fontSize: '20px' }}>Stats</div>
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <Flex direction={{ base: 'column', md: 'row' }} gap="md">
+                            <div style={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px', border: '1px solid #e0e0e0', borderRadius: '5px' }}>
+                                <div style={{ textAlign: 'center', backgroundColor: '#f5f5f5', padding: '10px', margin: '20px', width: '100%', fontSize: '20px', fontWeight: 'bold' }}> Jobs stats </div>
+                                <JobsBarchart jobs={jobs} />
+                            </div>
 
-            </Stack>
-        </Stack >
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px', border: '1px solid #e0e0e0', borderRadius: '5px' }}>
+                                <div style={{ textAlign: 'center', backgroundColor: '#f5f5f5', padding: '10px', margin: '20px', width: '100%', fontSize: '20px', fontWeight: 'bold' }}> Nodes stats </div>
+                                <NodesPiechart nodes={nodes} />
+                            </div>
+                        </Flex>
+                    </Accordion.Panel>
+                </Accordion.Item>
+            </Accordion>
+        </div>
     );
 }

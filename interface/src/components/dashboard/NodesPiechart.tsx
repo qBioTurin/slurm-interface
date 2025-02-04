@@ -33,5 +33,5 @@ export default function NodesPiechart({ nodes }: NodesPiechartProps) {
     const data = processData(nodes);
     const chartData = Object.values(data);
 
-    return <PieChart data={chartData} size={300} withTooltip withLabelsLine labelsPosition="inside" labelsType="percent" startAngle={180} endAngle={0} strokeWidth={2} />;
+    return <PieChart data={chartData} size={200} withTooltip withLabelsLine labelsPosition="inside" labelsType="percent" startAngle={180} endAngle={0} strokeWidth={2} />;
 }
