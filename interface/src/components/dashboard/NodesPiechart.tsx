@@ -9,13 +9,13 @@ interface NodesPiechartProps {
 }
 
 const stateColors = {
-    unknown: '#000000',
+    unknown: '#C9C9C9',
     mixed: '#260000',
-    error: '#4D0000',
+    error: '#c92a2a',
     future: '#730000',
-    idle: '#990000',
-    down: '#C00000',
-    allocated: '#FF0000'
+    idle: '#69db7c',
+    down: '#343a40',
+    allocated: '#74c0fc'
 };
 
 function processData(nodes: Node[]) {
