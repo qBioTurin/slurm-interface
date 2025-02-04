@@ -54,7 +54,7 @@ function JobProgressTimeline({ job }: JobProgressTimelineProps) {
   }
 
   return (
-    <Timeline active={activeStep} bulletSize={24} lineWidth={2} color={isErrorState ? 'red' : 'blue'}>
+    <Timeline active={activeStep} bulletSize={24} lineWidth={2} color='#7C1919'>
       {/* Submitted Step */}
       <Timeline.Item
         bullet={<IconClipboardCheck size={12} />}
