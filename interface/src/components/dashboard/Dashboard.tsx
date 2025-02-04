@@ -1,24 +1,32 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Grid, Switch, Group, Flex, Accordion, Title } from '@mantine/core';
+import { Button, Switch, Group, Flex, Accordion, Title } from '@mantine/core';
 import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components/';
 import { IconBriefcase2, IconPresentationAnalyticsFilled, IconCalendarFilled } from '@tabler/icons-react';
 import NodesPiechart from '@/components/dashboard/NodesPiechart';
 import { useFetchData } from '@/hooks/';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
 import { SlurmNodeResponseSchema, NodeSchema } from '@/schemas/node_schema';
+import { ReservationSchema, SlurmReservationResponseSchema } from '@/schemas/reservation_schema';
 import { z } from 'zod';
+import ReservationsColumn from './ReservationsColumn';
+import { useRouter } from 'next/navigation';
 
 type Job = z.infer<typeof JobSchema>;
 type Node = z.infer<typeof NodeSchema>;
+type Reservation = z.infer<typeof ReservationSchema>;
+
 const currentUser = process.env.CURRENT_USER || 'scontald'; // TODO: get current user from auth context
 
 export default function DashBoard() {
+    const router = useRouter();
     const [allJobs, setAllJobs] = useState<Job[]>([]); // fetched jobs
     const [nodes, setNodes] = useState<Node[]>([]); // fetched nodes
+    const [reservations, setReservations] = useState<Reservation[]>([]); // fetched reservations
     const { data: jobData, loading: jobLoading, error: jobError } = useFetchData('jobs', SlurmJobResponseSchema);
     const { data: nodeData, loading: nodeLoading, error: nodeError } = useFetchData('nodes', SlurmNodeResponseSchema);
+    const { data: reservationData, loading: reservationLoading, error: reservationError } = useFetchData('reservations', SlurmReservationResponseSchema);
     const [showUserJobs, setShowUserJobs] = useState(true);
 
     useEffect(() => {
@@ -33,11 +41,18 @@ export default function DashBoard() {
         }
     }, [nodeData]);
 
+    useEffect(() => {
+        if (reservationData) {
+            setReservations(reservationData);
+        }
+    }, [reservationData]);
+
     const jobs = showUserJobs ? allJobs.filter(job => job.user_name.includes(currentUser)) : allJobs;
     const runningCompletedJobs = jobs.filter(job => job.job_state[0] != 'PENDING');
     const pendingJobs = jobs.filter(job => job.job_state[0] === 'PENDING');
+    const userReservations = reservations.filter(reservation => reservation.users.includes(currentUser));
 
-    if (jobLoading || nodeLoading) {
+    if (jobLoading || nodeLoading || reservationLoading) {
         return <LoadingPage />;
     }
 
@@ -49,21 +64,45 @@ export default function DashBoard() {
         return <div>Error: {nodeError}</div>;
     }
 
+    if (reservationError) {
+        return <div>Error: {reservationError}</div>;
+    }
+
     return (
         <div>
-            <Group justify='space-between' style={{ marginBottom: '20px' }}>
+            <Flex justify="space-between" align="center" style={{ marginBottom: '10px' }}>
                 <Title order={2}> Welcome, <span style={{ color: 'red' }}>{currentUser}</span></Title>
-                <Switch
-                    label={showUserJobs ? "Your jobs" : "All Jobs"}
-                    checked={showUserJobs}
-                    onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
-                />
-            </Group>
+                <Group>
+                    <Button mb="md" onClick={() => router.push('/dashboard/jobs/submit')} color="red">
+                        Submit Jobs
+                    </Button>
+                    <Button mb="md" onClick={() => router.push('/dashboard/reservations/new')} color="black">
+                        New reservation
+                    </Button>
+                </Group>
+            </Flex>
 
-            <Accordion multiple defaultValue={['UpcomingJobs', 'Stats']}>
-                <Accordion.Item value="UpcomingJobs">
+            <Accordion multiple defaultValue={['Reservations', 'Jobs', 'Stats']}>
+                <Accordion.Item value="Reservations">
+                    <Accordion.Control icon={<IconCalendarFilled size={20} color="red" />}>
+                        <div style={{ fontWeight: 'bold', fontSize: '20px' }}>Upcoming Reservations</div>
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <ReservationsColumn reservations={userReservations} />
+                    </Accordion.Panel>
+                </Accordion.Item>
+
+                <Accordion.Item value="Jobs">
                     <Accordion.Control icon={<IconBriefcase2 size={20} color="red" />}>
-                        <div style={{ fontWeight: 'bold', fontSize: '20px' }}>Upcoming Jobs</div>
+                        <Group>
+                            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>Upcoming Jobs</div>
+
+                            <Switch
+                                label={showUserJobs ? "Your jobs" : "All Jobs"}
+                                checked={showUserJobs}
+                                onChange={(event) => setShowUserJobs(event.currentTarget.checked)}
+                            />
+                        </Group>
                     </Accordion.Control>
                     <Accordion.Panel>
                         <Flex direction={{ base: 'column', md: 'row' }} gap="md">
