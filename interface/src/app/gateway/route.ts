@@ -104,25 +104,43 @@ export async function POST(req: NextRequest) {
             body: JSON.stringify(requestBody),
         });
 
-        const contentType = slurmResponse.headers.get('content-type');
-        const data = contentType?.includes('application/json')
-            ? await slurmResponse.json()
-            : await slurmResponse.text();
+        console.log("SLURM Response in POST handler: ", slurmResponse);
 
-        logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
-        logger.debug(`Response Data: ${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}`); // logger debug
-
-        if (typeof data === 'string' && data.includes("error") || !slurmResponse.ok) {
-            const errorMessage = typeof data === 'string' ? data : JSON.stringify(data);
-            console.log("Error thrown after string check: " + errorMessage);
-            throw new Error(`API Error: ${errorMessage}`);
+        if (!slurmResponse.ok) {
+            throw new Error(`Failed to post with SLURM API: ${slurmResponse.statusText}`);
         }
+
+        const data = await slurmResponse.json();
+
+        if (data.errors.length > 0) {
+            throw new Error(`${data.errors[0].description}`);
+        }
+
+        if (data.warnings.length > 0) {
+            throw new Error(`${data.warnings[0].description}`);
+        }
+
+        // We might still need to handle different content types ?
+
+        // const contentType = slurmResponse.headers.get('content-type');
+        // const data = contentType?.includes('application/json')
+        //     ? await slurmResponse.json()
+        //     : await slurmResponse.text();
+
+        // logger.debug(`Response Headers: ${JSON.stringify(Object.fromEntries(slurmResponse.headers), null, 2)}`); // logger debug
+        // logger.debug(`Response Data: ${typeof data === 'string' ? data : JSON.stringify(data, null, 2)}`); // logger debug
+
+        // if (typeof data === 'string' && data.includes("error") || !slurmResponse.ok) {
+        //     const errorMessage = typeof data === 'string' ? data : JSON.stringify(data);
+        //     console.log("Error thrown after string check: " + errorMessage);
+        //     throw new Error(`API Error: ${errorMessage}`);
+        // }
 
         return NextResponse.json(data);
 
     } catch (error: any) {
         logger.error(`POST request to ${path} failed: ${error.message}`); // logger error
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: error.message }, { status: 500, statusText: error.message });
     }
 }
 

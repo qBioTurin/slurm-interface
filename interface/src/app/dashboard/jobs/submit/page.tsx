@@ -21,7 +21,7 @@ type JobSubmissionSchema = z.infer<typeof JobSubmissionSchema>;
 
 const SubmitJobForm = () => {
   const [active, setActive] = useState(0);
-  const { data, error, loading, callPost } = usePostData('/job/submit');
+  const { callPost } = usePostData('/job/submit');
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -35,8 +35,8 @@ const SubmitJobForm = () => {
 
   const form = useForm({
     initialValues: {
-      name: '',
-      script: '',
+      name: 'slurm-job',
+      script: '#!/bin/bash\nsrun sleep 600',
       current_working_directory: process.env.CURRENT_WORKING_DIR || '',
       nodes: 1,
       tasks: 1,
@@ -89,15 +89,14 @@ const SubmitJobForm = () => {
           message: 'Your job has been successfully submitted.',
           autoClose: 5000,
         });
-        router.push('/dashboard/jobs');
+
 
       } catch (error: any) {
-        const errorMessage = error.response?.data?.error || 'Please try again.';
         notifications.show({
           color: 'red',
           icon: <IconX style={{ width: rem(18), height: rem(18), }} />,
           title: 'Job submission failed',
-          message: errorMessage,
+          message: error.message,
           autoClose: 5000,
         });
       }
@@ -111,6 +110,8 @@ const SubmitJobForm = () => {
         message: 'Please try again later.',
         autoClose: 5000,
       });
+    } finally {
+      router.push('/dashboard/jobs');
     }
   };
 

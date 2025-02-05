@@ -2,15 +2,11 @@ import { useState, useCallback } from 'react';
 
 export function usePostData(path: string) {
     const [data, setData] = useState<any>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+
 
     const callPost = useCallback(async (requestBody: any) => {
-        setError(null);
         setData(null);
-
         try {
-            setLoading(true);
 
             const request = new Request(`/gateway?path=${path}`, {
                 method: 'POST',
@@ -43,7 +39,7 @@ export function usePostData(path: string) {
                 } catch {
                     formattedError += `: ${errorText}`;
                 }
-                throw new Error(formattedError);
+                throw new Error(`${response.statusText}`);
             }
 
             const contentType = response.headers.get('content-type');
@@ -55,13 +51,9 @@ export function usePostData(path: string) {
             return responseData;
 
         } catch (err: any) {
-            setError(err.message || 'An unknown error occurred');
             throw new Error(err.message);
-        } finally {
-            setLoading(false);
         }
     }, [path]);
 
-
-    return { data, error, loading, callPost }
+    return { data, callPost }
 }

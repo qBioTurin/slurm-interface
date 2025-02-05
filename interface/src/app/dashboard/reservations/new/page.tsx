@@ -37,7 +37,7 @@ const getCurrentDateAtMidnight = () => {
 export default function NewReservationForm() {
     const router = useRouter();
     const [active, setActive] = useState(0);
-    const { data, error, loading, callPost } = usePostData('reservations');
+    const { callPost } = usePostData('reservations');
     const searchParams = useSearchParams();
 
     useEffect(() => {
@@ -170,7 +170,7 @@ export default function NewReservationForm() {
 
             <Stepper active={active} mt="xl">
                 <Stepper.Step label="New reservation" description="Select resources" icon={<IconCalendar style={{ width: 20, height: 20 }} />}>
-                    <ReservationStep form={form} partitions={partitions} nodesSelected={nodesSelected}/>
+                    <ReservationStep form={form} partitions={partitions} nodesSelected={nodesSelected} />
                 </Stepper.Step>
                 <Stepper.Completed>
                     Review your submission details below:

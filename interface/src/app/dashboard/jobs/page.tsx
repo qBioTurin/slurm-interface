@@ -50,10 +50,10 @@ export default function JobsPage() {
         );
     };
 
-    const handleDeleteSelectedJobs = () => {
+    const handleDeleteSelectedJobs = async () => {
         console.log('delete clicked');
         for (const id of selectedJobs) {
-            deleteData(`job/${id}`)
+            await deleteData(`job/${id}`)
                 .then(() => {
                     notifications.show({
                         color: 'teal',
