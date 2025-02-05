@@ -10,7 +10,7 @@ import unito from "@/assets/UniTo.png";
 import regPiem from "@/assets/logo_RegPiem.jpg";
 import porPiemFESR from "@/assets/POR_Piem_FESR_14_20.jpg";
 
-const data = [
+const contacts = [
     {
         title: 'Contacts',
         links: [
@@ -22,7 +22,7 @@ const data = [
 
 export default function Footer() {
 
-    const groups = data.map((group, groupIndex) => {
+    const groupContacts = contacts.map((group, groupIndex) => {
         const links = group.links.map((link, index) => (
             <Group key={index}>
                 <ActionIcon size="lg" color="gray" variant="subtle" onClick={
@@ -55,17 +55,16 @@ export default function Footer() {
     return (
         <footer className={classes.footer}>
             <Container className={classes.inner}>
-                <Flex direction='row'>
+                <Flex direction='row' justify='center' align='center' wrap='wrap'>
+                    <Stack align='flex-start' className={classes.contacts} p='lg'>
+                        {groupContacts}
+                    </Stack>
                     <Image src={regPiem} alt="Regione piemonte" height={heightLogo} style={{ margin: '30px  0 0 15px' }} />
                     <Image src={porPiemFESR} alt="POR Piemonte FESR 14-20" height={heightLogo} style={{ margin: '30px  0 0 15px' }} />
                     <Image src={unito} alt="UniTo" height={heightLogo} style={{ margin: '30px  0 0 15px' }} />
                     <Image src={qbio} alt="qBio Logo" height={heightLogo} style={{ margin: '30px 0 0 15px' }} />
                     <Image src={hpc4ai} alt="HPC4AI" height={heightLogo} style={{ margin: '30px 0 0 15px' }} />
                 </Flex>
-                {/* <Text size="xs" c="dimmed" className={classes.description}>
-                        Build fully functional accessible web applications faster than ever
-                    </Text> */}
-                <div className={classes.groups}>{groups}</div>
             </Container>
             <Container className={classes.afterFooter}>
                 <Text c="dimmed" size="sm" ml='sm'>
