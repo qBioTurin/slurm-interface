@@ -53,6 +53,7 @@ export const authOptions: AuthOptions = {
     jwt: { maxAge: 60 * 60 }, // 1 hour
     pages: {
         signIn: '/',
+        signOut: '/',
     },
     providers: [
         KeycloakProvider({
@@ -107,11 +108,10 @@ export const authOptions: AuthOptions = {
             return await refreshAccessToken(token)
         },
 
-        async session({ session, token, user }) {
+        async session({ session, token }) {
             console.log("--- checking session"); //debug
             if (token) {
                 console.log("----- session token exists: ", token.expiresAt); //debug
-                session.user = { name: token.name, email: "help" };
                 session.accessToken = token.accessToken as string;
             } else {
                 console.log("----- session token does not exist"); //debug
