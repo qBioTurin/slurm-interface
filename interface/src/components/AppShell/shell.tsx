@@ -12,7 +12,8 @@ interface ShellProps {
 }
 
 export const Shell = ({ children }: ShellProps) => {
-    const [opened, { toggle }] = useDisclosure();
+    const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+    const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
 
     return (
         <AppShell
@@ -20,7 +21,7 @@ export const Shell = ({ children }: ShellProps) => {
             navbar={{
                 width: { base: 200, md: 200, xl: 200 },
                 breakpoint: 'sm',
-                collapsed: { mobile: !opened },
+                collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
             }}
             padding="md"
             styles={(theme) => ({
@@ -37,13 +38,8 @@ export const Shell = ({ children }: ShellProps) => {
             <AppShell.Header>
                 <Group justify='space-between' h="100%">
                     <Group h="100%" px="md">
-                        <Burger
-                            opened={opened}
-                            onClick={toggle}
-                            hiddenFrom="sm"
-                            size="sm"
-                        />
-                        {/* <img src={'/logo_hpc4ai.png'} alt="HPC4AI" height={40} /> */}
+                        <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
+                        <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
                         <Image src={logo} alt="HPC4AI" height={40} priority style={{ margin: '0 0 0 15px' }} />
                     </Group>
                     <Group>
