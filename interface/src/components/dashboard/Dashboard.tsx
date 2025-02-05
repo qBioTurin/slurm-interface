@@ -71,7 +71,7 @@ export default function DashBoard() {
     return (
         <div>
             <Flex justify="space-between" align="center" style={{ marginBottom: '10px' }}>
-                <Title order={2}> Welcome, <span style={{ color: 'red' }}>{currentUser}</span></Title>
+                <Title order={3}> Welcome, <span style={{ color: 'red' }}>{currentUser}</span> !</Title>
                 <Group>
                     <Button mb="md" onClick={() => router.push('/dashboard/jobs/submit')} color="red">
                         Submit Jobs
@@ -85,7 +85,7 @@ export default function DashBoard() {
             <Accordion multiple defaultValue={['Reservations', 'Jobs', 'Stats']}>
                 <Accordion.Item value="Reservations">
                     <Accordion.Control icon={<IconCalendarFilled size={20} color="red" />}>
-                        <div style={{ fontWeight: 'bold', fontSize: '20px' }}>Upcoming Reservations</div>
+                        <Title order={4}>Upcoming Reservations</Title>
                     </Accordion.Control>
                     <Accordion.Panel>
                         <ReservationsColumn reservations={userReservations} />
@@ -95,7 +95,7 @@ export default function DashBoard() {
                 <Accordion.Item value="Jobs">
                     <Accordion.Control icon={<IconBriefcase2 size={20} color="red" />}>
                         <Group>
-                            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>Upcoming Jobs</div>
+                            <Title order={4}>Upcoming Jobs</Title>
 
                             <Switch
                                 label={showUserJobs ? "Your jobs" : "All Jobs"}
@@ -121,7 +121,7 @@ export default function DashBoard() {
 
                 <Accordion.Item value="Stats">
                     <Accordion.Control icon={<IconPresentationAnalyticsFilled size={20} color="red" />}>
-                        <div style={{ fontWeight: 'bold', fontSize: '20px' }}>Stats</div>
+                        <Title order={4}>Stats</Title>
                     </Accordion.Control>
                     <Accordion.Panel>
                         <Flex direction={{ base: 'column', md: 'row' }} gap="md">

@@ -13,10 +13,10 @@ export default function LoginCard() {
                 <Stack justify='center' align='center' m='xl' mt='xs' >
                     <Image src={logo} alt="HPC4AI" height={100} />
                     <Group>
-                        <Title fw='900' size='40' mt='md' mb='xs'>
+                        <Title fw='700' size='45' mt='md' mb='xs'>
                             Sign
                         </Title>
-                        <Title fw='900' size='40' mt='md' mb='xs' c='#A41517'>
+                        <Title fw='700' size='45' mt='md' mb='xs' c='#A41517'>
                             in
                         </Title>
                     </Group>
