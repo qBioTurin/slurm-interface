@@ -36,7 +36,7 @@ export default function StepInfo({ form }: Props) {
 
       <Textarea
         label="Environment Variables"
-        placeholder={`e.g. PATH=/bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin \n Each line will be treated as a separate variable.`}
+        placeholder={`e.g. PATH=/bin:/usr/bin/:/usr/local/bin/:/opt/slurm/bin \nEach line will be treated as a separate variable.`}
         {...form.getInputProps("environment")}
         autosize
         minRows={2}

@@ -28,8 +28,8 @@ const SubmitJobForm = () => {
   useEffect(() => {
     const nodes = searchParams.getAll('nodes');
     if (nodes.length) {
-      form.setFieldValue('specify_nodes', nodes.join(','));
-      form.setFieldValue('nodes', nodes.length);
+      form.setFieldValue('required_nodes', nodes);
+      form.setFieldValue('nodes', nodes.length.toString());
     }
   }, [searchParams]);
 
@@ -38,19 +38,19 @@ const SubmitJobForm = () => {
       name: 'slurm-job',
       script: '#!/bin/bash\nsrun sleep 600',
       current_working_directory: process.env.CURRENT_WORKING_DIR || '',
-      nodes: 1,
+      nodes: '1' as string,
       tasks: 1,
-      environment: "",
+      environment: '',
       description: '',
       partition: '',
-      specify_nodes: '',
+      required_nodes: [] as string[],
       reservation: '',
     },
     validate: {
       name: (value) => value.trim().length > 0 ? null : "Name is required",
       script: (value) => value.trim().length > 0 ? null : "Script is required",
       current_working_directory: (value) => value.trim().length > 0 ? null : "Current working directory is required",
-      nodes: (value) => value >= 1 ? null : "At least 1 node is required",
+      nodes: (value) => parseInt(value, 10) >= 1 ? null : "At least 1 node is required",
       partition: (value) => value.trim().length > 0 ? null : "Partition is required",
     },
   });
@@ -59,26 +59,43 @@ const SubmitJobForm = () => {
     try {
       await JobSubmissionSchema.parseAsync(values);
 
-      const specify_nodes_number = values.specify_nodes ? values.specify_nodes.split(',').length : values.nodes;
-      const environment_variables = (values.environment || '').split('\n').filter((line) => line.trim().length > 0);
+      console.log("Values: ", values); //debug
+
+      const required_nodes_number = (values.required_nodes?.length ?? 0) > 0 ? (values.required_nodes?.length ?? 0).toString() : values.nodes;
+      const environment_variables = (values.environment || '').split('\n').filter((line) => line.trim().length > 0).map((line) => String(line));
 
       const formattedData = {
         job: {
           name: values.name,
           script: values.script,
           current_working_directory: values.current_working_directory,
-          nodes: specify_nodes_number,
+          nodes: required_nodes_number,
           tasks: values.tasks,
-          environment: environment_variables,
+          environment: values.environment ? environment_variables : undefined,
           partition: values.partition,
-          specify_nodes: values.specify_nodes,
+          required_nodes: values.required_nodes,
           reservation: values.reservation,
         },
       };
 
+      console.log("Formatted Data: ", formattedData); //debug
+      console.log("Types: ", {
+        name: typeof formattedData.job.name,
+        script: typeof formattedData.job.script,
+        current_working_directory: typeof formattedData.job.current_working_directory,
+        nodes: typeof formattedData.job.nodes,
+        tasks: typeof formattedData.job.tasks,
+        environment: typeof formattedData.job.environment,
+        partition: typeof formattedData.job.partition,
+        required_nodes: typeof formattedData.job.required_nodes,
+        reservation: typeof formattedData.job.reservation,
+      }); //debug
+
+      console.log("Environment is array of strings: ", Array.isArray(formattedData.job.environment) && formattedData.job.environment.every(item => typeof item === 'string')); //debug
+
       const jsonData = JSON.stringify(formattedData, null, 2);
 
-      console.log("Json data: ", jsonData);
+      console.log("Json data: ", jsonData); //debug
 
       try {
         await callPost(jsonData);
@@ -89,7 +106,6 @@ const SubmitJobForm = () => {
           message: 'Your job has been successfully submitted.',
           autoClose: 5000,
         });
-
 
       } catch (error: any) {
         notifications.show({

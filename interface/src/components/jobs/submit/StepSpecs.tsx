@@ -22,7 +22,9 @@ type NumberInputFieldProps = {
 const NumberInputField = ({ label, form, fieldName, isDisabled, max }: NumberInputFieldProps) => (
   <NumberInput
     label={label}
-    {...form.getInputProps(fieldName)}
+    {...form.getInputProps(fieldName, {
+      parse: label === "Number of Nodes" ? (value: number) => value.toString() : 1,
+    })}
     min={1}
     max={max}
     disabled={isDisabled}
@@ -34,14 +36,14 @@ type Reservation = z.infer<typeof ReservationSchema>;
 
 export default function StepSpecs({ form }: Props) {
 
-  if (form.values.specify_nodes.length > 0) {
+  if (form.values.required_nodes.length > 0) {
     return (
       <>
         <NumberInputField label="Number of Nodes" form={form} fieldName="nodes" isDisabled />
         <NumberInputField label="Number of Tasks" form={form} fieldName="tasks" />
         <TextInput
-          label="Specify nodes"
-          {...form.getInputProps('specify_nodes')}
+          label="Required Nodes"
+          {...form.getInputProps('required_nodes')}
           mt="md"
           disabled
         />
@@ -104,7 +106,7 @@ export default function StepSpecs({ form }: Props) {
                 const selectedReservation = filteredReservations.find(reservation => reservation.name === selectedValue);
                 if (selectedReservation) {
                   setSelectedReservation(selectedReservation);
-                  form.setFieldValue('nodes', selectedReservation.node_list.split(',').length);
+                  form.setFieldValue('nodes', selectedReservation.node_list.split(',').length.toString());
                 }
               }}
               mt='md'
@@ -140,8 +142,8 @@ export default function StepSpecs({ form }: Props) {
             />
             <Select
               label="Partition"
-              // data={['broadwell']} // test partitions
-              data={['broadwell-booked', 'cascadelake-booked', 'epito-booked', 'gracehopper-booked']} // prod partitions
+              data={['broadwell']} // test partitions
+              // data={['broadwell-booked', 'cascadelake-booked', 'epito-booked', 'gracehopper-booked']} // prod partitions
               {...form.getInputProps('partition', { withError: false })}
               required
             />
