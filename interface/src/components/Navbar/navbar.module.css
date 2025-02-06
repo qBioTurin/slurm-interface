@@ -63,3 +63,8 @@
     width: rem(25px);
     height: rem(25px);
 }
+
+.link.active {
+    background-color: var(--mantine-color-gray-light);
+    color: var(--mantine-color-gray-9);
+}
