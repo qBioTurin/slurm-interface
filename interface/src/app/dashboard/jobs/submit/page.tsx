@@ -40,7 +40,7 @@ const SubmitJobForm = () => {
       current_working_directory: process.env.CURRENT_WORKING_DIR || '',
       nodes: 1,
       tasks: 1,
-      environment: { PATH: process.env.CURRENT_PATH || '' },
+      environment: "",
       description: '',
       partition: '',
       specify_nodes: '',
@@ -60,6 +60,7 @@ const SubmitJobForm = () => {
       await JobSubmissionSchema.parseAsync(values);
 
       const specify_nodes_number = values.specify_nodes ? values.specify_nodes.split(',').length : values.nodes;
+      const environment_variables = (values.environment || '').split('\n').filter((line) => line.trim().length > 0);
 
       const formattedData = {
         job: {
@@ -68,7 +69,7 @@ const SubmitJobForm = () => {
           current_working_directory: values.current_working_directory,
           nodes: specify_nodes_number,
           tasks: values.tasks,
-          environment: values.environment,
+          environment: environment_variables,
           partition: values.partition,
           specify_nodes: values.specify_nodes,
           reservation: values.reservation,
@@ -76,6 +77,8 @@ const SubmitJobForm = () => {
       };
 
       const jsonData = JSON.stringify(formattedData, null, 2);
+
+      console.log("Json data: ", jsonData);
 
       try {
         await callPost(jsonData);
