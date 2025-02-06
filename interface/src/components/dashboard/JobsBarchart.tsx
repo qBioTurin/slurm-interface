@@ -34,6 +34,19 @@ const JobsBarchart: React.FC<JobsBarchartProps> = ({ jobs }) => {
     const maxCount = Math.max(...data.map(item => item.count), 0);
     const yAxisMax = Math.ceil(maxCount / 10) * 10;
 
+    const getColor = (state: string) => {
+        switch (state) {
+            case 'RUNNING':
+                return '#d4edda';
+            case 'COMPLETED':
+                return '#cce5ff';
+            case 'FAILED':
+                return '#f8d7da';
+            default:
+                return '#fff3cd';
+        }
+    };
+
     return (
         <BarChart
             h={200}
@@ -45,7 +58,7 @@ const JobsBarchart: React.FC<JobsBarchartProps> = ({ jobs }) => {
             xAxisLabel='N. jobs'
             valueFormatter={(value: number) => Number.isInteger(value) ? value.toString() : ''}
             barProps={{ radius: 10 }}
-            series={[{ name: 'count', color: '#c92a2a' }]}
+            series={data.map(item => ({ name: 'count', color: getColor(item.state) }))}
         />
     );
 };
