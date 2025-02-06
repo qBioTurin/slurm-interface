@@ -15,7 +15,7 @@ const contacts = [
         title: 'Contacts',
         links: [
             { icon: <IconMapPin />, label: 'Corso Svizzera 185, 10149, Turin', link: 'https://maps.app.goo.gl/7YNWoG9JgPDix2ov5' },
-            { icon: <IconMail />, label: 'support@hp4ai.unito.it', link: 'mailto:support@hp4ai.unito.it' },
+            { icon: <IconMail />, label: 'support@hpc4ai.unito.it', link: 'mailto:support@hpc4ai.unito.it' },
         ],
     },
 ];
