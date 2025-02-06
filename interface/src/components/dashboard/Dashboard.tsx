@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button, Switch, Group, Flex, Accordion, Title } from '@mantine/core';
-import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage } from '@/components/';
+import { JobsBarchart, RunningJobsColumn, PendingJobsColumn, LoadingPage, ErrorPage } from '@/components/';
 import { IconBriefcase2, IconPresentationAnalyticsFilled, IconCalendarFilled } from '@tabler/icons-react';
 import NodesPiechart from '@/components/dashboard/NodesPiechart';
 import { useFetchData } from '@/hooks/';
@@ -57,15 +57,15 @@ export default function DashBoard() {
     }
 
     if (jobError) {
-        return <div>Error: {jobError}</div>;
+        return <ErrorPage error={jobError} />;
     }
 
     if (nodeError) {
-        return <div>Error: {nodeError}</div>;
+        return <ErrorPage error={nodeError} />;
     }
 
     if (reservationError) {
-        return <div>Error: {reservationError}</div>;
+        return <ErrorPage error={reservationError} />;
     }
 
     return (

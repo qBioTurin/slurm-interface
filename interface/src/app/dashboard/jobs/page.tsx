@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import styles from './JobsPage.module.css';
 import { TextInput, Group, rem, Switch, Button, ActionIcon } from '@mantine/core';
 import { JobSchema, SlurmJobResponseSchema } from '@/schemas/job_schema';
-import { LoadingPage, JobsTable } from '@/components/';
+import { LoadingPage, ErrorPage, JobsTable } from '@/components/';
 import { notifications } from '@mantine/notifications';
 import { useFetchData, useDeleteData } from '@/hooks';
 import { useRouter } from 'next/navigation';
@@ -88,7 +88,7 @@ export default function JobsPage() {
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <ErrorPage error={error} />;
     }
 
     return (

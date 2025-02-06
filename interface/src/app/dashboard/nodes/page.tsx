@@ -6,7 +6,7 @@ import { Accordion, TextInput, Group, rem, Button, Text, SegmentedControl } from
 import { IconCalendar, IconPlayerPlay, IconSearch, IconServer } from '@tabler/icons-react';
 import { useFetchData } from '@/hooks';
 import { SlurmNodeResponseSchema, NodeSchema } from '@/schemas/node_schema';
-import { LoadingPage, NodesTable } from '@/components';
+import { ErrorPage, LoadingPage, NodesTable } from '@/components';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 
@@ -81,7 +81,7 @@ export default function NodesPage() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <ErrorPage error={error} />;
   }
 
   return (

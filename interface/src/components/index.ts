@@ -26,6 +26,7 @@ import ReservationStep from "./reservations/new/ReservationSteps";
 
 // Common components
 import LoadingPage from "./commons/LoadingPage/loadingPage";
+import ErrorPage from "./commons/ErrorPage/errorPage";
 import Footer from "./footer/footer";
 import Shell from "./AppShell/shell";
 import NavBar from "./Navbar/navbar";
@@ -54,6 +55,7 @@ export {
     ReservationSummary,
     ReservationStep,
     LoadingPage,
+    ErrorPage,
     LoginPage,
     LoginCard,
     LogoutButton,

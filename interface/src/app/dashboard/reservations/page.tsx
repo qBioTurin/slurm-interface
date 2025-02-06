@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ReservationsTable, LoadingPage } from '@/components';
+import { ReservationsTable, LoadingPage, ErrorPage } from '@/components';
 import { ReservationSchema, SlurmReservationResponseSchema } from '@/schemas/reservation_schema';
 import { useFetchData } from '@/hooks/useFetchData';
 import { z } from 'zod';
@@ -24,7 +24,7 @@ export default function ReservationsPage() {
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <ErrorPage error={error} />;
     }
 
     return (<ReservationsTable reservations={reservations} />);
