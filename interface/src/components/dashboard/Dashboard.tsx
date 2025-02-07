@@ -125,12 +125,12 @@ export default function DashBoard() {
                     </Accordion.Control>
                     <Accordion.Panel>
                         <Flex direction={{ base: 'column', md: 'row' }} gap="md">
-                            <div style={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px', border: '1px solid #e0e0e0', borderRadius: '5px' }}>
+                            <div style={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 20px 5px 20px', border: '1px solid #e0e0e0', borderRadius: '5px' }}>
                                 <div style={{ textAlign: 'center', backgroundColor: '#f5f5f5', padding: '10px', margin: '20px', width: '100%', fontSize: '20px', fontWeight: 'bold' }}> Jobs stats </div>
                                 <JobsBarchart jobs={jobs} />
                             </div>
 
-                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px', border: '1px solid #e0e0e0', borderRadius: '5px' }}>
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px 20px 5px 20px', border: '1px solid #e0e0e0', borderRadius: '5px' }}>
                                 <div style={{ textAlign: 'center', backgroundColor: '#f5f5f5', padding: '10px', margin: '20px', width: '100%', fontSize: '20px', fontWeight: 'bold' }}> Nodes stats </div>
                                 <NodesPiechart nodes={nodes} />
                             </div>
