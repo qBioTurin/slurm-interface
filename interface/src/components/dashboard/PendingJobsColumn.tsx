@@ -28,8 +28,7 @@ const PendingJobsColumn: React.FC<PendingJobsColumnProps> = ({ jobs }) => {
                                 <tr
                                     key={job.job_id}
                                     onClick={() => (window.location.href = `/dashboard/jobs/${job.job_id}`)}
-                                    className={`${styles.greyRow}`}
-
+                                    className={`${styles.yellowRow}`}
                                 >
                                     <td>
                                         <Button>
