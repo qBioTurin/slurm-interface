@@ -29,7 +29,12 @@ const aggregateJobStates = (jobs: Job[]) => {
 };
 
 const JobsBarchart: React.FC<JobsBarchartProps> = ({ jobs }) => {
-    const data = aggregateJobStates(jobs);
+    const data = aggregateJobStates(jobs).map(item => (
+        {
+            ...item,
+            name: item.state,
+        }
+    ));
 
     const maxCount = Math.max(...data.map(item => item.count), 0);
     const yAxisMax = Math.ceil(maxCount / 10) * 10;
@@ -41,9 +46,12 @@ const JobsBarchart: React.FC<JobsBarchartProps> = ({ jobs }) => {
             case 'COMPLETED':
                 return '#cce5ff';
             case 'FAILED':
+            case 'CANCELLED':
                 return '#f8d7da';
-            default:
+            case 'PENDING':
                 return '#fff3cd';
+            default:
+                return '#d6d6d4';
         }
     };
 
@@ -57,8 +65,10 @@ const JobsBarchart: React.FC<JobsBarchartProps> = ({ jobs }) => {
             yAxisProps={{ domain: [0, yAxisMax], width: 80 }}
             xAxisLabel='N. jobs'
             valueFormatter={(value: number) => Number.isInteger(value) ? value.toString() : ''}
-            barProps={{ radius: 10 }}
-            series={data.map(item => ({ name: 'count', color: getColor(item.state) }))}
+            barProps={{ radius: 10, }}
+            series={data.map(item => ({ name: item.name.toLowerCase(), color: getColor(item.state) }))}
+            withLegend
+            legendProps={{ verticalAlign: 'bottom' }}
         />
     );
 };
