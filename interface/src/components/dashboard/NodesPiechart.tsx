@@ -33,5 +33,32 @@ export default function NodesPiechart({ nodes }: NodesPiechartProps) {
     const data = processData(nodes);
     const chartData = Object.values(data);
 
-    return <PieChart data={chartData} size={200} withTooltip withLabelsLine labelsPosition="inside" labelsType="percent" startAngle={180} endAngle={0} strokeWidth={2} />;
+    return (
+        <div>
+            <div>
+                <PieChart
+                    data={chartData}
+                    size={200}
+                    withLabels
+                    withLabelsLine
+                    withTooltip
+                    labelsPosition="inside"
+                    labelsType="percent"
+                    startAngle={180}
+                    endAngle={0}
+                    strokeWidth={2}
+                    style={{ marginBottom: '-75px' }}
+                />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                {chartData.map((item) => (
+                    <div key={item.name} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+                        <span style={{ width: '10px', height: '10px', backgroundColor: item.color, borderRadius: '50%', display: 'inline-block', marginRight: '5px' }}></span>
+                        <span>{item.name}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+
 }
